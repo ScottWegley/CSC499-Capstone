@@ -8,6 +8,6 @@ export const load: PageLoad = async ({ fetch, params }) => {
 	await fetch('https://www.cloudflare.com/cdn-cgi/trace')
 		.then((res) => res.text())
 		.then((data) => (item = data));
-	item = item.match(ipRegex)![0];
+	item = item.split("=")[3].trim().match(ipRegex)![0];
 	return { item };
 };
