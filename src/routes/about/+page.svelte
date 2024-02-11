@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { Heading, P } from "flowbite-svelte";
+
 </script>
 
 <title>About</title>
 
-<div class="aboutdiv">
-	<h1 class="abouttitle">About</h1>
-	<p>
+<div class="text-center">
+	<Heading tag="h2" class="mb-4">About</Heading>
+	<P class="mb-6 text-lg dark:text-gray-400 sm:px-16" align="center" size="sm">
 		This website was created as my capstone project for my Bachelors Degree. It was made during my
 		final undergraduate semester at California Lutheran University in Spring of 2024. I developed it
 		under the advisement of Dr. Chang-Shyh Peng, the Computer Science department chair at the time,
@@ -19,13 +21,8 @@
 		way for me to verify my own knowledge, and this seemed like a great chance to do that. This page
 		hosts a number of the documents I created during the development process, all of which you are
 		welcome to and encouraged to view.
-	</p>
+	</P>
 </div>
 
 <style>
-	.aboutdiv {
-		text-align: center;
-		display: block;
-		margin: 20px auto;
-	}
 </style>
