@@ -7,7 +7,7 @@
 <title>Home</title>
 
 <div class="homediv">
-	<h1 id="hometitle">Cybersecurity and You</h1>
+	<p class="self-center whitespace-nowrap text-xl font-semibold dark:text-white" id="hometitle">Cybersecurity and You</p>
 	<p>
 		Welcome to my Cybersecurity website! While I'm by no means an expert on the subject, this site
 		does serve as my personal collection of knowledge and tools related to my exploration of the
