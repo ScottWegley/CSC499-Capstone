@@ -12,6 +12,13 @@
 				style="margin-left: 7px;">Cybersecurity and You</span
 			>
 		</NavBrand>
+		<NavHamburger />
+		<NavUl >
+			<NavLi href="/">Home</NavLi>
+			<NavLi href="/about">About</NavLi>
+			<NavLi href="/dictionary">Dictionary</NavLi>
+			<NavLi href="/password">Password</NavLi>
+		</NavUl>
 	</Navbar>
 </div>
 
