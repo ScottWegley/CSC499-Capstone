@@ -4,7 +4,7 @@
     export let data: PageData;    
 </script>
 
-<title>Your IP: {data.item}</title>
+<title>Home</title>
 
 <div class="homediv">
     <h1 id="hometitle">Cybersecurity and You</h1>
