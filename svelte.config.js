@@ -1,5 +1,6 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { importAssets } from 'svelte-preprocess-import-assets';
 
 const dev = process.argv.includes('dev');
 
@@ -15,7 +16,7 @@ const config = {
 			base: dev ? '' : '/CSC499-Capstone'
 		}
 	},
-	preprocess: vitePreprocess()
+	preprocess: [importAssets(), vitePreprocess({})]
 };
 
 export default config;
