@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { Heading, P } from 'flowbite-svelte';
 	import type { PageData } from './$types';
-
-	export let data: PageData;
 </script>
 
 <title>Home</title>
