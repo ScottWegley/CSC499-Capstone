@@ -17,9 +17,40 @@
 	let demoNumbers = false;
 	let demoSpecial = false;
 
-	let demoPassComplexity = 0;
+	const letterCount = 26; // ABCDEFGHIJKLMNOPQRSTUVWXYZ
+	const numCount = 10; //0123456789
+	const specialCount = 27 // `~!@#$%^&*()-_=+{}[]|;:?,<>
 
-	function calculateDemoComplexity() {}
+	$: demoPassComplexity = Math.pow((demoUppercase ? letterCount : 0) + (demoLowercase ? letterCount : 0) + (demoNumbers ? numCount : 0) + (demoSpecial ? specialCount : 0), demoPasswordLength);
+
+	let demoPassword = "";
+
+	let bruteforceActive = false;
+
+	function generateSamplePassword() {
+		let possibleChars = "";
+		let password = "";
+		if(demoUppercase){
+			possibleChars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		}
+		if(demoLowercase){
+			possibleChars += "abcdefghijklmnopqrstuvwxyz"
+		}
+		if(demoNumbers){
+			possibleChars += "0123456789"
+		}
+		if(demoSpecial){
+			possibleChars += "`~!@#$%^&*()-_=+{}[]|;:?,<>"
+		}
+
+		for (let i = 0; i < demoPasswordLength; i++) {
+			password += possibleChars.charAt(Math.floor(Math.random() * possibleChars.length));
+		}
+
+		demoPassword = password;
+
+		return password;
+	}
 </script>
 
 <title>Password Tool</title>
@@ -43,9 +74,22 @@
 			<CheckboxButton bind:checked={demoNumbers}>[0-9] Numbers</CheckboxButton>
 			<CheckboxButton bind:checked={demoSpecial}>[!#?] Special Characters</CheckboxButton>
 		</ButtonGroup>
-		<Button outline color="blue">Generate Sample Passowrd</Button>
+		<Button outline color="blue" on:click={(e) => {alert(generateSamplePassword())}}>Generate Sample Password</Button>
 		<Label>Length: {demoPasswordLength}</Label>
 		<Range bind:value={demoPasswordLength} min={demoPassMin} max={demoPassMax} />
+	</div>
+	<P class="mb-6 text-lg dark:text-gray-400 sm:px-16 max-w-fit" align="center" size="sm">
+		If your passwords are completely random, the only vulnerability a properly secured system posseses is brute force attacks.
+		To prevent this, we make our passwords complex.  Lets see how secure you are with your selected password rules.
+	</P>
+	<div class="inline-block items-center justify-center text-center">
+		<Label class="min">
+			Your Password: {demoPassword}
+		</Label>
+		<ButtonGroup class="mb-3 mt-3">
+			<Button outline color="blue" on:click={(e) => {}}>Run Benchmark</Button>
+			<Button outline color="blue" on:click={(e) => {}}>{bruteforceActive ? "Stop" : "Start"} Bruteforce</Button>
+		</ButtonGroup>
 	</div>
 </div>
 
