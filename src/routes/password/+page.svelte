@@ -78,10 +78,12 @@
 		<Label>Length: {demoPasswordLength}</Label>
 		<Range bind:value={demoPasswordLength} min={demoPassMin} max={demoPassMax} />
 	</div>
-	<P class="mb-6 text-lg dark:text-gray-400 sm:px-16 max-w-fit" align="center" size="sm">
-		If your passwords are completely random, the only vulnerability a properly secured system posseses is brute force attacks.
-		To prevent this, we make our passwords complex.  Lets see how secure you are with your selected password rules.
-	</P>
+	<div class="max-w-screen-lg mx-auto">
+		<P class="mb-6 text-lg dark:text-gray-400 sm:px-16" align="center" size="sm">
+			If your passwords are completely random, one of the only remaining vulnerabitilities is brute force attacks.
+			To prevent this, use complex passwords.  Lets see how secure you are with your selected password rules.
+		</P>
+	</div>
 	<div class="inline-block items-center justify-center text-center">
 		<Label class="min">
 			Your Password: {demoPassword}
