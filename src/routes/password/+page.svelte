@@ -8,7 +8,8 @@
 		Range,
 		Label,
 		Button,
-		Alert
+		Alert,
+		Tooltip
 	} from 'flowbite-svelte';
 	import { InfoCircleSolid } from 'flowbite-svelte-icons';
 
@@ -176,7 +177,7 @@
 			outline
 			color="blue"
 			on:click={(e) => {
-				alert(generateSamplePassword());
+				generateSamplePassword();
 			}}>Generate Sample Password</Button
 		>
 		<Label>Length: {demoPasswordLength}</Label>
@@ -203,9 +204,14 @@
 			>
 				Run Benchmark
 			</Button>
-			<Button outline color={bruteforceActive ? "red" : "blue"} on:click={(e) => {}}>
+			<Button id="bruteforceBtn" outline color={bruteforceActive ? 'red' : 'blue'} disabled='{demoPassword==''}' on:click={(e) => {}}>
 				{bruteforceActive ? 'Stop' : 'Start'} Bruteforce
 			</Button>
+			{#if demoPassword==''}
+				<Tooltip triggeredBy="[id=bruteforceBtn]">
+					Generate a password before bruteforcing.
+				</Tooltip>
+			{/if}
 		</ButtonGroup>
 	</div>
 	<!-- The elements enclosed below should only be visible if a benchmark has been run. -->
@@ -219,11 +225,15 @@
 		</div>
 		<div class="mx-auto w-fit">
 			<P class="mb-6 w-fit text-lg dark:text-gray-400 sm:px-16" align="center"
-				>With those results, your computer would take around {(demoPassComplexity / benchmarkLimit ) *
-					(benchmarkEndTime - benchmarkStartTime)} milliseconds [{((demoPassComplexity / benchmarkLimit ) *
-					(benchmarkEndTime - benchmarkStartTime)) / 86400000} days] to bruteforce your password.  While obviously a dedicated password cracking machine would
-					outperform your web browser, as you mess around with the settings it should be clear that with the exponentially increasing amount of possible passwords,
-					the time to bruteforce also exponentially increases.</P
+				>With those results, your computer would take around {(demoPassComplexity /
+					benchmarkLimit) *
+					(benchmarkEndTime - benchmarkStartTime)} milliseconds [{((demoPassComplexity /
+					benchmarkLimit) *
+					(benchmarkEndTime - benchmarkStartTime)) /
+					86400000} days] to bruteforce your password. While obviously a dedicated password cracking
+				machine would outperform your web browser, as you mess around with the settings it should be
+				clear that with the exponentially increasing amount of possible passwords, the time to bruteforce
+				also exponentially increases.</P
 			>
 		</div>
 	{/if}
