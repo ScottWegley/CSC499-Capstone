@@ -28,15 +28,6 @@
 	/** This boolean represents whether or not special characters are included in the password. */
 	let demoSpecial = false;
 
-	/** This boolean represents whether or not uppercase letters are included in the genned password. */
-	let gennedUppercase = false;
-	/** This boolean represents whether or not lowercase letters are included in the genned password. */
-	let gennedLowercase = false;
-	/** This boolean represents whether or not numbers are included in the genned password. */
-	let gennedNumbers = false;
-	/** This boolean represents whether or not special characters are included in the genned password. */
-	let gennedSpecial = false;
-
 	/** This is the number of letters in the upper/lowercase set. */
 	const letterCount = 26; // ABCDEFGHIJKLMNOPQRSTUVWXYZ
 	/** This is the number of numbers in the number set. */
@@ -59,20 +50,22 @@
 	/** This function returns the current characterset based on the selected password rules. */
 	function getCurrentCharset() {
 		let possibleChars = '';
-		if (gennedUppercase) {
+		if (demoUppercase) {
 			possibleChars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		}
-		if (gennedLowercase) {
+		if (demoLowercase) {
 			possibleChars += 'abcdefghijklmnopqrstuvwxyz';
 		}
-		if (gennedNumbers) {
+		if (demoNumbers) {
 			possibleChars += '0123456789';
 		}
-		if (gennedSpecial) {
+		if (demoSpecial) {
 			possibleChars += '`~!@#$%^&*()-_=+{}[]|;:?,<>';
 		}
 		return possibleChars;
 	}
+
+	let gennedCharset = '';
 
 	/** This function gnerate a random password based on the selected rules and length. */
 	function generateSamplePassword() {
@@ -86,10 +79,7 @@
 		demoPassword = password;
 
 		gennedPasswordLength = demoPasswordLength;
-		gennedUppercase = demoUppercase;
-		gennedLowercase = demoLowercase;
-		gennedNumbers = demoNumbers;
-		gennedSpecial = demoSpecial;
+		gennedCharset = possibleChars;
 
 		return password;
 	}
@@ -203,7 +193,7 @@
 	async function startBruteforce() {
 		console.log('Starting bruteforce.');
 
-		let possibleChars = getCurrentCharset();
+		let possibleChars = gennedCharset;
 		// If no rules are enabled for the password, there are no potential characters, and there is no point in running the benchmark.
 		if (possibleChars == '') return;
 
@@ -319,7 +309,7 @@
 					Generate a password before bruteforcing.
 				{:else}
 					If the predicted length is longer than 7 seconds, it is not recommended to bruteforce this password.
-					This is a demonstration tool, not an efficient password cracker and will likely crash your browser
+					This is a demonstration tool, not an efficient password cracker, and will likely crash your browser
 					if pushed too far.
 				{/if}
 			</Tooltip>
@@ -334,13 +324,20 @@
 					benchmarkStartTime} milliseconds.
 			</Alert>
 		</div>
-		<div class="mx-auto w-fit">
+		<div class="mx-auto w-fit text-center">
 			<P class="mb-6 w-fit text-lg dark:text-gray-400 sm:px-16" align="center"
 				>With those results, your browser would take around {predictedRelevantTimeStat} to bruteforce
 				your password. While obviously a dedicated password cracking machine would outperform your web
 				browser, as you mess around with the settings it should be clear that with the exponentially
 				increasing amount of possible passwords, the time to bruteforce also exponentially increases.</P
 			>
+			{#if bruteForceRun && !bruteForceCancelled}
+			<div class="mx-auto w-fit text-center">
+				<P class="mb-6 w-fit text-lg dark:text-gray-400 sm:px-16" align="center"
+					>Your browser found the password "{demoPassword}" in {getRelevantTimeStat(bruteForceEndTime - bruteForceStartTime)}.</P
+				>
+			</div>
+			{/if}
 		</div>
 	{/if}
 </div>
