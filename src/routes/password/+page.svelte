@@ -28,6 +28,15 @@
 	/** This boolean represents whether or not special characters are included in the password. */
 	let demoSpecial = false;
 
+	/** This boolean represents whether or not uppercase letters are included in the genned password. */
+	let gennedUppercase = false;
+	/** This boolean represents whether or not lowercase letters are included in the genned password. */
+	let gennedLowercase = false;
+	/** This boolean represents whether or not numbers are included in the genned password. */
+	let gennedNumbers = false;
+	/** This boolean represents whether or not special characters are included in the genned password. */
+	let gennedSpecial = false;
+
 	/** This is the number of letters in the upper/lowercase set. */
 	const letterCount = 26; // ABCDEFGHIJKLMNOPQRSTUVWXYZ
 	/** This is the number of numbers in the number set. */
@@ -47,22 +56,19 @@
 	/** This is the example password we generate. */
 	let demoPassword = '';
 
-	/** This boolean represents whether or not bruteforcing is currently active. */
-	let bruteforceActive = false;
-
 	/** This function returns the current characterset based on the selected password rules. */
 	function getCurrentCharset() {
 		let possibleChars = '';
-		if (demoUppercase) {
+		if (gennedUppercase) {
 			possibleChars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		}
-		if (demoLowercase) {
+		if (gennedLowercase) {
 			possibleChars += 'abcdefghijklmnopqrstuvwxyz';
 		}
-		if (demoNumbers) {
+		if (gennedNumbers) {
 			possibleChars += '0123456789';
 		}
-		if (demoSpecial) {
+		if (gennedSpecial) {
 			possibleChars += '`~!@#$%^&*()-_=+{}[]|;:?,<>';
 		}
 		return possibleChars;
@@ -79,6 +85,12 @@
 
 		demoPassword = password;
 
+		gennedPasswordLength = demoPasswordLength;
+		gennedUppercase = demoUppercase;
+		gennedLowercase = demoLowercase;
+		gennedNumbers = demoNumbers;
+		gennedSpecial = demoSpecial;
+
 		return password;
 	}
 
@@ -93,6 +105,8 @@
 	/** Stores the timestamp for the benchmark ending. */
 	let benchmarkEndTime = 0;
 
+	let gennedPasswordLength = 0;
+
 	/** This value represents the total amount of time, in milliseconds, a benchmark took to run. */
 	$: benchmarkTotalTime = benchmarkEndTime - benchmarkStartTime;
 	/** This values represents how many benchmarks' worth of iterations are in the full range of possible passwords. */
@@ -103,8 +117,10 @@
 	$: predictedRelevantTimeStat = getRelevantTimeStat(predictedTotalMilliseconds);
 
 	function getRelevantTimeStat(ms: number) {
-		 if (ms / 31556952000000 > 1) {
-			return (ms / 31556952000000).toFixed(2) + ' Millenni' + (ms / 31556952000000 == 1 ? 'um' : 'a');
+		if (ms / 31556952000000 > 1) {
+			return (
+				(ms / 31556952000000).toFixed(2) + ' Millenni' + (ms / 31556952000000 == 1 ? 'um' : 'a')
+			);
 		} else if (ms / 3155695200000 > 1) {
 			return (ms / 3155695200000).toFixed(2) + ' Centur' + (ms / 3155695200000 == 1 ? 'y' : 'ies');
 		} else if (ms / 315569520000 > 1) {
@@ -134,7 +150,7 @@
 
 		let possibleChars = getCurrentCharset();
 		// If no rules are enabled for the password, there are no potential characters, and there is no point in running the benchmark.
-		if(possibleChars == '') return;
+		if (possibleChars == '') return;
 
 		// Reset the benchmark tracking variables.
 		benchmarkStartTime = Date.now();
@@ -181,18 +197,45 @@
 	let bruteForceEndTime = 0;
 	/** This booleans represents whether or not a bruteforce search found a match. */
 	let bruteForceMatch = false;
+	/** This boolean represents whether or not bruteforcing is currently active. */
+	let bruteforceActive = false;
+
+	async function startBruteforce() {
+		console.log('Starting bruteforce.');
+
+		let possibleChars = getCurrentCharset();
+		// If no rules are enabled for the password, there are no potential characters, and there is no point in running the benchmark.
+		if (possibleChars == '') return;
+
+		// Reset bruteforce tracking variables.
+		bruteForceCancelled = false;
+		bruteForceGenerated = 0;
+		bruteForceRun = false;
+		bruteForceStartTime = Date.now();
+		bruteForceEndTime = Date.now();
+		bruteForceMatch = false;
+
+		bruteforceActive = true;
+		await iterateBruteforce(possibleChars, '', possibleChars.length, gennedPasswordLength);
+		bruteForceEndTime = Date.now();
+		bruteForceRun = true;
+		bruteforceActive = false;
+		console.log('Bruteforce finished.');
+	}
 
 	async function iterateBruteforce(charSet: String, prev: String, n: number, k: number) {
+		if (bruteForceCancelled || bruteForceMatch) {
+			bruteforceActive = false;
+			return;
+		}
+
 		// If this branch of recursion has reached the desired length, increase the count, check for match, prune the branch.
 		if (k == 0) {
 			bruteForceGenerated += 1;
 			if (prev == demoPassword) {
-				bruteForceCancelled = true;
+				bruteForceMatch = true;
+				console.log('Found match between ' + prev + '    ' + demoPassword);
 			}
-			return;
-		}
-
-		if (bruteForceCancelled) {
 			return;
 		}
 
@@ -260,13 +303,26 @@
 				outline
 				color={bruteforceActive ? 'red' : 'blue'}
 				disabled={demoPassword == ''}
-				on:click={(e) => {}}
+				on:click={(e) => {
+					if (bruteforceActive) {
+						bruteForceCancelled = true;
+					} else {
+						startBruteforce();
+					}
+				}}
 			>
 				{bruteforceActive ? 'Stop' : 'Start'} Bruteforce
 			</Button>
-			{#if demoPassword == ''}
-				<Tooltip triggeredBy="[id=bruteforceBtn]">Generate a password before bruteforcing.</Tooltip>
-			{/if}
+
+			<Tooltip triggeredBy="[id=bruteforceBtn]">
+				{#if demoPassword == ''}
+					Generate a password before bruteforcing.
+				{:else}
+					If the predicted length is longer than 7 seconds, it is not recommended to bruteforce this password.
+					This is a demonstration tool, not an efficient password cracker and will likely crash your browser
+					if pushed too far.
+				{/if}
+			</Tooltip>
 		</ButtonGroup>
 	</div>
 	<!-- The elements enclosed below should only be visible if a benchmark has been run. -->
