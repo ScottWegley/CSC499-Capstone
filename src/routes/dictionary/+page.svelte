@@ -33,21 +33,38 @@
 		if (localStorage.getItem('wordlist') == 'empty') {
 			wordlist.set(await getBasicWordList());
 		}
-		displayWordList = "";
+		resyncDisplayWithSession();
+	});
+
+	async function resetWordlist() {
+		wordlist.set(await getBasicWordList());
+		resyncDisplayWithSession();
+	}
+
+	/** This stores the wordlist as \n seperated for display to the user. */
+	$: displayWordList = '';
+
+	/** Update the display list to match the session memory. */
+	function resyncDisplayWithSession() {
+		displayWordList = '';
 		$wordlist
 			.toString()
 			.split(',')
 			.forEach((e) => {
 				displayWordList = displayWordList + e + '\n';
 			});
-	});
-
-	/** This stores the wordlist as \n seperated for display to the user. */
-	$: displayWordList = '';
+	}
 
 	function updateStoredWordlist() {
 		displayWordList = displayWordList.trim();
-		wordlist.set(displayWordList.replaceAll("\n",","));
+		wordlist.set('');
+		displayWordList.split('\n').forEach((e) => {
+			if (e.trim() != '') {
+				wordlist.set($wordlist.toString() + e + ',');
+			}
+		});
+		wordlist.set($wordlist.toString().substring(0,$wordlist.toString().length-2));
+		resyncDisplayWithSession();
 	}
 </script>
 
@@ -67,7 +84,12 @@
 		/>
 		<div class="flex max-h-72 flex-col">
 			<Fileupload {...fileuploadprops} class="mb-3 ml-3 max-h-10 max-w-64" />
-			<Button outline color="green" class="ml-3 max-w-64" on:click={updateStoredWordlist}>Save Changes</Button>
+			<Button outline color="green" class="mb-1 ml-3 max-w-64" on:click={updateStoredWordlist}
+				>Save Changes</Button
+			>
+			<Button outline color="red" class="ml-3 max-w-64" on:click={resetWordlist}
+				>Reset to Default</Button
+			>
 		</div>
 	</div>
 </div>
