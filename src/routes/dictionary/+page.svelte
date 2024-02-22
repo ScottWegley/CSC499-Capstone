@@ -8,13 +8,7 @@
 		id: 'user_avatar'
 	};
 
-	let wordlistprops = {
-		id: 'worldlist',
-		name: 'wordlist',
-		label: 'Your message',
-		rows: 40,
-		placeholder: 'The Wordlist'
-	};
+	let inputFileUpload: HTMLElement;
 
 	/** This variable will store our wordlist.  If one exists in storage, use that.  If not, default to our basic word list. */
 	export const wordlist = writable(browser && (localStorage.getItem('wordlist') || 'empty'));
@@ -43,6 +37,12 @@
 
 	/** This stores the wordlist as \n seperated for display to the user. */
 	$: displayWordList = '';
+
+	/** This stores the number of rows currently set for our display text area. */
+	$: rows = calculateTextAreaRows(displayWordList);
+	/** Determines the visually optimal number of rows for our display text area. */
+	function calculateTextAreaRows(wordlist: string){
+	}
 
 	/** Update the display list to match the session memory. */
 	function resyncDisplayWithSession() {
@@ -77,8 +77,12 @@
 	</P>
 	<div class="flex flex-row justify-center">
 		<Textarea
-			{...wordlistprops}
-			class="max-w-64"
+			id="wordlist"
+			name="wordlist"
+			label="Your message"
+			placeholder="The Wordlist"
+			bind:rows={rows}
+			class="h-5/6 max-w-64"
 			bind:value={displayWordList}
 			style="resize:none"
 		/>
