@@ -292,7 +292,7 @@
 				id="bruteforceBtn"
 				outline
 				color={bruteforceActive ? 'red' : 'blue'}
-				disabled={demoPassword == ''}
+				disabled={demoPassword == '' && benchmarkRun}
 				on:click={(e) => {
 					if (bruteforceActive) {
 						bruteForceCancelled = true;
