@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Heading, P } from 'flowbite-svelte';
-	import type { PageData } from './$types';
 </script>
 
 <title>Home</title>

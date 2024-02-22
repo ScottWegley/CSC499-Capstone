@@ -8,6 +8,7 @@
 		id: 'user_avatar'
 	};
 
+	/** Stores a reference to the fileupload element. */
 	let inputFileUpload: HTMLElement;
 
 	/** This variable will store our wordlist.  If one exists in storage, use that.  If not, default to our basic word list. */
