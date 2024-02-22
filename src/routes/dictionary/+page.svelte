@@ -28,6 +28,7 @@
 			wordlist.set(await getBasicWordList());
 		}
 		resyncDisplayWithSession();
+		inputFileUpload = document.getElementsByName('fileUpload')[0];
 	});
 
 	async function resetWordlist() {
@@ -75,7 +76,7 @@
 	<P class="mb-6 text-lg dark:text-gray-400 sm:px-16" align="center" size="sm">
 		This page allows you to customize the default wordlist we use or replace it with your own.
 	</P>
-	<div class="flex flex-row justify-center">
+	<div class="flex min-h-[75%] flex-row justify-center">
 		<Textarea
 			id="wordlist"
 			name="wordlist"
@@ -86,8 +87,12 @@
 			bind:value={displayWordList}
 			style="resize:none"
 		/>
-		<div class="flex max-h-72 flex-col">
-			<Fileupload {...fileuploadprops} class="mb-3 ml-3 max-h-10 max-w-64" />
+		<div class="flex flex-col">
+			<Fileupload
+				{...fileuploadprops}
+				class="mb-3 ml-3 max-h-10 max-w-64"
+				accept=".txt"
+				name="fileUpload"
 			<Button outline color="green" class="mb-1 ml-3 max-w-64" on:click={updateStoredWordlist}
 				>Save Changes</Button
 			>
