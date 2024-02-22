@@ -19,6 +19,7 @@
 			<NavLi href="{base}/about">About</NavLi>
 			<NavLi href="{base}/dictionary">Dictionary</NavLi>
 			<NavLi href="{base}/password">Password</NavLi>
+			<NavLi href="{base}/caesar">Caesar Cipher</NavLi>
 		</NavUl>
 	</Navbar>
 </div>
