@@ -41,8 +41,15 @@
 
 	/** This stores the number of rows currently set for our display text area. */
 	$: rows = calculateTextAreaRows(displayWordList);
+
 	/** Determines the visually optimal number of rows for our display text area. */
 	function calculateTextAreaRows(wordlist: string){
+		let newlineCount = wordlist.match(/\n/g)?.length || 0;
+		newlineCount += 1.5;
+		if(newlineCount > window.innerHeight / 26){
+			newlineCount = window.innerHeight / 26;
+		}
+		return newlineCount;
 	}
 
 	/** Update the display list to match the session memory. */
