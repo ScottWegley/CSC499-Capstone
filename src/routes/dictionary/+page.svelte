@@ -67,15 +67,20 @@
 		displayWordList = displayWordList.substring(0,displayWordList.length-1);
 	}
 
+	/** Go through the displayed wordlist, fix any obvious issues, store the wordlist in session storage.*/
 	function updateStoredWordlist() {
 		displayWordList = displayWordList.trim();
+		if (!validDictionary(displayWordList)) {
+			return;
+		}
 		wordlist.set('');
 		displayWordList.split('\n').forEach((e) => {
 			if (e.trim() != '') {
 				wordlist.set($wordlist.toString() + e + ',');
 			}
 		});
-		wordlist.set($wordlist.toString().substring(0,$wordlist.toString().length-2));
+		wordlist.set($wordlist.toString().substring(0, $wordlist.toString().length - 1));
+		console.log($wordlist.toString());
 		resyncDisplayWithSession();
 	}
 	/** Storage of an inputted dictionary as a split array. */
