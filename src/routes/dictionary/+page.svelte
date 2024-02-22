@@ -64,6 +64,7 @@
 			.forEach((e) => {
 				displayWordList = displayWordList + e + '\n';
 			});
+		displayWordList = displayWordList.substring(0,displayWordList.length-1);
 	}
 
 	function updateStoredWordlist() {
