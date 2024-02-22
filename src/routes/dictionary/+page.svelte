@@ -46,13 +46,15 @@
 	$: rows = calculateTextAreaRows(displayWordList);
 
 	/** Determines the visually optimal number of rows for our display text area. */
-	function calculateTextAreaRows(wordlist: string){
-		let newlineCount = wordlist.match(/\n/g)?.length || 0;
-		newlineCount += 1.5;
-		if(newlineCount > window.innerHeight / 26){
-			newlineCount = window.innerHeight / 26;
+	function calculateTextAreaRows(wordlist: string) {
+		if (browser) {
+			let newlineCount = wordlist.match(/\n/g)?.length || 0;
+			newlineCount += 1.5;
+			if (newlineCount > window.innerHeight / 26) {
+				newlineCount = window.innerHeight / 26;
+			}
+			return newlineCount;
 		}
-		return newlineCount;
 	}
 
 	/** Update the display list to match the session memory. */
@@ -64,7 +66,7 @@
 			.forEach((e) => {
 				displayWordList = displayWordList + e + '\n';
 			});
-		displayWordList = displayWordList.substring(0,displayWordList.length-1);
+		displayWordList = displayWordList.substring(0, displayWordList.length - 1);
 	}
 
 	/** Go through the displayed wordlist, fix any obvious issues, store the wordlist in session storage.*/
@@ -153,7 +155,7 @@
 			name="wordlist"
 			label="Your message"
 			placeholder="The Wordlist"
-			bind:rows={rows}
+			bind:rows
 			class="h-5/6 max-w-64"
 			bind:value={displayWordList}
 			style="resize:none"
