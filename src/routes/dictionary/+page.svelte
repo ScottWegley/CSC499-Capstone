@@ -83,8 +83,31 @@
 		console.log($wordlist.toString());
 		resyncDisplayWithSession();
 	}
+
 	/** Storage of an inputted dictionary as a split array. */
 	let inputWordArr: string[] = [];
+
+	/** File upload handler.  Restricts upload to plain text and runs validity checks.*/
+	async function handleFileUpload(e: Event) {
+		let file = (e.target as HTMLInputElement).files![0];
+		if (file.type != 'text/plain') {
+			alert('Submitted dictionary must be a plaintext file.');
+			(e.target as HTMLInputElement).value = '';
+			return;
+		}
+		let inputText = await file.text();
+		if (validDictionary(inputText)) {
+			displayWordList = '';
+			inputWordArr.forEach((word) => {
+				displayWordList = displayWordList + word + '\n';
+			});
+			displayWordList.trim();
+			updateStoredWordlist();
+		} else {
+			(e.target as HTMLInputElement).value = '';
+		}
+	}
+
 	/** Function to assess if specified text is valid dictionary.  Stores results in inputWordArr if so.*/
 	function validDictionary(dictionary: string): boolean {
 		dictionary = dictionary.trim().toLowerCase();
@@ -141,6 +164,8 @@
 				class="mb-3 ml-3 max-h-10 max-w-64"
 				accept=".txt"
 				name="fileUpload"
+				on:change={handleFileUpload}
+			/>
 			<Button outline color="green" class="mb-1 ml-3 max-w-64" on:click={updateStoredWordlist}
 				>Save Changes</Button
 			>
