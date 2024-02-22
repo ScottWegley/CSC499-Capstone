@@ -67,7 +67,7 @@
 
 	let gennedCharset = '';
 
-	/** This function gnerate a random password based on the selected rules and length. */
+	/** This function generate a random password based on the selected rules and length. */
 	function generateSamplePassword() {
 		let possibleChars = getCurrentCharset();
 		let password = '';
