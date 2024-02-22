@@ -31,9 +31,12 @@
 		inputFileUpload = document.getElementsByName('fileUpload')[0];
 	});
 
+	/** Load the default wordlist we provide into storage and display. */
 	async function resetWordlist() {
 		wordlist.set(await getBasicWordList());
+		console.log($wordlist.toString());
 		resyncDisplayWithSession();
+		(inputFileUpload as HTMLInputElement).value = '';
 	}
 
 	/** This stores the wordlist as \n seperated for display to the user. */
