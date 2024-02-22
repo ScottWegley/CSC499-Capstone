@@ -78,6 +78,38 @@
 		wordlist.set($wordlist.toString().substring(0,$wordlist.toString().length-2));
 		resyncDisplayWithSession();
 	}
+	/** Storage of an inputted dictionary as a split array. */
+	let inputWordArr: string[] = [];
+	/** Function to assess if specified text is valid dictionary.  Stores results in inputWordArr if so.*/
+	function validDictionary(dictionary: string): boolean {
+		dictionary = dictionary.trim().toLowerCase();
+		dictionary = dictionary.replaceAll(',', '\n');
+		let invalidCharacters = '0123456789`-=[]\\;\',./~!@#$%^&*()_+{}|:"<>?';
+
+		for (let i = 0; i < invalidCharacters.length; i++) {
+			if (dictionary.indexOf(invalidCharacters.charAt(i)) != -1) {
+				alert(
+					`Dictionary contained invalid character: ${invalidCharacters.charAt(i)} on Line ${i + 1}`
+				);
+				return false;
+			}
+		}
+
+		inputWordArr = [];
+
+		let dictionaryArray = dictionary.split('\n');
+		for (let i = 0; i < dictionaryArray.length; i++) {
+			dictionaryArray[i] = dictionaryArray[i].trim();
+			if (dictionaryArray[i].indexOf(' ') != -1) {
+				alert(`Cannot have spaces in dictionary entries.  Line ${i + 1}`);
+				return false;
+			}
+			if (!(dictionaryArray[i].length == 0)) {
+				inputWordArr.push(dictionaryArray[i]);
+			}
+		}
+		return true;
+	}
 </script>
 
 <title>Dictionary</title>
