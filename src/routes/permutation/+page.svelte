@@ -60,7 +60,10 @@
 								size="sm"
 								bind:value={permutationAlphabet[i]}
 								on:change={() => {
-									permutationAlphabet[i] = permutationAlphabet[i].trim().toUpperCase().substring(0, 1);
+									permutationAlphabet[i] = permutationAlphabet[i]
+										.trim()
+										.toUpperCase()
+										.substring(0, 1);
 								}}
 							></VerticalInput>
 						{/each}
@@ -73,7 +76,7 @@
 					placeholder="Input text"
 					rows="4"
 					bind:value={inputText}
-                    class="resize-none"
+					class="resize-none"
 					on:change={() => {
 						inputText = inputText.toUpperCase();
 					}}
@@ -94,7 +97,12 @@
 					class="mt-1.5"
 					disabled={!isValidAlphabet(permutationAlphabet)}>Run</GradientButton
 				>
-				<Textarea placeholder="Output text" rows="4" class="mt-3 resize-none" disabled bind:value={outputText}
+				<Textarea
+					placeholder="Output text"
+					rows="4"
+					class="mt-3 resize-none"
+					disabled
+					bind:value={outputText}
 				></Textarea>
 			</div>
 		</div>
