@@ -46,3 +46,19 @@ export function permutationEncrypt(input: string, permAlphabet: string[]) {
 	}
 	return output;
 }
+
+/** Function to decrypt a specified string given an alphabet. */
+export function permutationDecrypt(input: string, permAlphabet: string[]){
+	let output = "";
+	if(!isValidAlphabet(permAlphabet)){
+		return output;
+	}
+	for (let i = 0; i < input.length; i++) {
+		if(DEFAULT_ALPHABET.includes(input.charAt(i))){
+			output = output + DEFAULT_ALPHABET[permAlphabet.indexOf(input.charAt(i))]
+		} else {
+			output = output + input.charAt(i);
+		}
+	}
+	return output;
+}
