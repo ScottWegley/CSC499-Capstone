@@ -12,36 +12,7 @@
 		Tooltip
 	} from 'flowbite-svelte';
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
-
-	/** The default standard alphabet. */
-	const DEFAULT_ALPHABET = [
-		'A',
-		'B',
-		'C',
-		'D',
-		'E',
-		'F',
-		'G',
-		'H',
-		'I',
-		'J',
-		'K',
-		'L',
-		'M',
-		'N',
-		'O',
-		'P',
-		'Q',
-		'R',
-		'S',
-		'T',
-		'U',
-		'V',
-		'W',
-		'X',
-		'Y',
-		'Z'
-	];
+	import { DEFAULT_ALPHABET, caesarDecryption, caesarEncryption, getCipherAlphabet } from '$lib/scripts/caesar';
 
 	/** Stores the current shift being applied to the alphabet. */
 	let currentShift = 1;
@@ -55,52 +26,12 @@
 	/** Stores the text we give back to the user. */
 	let outputText = '';
 
-	/** Function to return an alphabet shifted by a specified amount. */
-	function getCipherAlphabet(shift: number) {
-		while (shift < 0) {
-			shift += 26;
-		}
-		let shiftedAlphabet = DEFAULT_ALPHABET.map((l) => l);
-		for (let i = 0; i < 26; i++) {
-			shiftedAlphabet[i] = DEFAULT_ALPHABET[(i + shift) % 26];
-		}
-		return shiftedAlphabet;
-	}
-
 	/** This function will either encrypt or decrypt our input text based on the current encryption mode. */
 	function performOperation() {
 		inputText = inputText.toUpperCase();
 		outputText = encryptionMode
 			? caesarEncryption(inputText, currentShift)
 			: caesarDecryption(inputText, currentShift);
-	}
-
-	/** This function encrypts a given input with a Caesar Cipher of a specified shift. */
-	function caesarEncryption(input: string, shift: number) {
-		let shiftedAlphabet = getCipherAlphabet(shift);
-		let output = "";
-		for (let i = 0; i < input.length; i++) {
-			let newChar = '';
-			if(DEFAULT_ALPHABET.includes(input.charAt(i))){
-				newChar = shiftedAlphabet[DEFAULT_ALPHABET.indexOf(input.charAt(i))];
-			}
-			output = output + (newChar == '' ? input.charAt(i) : newChar);
-		}
-		return output;
-	}
-
-	/** This function encrypts a given output with a Caesar Cipher of a specified shift. */
-	function caesarDecryption(input: string, shift: number) {
-		let shiftedAlphabet = getCipherAlphabet(shift);
-		let output = "";
-		for (let i = 0; i < input.length; i++) {
-			let newChar = '';
-			if(DEFAULT_ALPHABET.includes(input.charAt(i))){
-				newChar = DEFAULT_ALPHABET[shiftedAlphabet.indexOf(input.charAt(i))];
-			}
-			output = output + (newChar == '' ? input.charAt(i) : newChar);
-		}
-		return output;
 	}
 </script>
 
