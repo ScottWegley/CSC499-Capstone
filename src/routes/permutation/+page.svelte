@@ -59,6 +59,9 @@
 								class="h-min w-9 max-w-9 text-center"
 								size="sm"
 								bind:value={permutationAlphabet[i]}
+								on:change={() => {
+									permutationAlphabet[i] = permutationAlphabet[i].trim().toUpperCase().substring(0, 1);
+								}}
 							></VerticalInput>
 						{/each}
 					</div>
@@ -80,12 +83,16 @@
 					class="mt-3"
 					on:click={() => {
 						encryptionMode = !encryptionMode;
-                        isValidAlphabet(permutationAlphabet);
+						isValidAlphabet(permutationAlphabet);
 					}}
 					>Manual {encryptionMode ? 'Encryption' : 'Decryption'}
 				</GradientButton>
 				<Tooltip>Click to change to {!encryptionMode ? 'Encryption' : 'Decryption'}.</Tooltip>
-				<GradientButton color="greenToBlue" class="mt-1.5" disabled={!isValidAlphabet(permutationAlphabet)}>Run</GradientButton>
+				<GradientButton
+					color="greenToBlue"
+					class="mt-1.5"
+					disabled={!isValidAlphabet(permutationAlphabet)}>Run</GradientButton
+				>
 				<Textarea placeholder="Output text" rows="4" class="mt-3" disabled bind:value={outputText}
 				></Textarea>
 			</div>
