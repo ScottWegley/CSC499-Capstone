@@ -51,6 +51,12 @@
 		simply, only requiring knowledge of the order of the alphabet. For example, the word "Barnacle"
 		becomes "Cbsobdmf" after a 1-Right Shift. It becomes "Azqmzbkd" after a 1-Left Shift.
 	</P>
+	<div class="flex flex-col justify-center">
+		<div class="mb-1.5">
+			<P align="center" class="text-sm dark:text-gray-400 sm:px-16">Current Shift: {currentShift}</P>
+			<Range bind:value={currentShift} class="max-w-[75%]" min="-26" max="26"></Range>
+		</div>
+	</div>
 </div>
 
 <style>
