@@ -15,7 +15,7 @@
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	import VerticalInput from '$lib/components/VerticalInput.svelte';
 	import { DEFAULT_ALPHABET } from '$lib/scripts/caesar';
-	import { isValidAlphabet } from '$lib/scripts/permutation';
+	import { generateRandomAlphabet, isValidAlphabet } from '$lib/scripts/permutation';
 
 	/** This stores the permutated alphabet. */
 	let permutationAlphabet = DEFAULT_ALPHABET.map((l) => l);
@@ -28,6 +28,7 @@
 
 	/** A boolean to represent whether we are currently in encryption mode.  If false, we are in decryption mode. */
 	let encryptionMode = true;
+
 </script>
 
 <title>Home</title>
@@ -44,7 +45,9 @@
 	<div class="flex flex-col justify-center">
 		<div class="flex flex-row justify-center">
 			<div class="flex flex-col">
-				<Button class="w-20 text-xs">Randomize</Button>
+				<Button class="w-20 text-xs mb-1.5" on:click={()=>{
+					permutationAlphabet = generateRandomAlphabet();
+				}}>Randomize</Button>
 				<div class="flex flex-row justify-center">
 					<div class="mb-1.5 mr-1 flex h-min min-w-fit flex-col rounded-lg shadow-sm">
 						{#each DEFAULT_ALPHABET as letter}
