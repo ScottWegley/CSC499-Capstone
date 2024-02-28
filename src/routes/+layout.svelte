@@ -20,6 +20,7 @@
 			<NavLi href="{base}/dictionary">Dictionary</NavLi>
 			<NavLi href="{base}/password">Password</NavLi>
 			<NavLi href="{base}/caesar">Caesar Cipher</NavLi>
+			<NavLi href="{base}/permutation">Permutation Cipher</NavLi>
 		</NavUl>
 	</Navbar>
 </div>
