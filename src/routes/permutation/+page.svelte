@@ -61,6 +61,7 @@
 							<VerticalInput
 								class="h-min w-9 max-w-9 text-center"
 								size="sm"
+								color="blue"
 								bind:value={permutationAlphabet[i]}
 								on:change={() => {
 									permutationAlphabet[i] = permutationAlphabet[i]
