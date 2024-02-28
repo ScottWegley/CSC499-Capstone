@@ -11,7 +11,7 @@
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	import VerticalInput from '$lib/components/VerticalInput.svelte';
 	import { DEFAULT_ALPHABET } from '$lib/scripts/caesar';
-	import { generateRandomAlphabet, isValidAlphabet, permutationEncrypt } from '$lib/scripts/permutation';
+	import { generateRandomAlphabet, isValidAlphabet, permutationDecrypt, permutationEncrypt } from '$lib/scripts/permutation';
 
 	/** This stores the permutated alphabet. */
 	let permutationAlphabet = DEFAULT_ALPHABET.map((l) => l);
@@ -30,7 +30,7 @@
 		inputText = inputText.toUpperCase();
 		outputText = encryptionMode
 			? permutationEncrypt(inputText, permutationAlphabet)
-			: '';
+			: permutationDecrypt(inputText, permutationAlphabet);
 	}
 </script>
 
