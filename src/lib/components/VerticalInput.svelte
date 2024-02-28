@@ -15,27 +15,30 @@
     export let value: any = undefined;
     export let size: FormSizeType | undefined = undefined;
     export let defaultClass: string = 'block w-full disabled:cursor-not-allowed disabled:opacity-50 rtl:text-right';
-    export let color: 'base' | 'green' | 'red' = 'base';
+    export let color: 'base' | 'green' | 'red' | 'blue' = 'base';
     export let floatClass: string = 'flex absolute inset-y-0 items-center text-gray-500 dark:text-gray-400';
   
     const borderClasses = {
       base: 'border-gray-300 dark:border-gray-600',
       tinted: 'border-gray-300 dark:border-gray-500',
       green: 'border-green-500 dark:border-green-400',
-      red: 'border-red-500 dark:border-red-400'
+      red: 'border-red-500 dark:border-red-400',
+      blue: 'border-blue-500 dark:border-blue-400'
     };
   
     const ringClasses = {
       base: 'focus:border-primary-500 focus:ring-primary-500 dark:focus:border-primary-500 dark:focus:ring-primary-500',
       green: 'focus:ring-green-500 focus:border-green-500 dark:focus:border-green-500 dark:focus:ring-green-500',
-      red: 'focus:ring-red-500 focus:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500'
+      red: 'focus:ring-red-500 focus:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500',
+      blue: 'focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500'
     };
   
     const colorClasses = {
       base: 'bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400',
       tinted: 'bg-gray-50 text-gray-900 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400',
       green: 'bg-green-50 text-green-900 placeholder-green-700 dark:text-green-400 dark:placeholder-green-500 dark:bg-gray-700',
-      red: 'bg-red-50 text-red-900 placeholder-red-700 dark:text-red-500 dark:placeholder-red-500 dark:bg-gray-700'
+      red: 'bg-red-50 text-red-900 placeholder-red-700 dark:text-red-500 dark:placeholder-red-500 dark:bg-gray-700',
+      blue: 'bg-blue-50 text-blue-900 placeholder-blue-700 dark:text-blue-500 dark:placeholder-blue-500 dark:bg-gray-700 dark:hover:text-white dark:hover:bg-blue-600'
     };
   
     // tinted if put in component having its own background
