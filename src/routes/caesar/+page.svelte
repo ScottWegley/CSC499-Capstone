@@ -67,6 +67,7 @@
 					placeholder="Input text"
 					rows="4"
 					bind:value={inputText}
+					class="resize-none"
 					on:change={() => {
 						inputText = inputText.toUpperCase();
 					}}
@@ -84,7 +85,7 @@
 				<GradientButton color="greenToBlue" class="mt-1.5" on:click={performOperation}
 					>Run</GradientButton
 				>
-				<Textarea placeholder="Output text" rows="4" class="mt-3" disabled bind:value={outputText}
+				<Textarea placeholder="Output text" rows="4" class="mt-3 resize-none" disabled bind:value={outputText}
 				></Textarea>
 			</div>
 		</div>
