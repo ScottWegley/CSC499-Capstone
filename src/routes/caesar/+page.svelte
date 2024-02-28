@@ -118,7 +118,7 @@
 		<div class="mb-1.5">
 			<P align="center" class="text-sm dark:text-gray-400 sm:px-16">Current Shift: {currentShift}</P
 			>
-			<Range bind:value={currentShift} class="max-w-[75%]" min="-26" max="26"></Range>
+			<Range bind:value={currentShift} class="max-w-[35%]" min="-26" max="26"></Range>
 		</div>
 		<div class="flex flex-row justify-center" id="alphabetDisplayDiv">
 			<div class="mb-1.5 mr-1 flex h-min min-w-fit flex-col rounded-lg shadow-sm">
