@@ -30,3 +30,19 @@ export function generateRandomAlphabet(): string[] {
 	}
 	return randomAlphabet;
 }
+
+/** Function to encrypt a specified string given an alphabet. */
+export function permutationEncrypt(input: string, permAlphabet: string[]) {
+	let output = "";
+	if(!isValidAlphabet(permAlphabet)){
+		return output;
+	}
+	for (let i = 0; i < input.length; i++) {
+		if(DEFAULT_ALPHABET.includes(input.charAt(i))){
+			output = output + permAlphabet[DEFAULT_ALPHABET.indexOf(input.charAt(i))]
+		} else {
+			output = output + input.charAt(i);
+		}
+	}
+	return output;
+}
