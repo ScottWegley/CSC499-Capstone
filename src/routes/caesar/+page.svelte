@@ -1,5 +1,45 @@
 <script lang="ts">
-	import { Heading, P } from 'flowbite-svelte';
+	const DEFAULT_ALPHABET = [
+		'A',
+		'B',
+		'C',
+		'D',
+		'E',
+		'F',
+		'G',
+		'H',
+		'I',
+		'J',
+		'K',
+		'L',
+		'M',
+		'N',
+		'O',
+		'P',
+		'Q',
+		'R',
+		'S',
+		'T',
+		'U',
+		'V',
+		'W',
+		'X',
+		'Y',
+		'Z'
+	];
+
+	let currentShift = 0;
+
+	function getCipherAlphabet(shift: number) {
+		while (shift < 0) {
+			shift += 26;
+		}
+		let shiftedAlphabet = DEFAULT_ALPHABET.map((l) => l);
+		for (let i = 0; i < 26; i++) {
+			shiftedAlphabet[i] = DEFAULT_ALPHABET[(i + shift) % 26];
+		}
+		return shiftedAlphabet;
+	}
 </script>
 
 <title>Home</title>
