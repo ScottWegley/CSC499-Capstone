@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button, ButtonGroup, Heading, Listgroup, ListgroupItem, P, Range} from 'flowbite-svelte';
 	const DEFAULT_ALPHABET = [
 		'A',
 		'B',
