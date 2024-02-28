@@ -24,9 +24,9 @@ export function generateRandomAlphabet(): string[] {
 	let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	let randomAlphabet: string[] = [];
 	while (alphabet.length != 0) {
-        let i = Math.floor(Math.random() * alphabet.length);
-       randomAlphabet.push(alphabet.charAt(i));
-        alphabet = alphabet.replace(alphabet.charAt(i),'');
-    }
+		let i = Math.floor(Math.random() * alphabet.length);
+		randomAlphabet.push(alphabet.charAt(i));
+		alphabet = alphabet.replace(alphabet.charAt(i), '');
+	}
 	return randomAlphabet;
 }
