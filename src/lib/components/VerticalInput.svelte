@@ -38,7 +38,7 @@
       tinted: 'bg-gray-50 text-gray-900 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400',
       green: 'bg-green-50 text-green-900 placeholder-green-700 dark:text-green-400 dark:placeholder-green-500 dark:bg-gray-700',
       red: 'bg-red-50 text-red-900 placeholder-red-700 dark:text-red-500 dark:placeholder-red-500 dark:bg-gray-700',
-      blue: 'bg-blue-50 text-blue-900 placeholder-blue-700 dark:text-blue-500 dark:placeholder-blue-500 dark:bg-gray-700 dark:hover:text-white dark:hover:bg-blue-600'
+      blue: 'bg-transparent text-blue-900 placeholder-blue-700 dark:text-blue-500 dark:placeholder-blue-500 dark:bg-transparent dark:hover:text-white dark:hover:bg-blue-600'
     };
   
     // tinted if put in component having its own background
