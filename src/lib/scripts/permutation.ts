@@ -25,8 +25,8 @@ export function generateRandomAlphabet(): string[] {
 	let randomAlphabet: string[] = [];
 	while (alphabet.length != 0) {
         let i = Math.floor(Math.random() * alphabet.length);
-        randomAlphabet.push(alphabet.charAt(i));
-        alphabet.replace(alphabet.charAt(i),'');
+       randomAlphabet.push(alphabet.charAt(i));
+        alphabet = alphabet.replace(alphabet.charAt(i),'');
     }
 	return randomAlphabet;
 }
