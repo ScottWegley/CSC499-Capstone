@@ -69,6 +69,7 @@
 
 	/** This function generate a random password based on the selected rules and length. */
 	function generateSamplePassword() {
+		bruteForceRun=false;
 		let possibleChars = getCurrentCharset();
 		let password = '';
 
@@ -292,7 +293,7 @@
 				id="bruteforceBtn"
 				outline
 				color={bruteforceActive ? 'red' : 'blue'}
-				disabled={demoPassword == '' && benchmarkRun}
+				disabled={demoPassword == '' || !benchmarkRun}
 				on:click={(e) => {
 					if (bruteforceActive) {
 						bruteForceCancelled = true;
@@ -326,7 +327,7 @@
 		</div>
 		<div class="mx-auto w-fit text-center">
 			<P class="mb-6 w-fit text-lg dark:text-gray-400 sm:px-16" align="center"
-				>With those results, your browser would take around {predictedRelevantTimeStat} to bruteforce
+				>With those results, your browser would take at worst {predictedRelevantTimeStat} to bruteforce
 				your password. While obviously a dedicated password cracking machine would outperform your web
 				browser, as you mess around with the settings it should be clear that with the exponentially
 				increasing amount of possible passwords, the time to bruteforce also exponentially increases.</P
