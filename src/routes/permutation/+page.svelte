@@ -42,6 +42,15 @@
 	</P>
 	<div class="flex flex-col justify-center">
 		<div class="flex flex-row justify-center">
+				<div class="flex flex-row justify-center">
+					<div class="mb-1.5 mr-1 flex h-min min-w-fit flex-col rounded-lg shadow-sm">
+						{#each DEFAULT_ALPHABET as letter}
+							<VerticalStackButton size="xs" outline color="green" class="h-min"
+								>{letter}</VerticalStackButton
+							>
+						{/each}
+					</div>
+				</div>
 			<div class="ml-3 flex min-w-[25%] flex-col">
 				<Textarea
 					placeholder="Input text"
