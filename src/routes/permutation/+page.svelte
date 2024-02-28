@@ -1,5 +1,6 @@
 <script lang="ts">
 	import {
+		Alert,
 		Button,
 		GradientButton,
 		Heading,
@@ -40,10 +41,11 @@
 	<Heading tag="h4" class="mb-4">Permutation Cipher</Heading>
 	<P class="text-md mb-2 dark:text-gray-400 sm:px-16" align="center" size="sm">
 		A permutation cipher is a twist on the classic Caesar cipher. Instead of translating between two
-		alphabets with one shifted from the other, your second alphabet is randomly arranged. This
+		alphabets with one shifted, your second alphabet is randomly arranged. This
 		increases the number of possible alphabets from 26 to 4.032914611*10^26, or roughly
 		four hundred and three septillion. A circle that many meters wide is comparable to the size of
-		the observable universe.
+		the observable universe.  To use a specific alphabet instead of a random one, just click into any
+		letter of the blue alphabet and edit it.
 	</P>
 	<div class="flex flex-col justify-center">
 		<div class="flex flex-row justify-center">
@@ -78,7 +80,7 @@
 				</div>
 			</div>
 
-			<div class="ml-3 flex min-w-[25%] flex-col">
+			<div class="ml-3 flex w-[25%] flex-col">
 				<Textarea
 					placeholder="Input text"
 					rows="4"
@@ -113,6 +115,9 @@
 					disabled
 					bind:value={outputText}
 				></Textarea>
+				{#if !isValidAlphabet(permutationAlphabet)}
+					<Alert color="none" class="border-t-4 mt-3 bg-[#111827] border-red-900 text-white">Something is wrong with your blue alphabet! Make sure you only have one of each letter.</Alert>
+				{/if}
 			</div>
 		</div>
 	</div>
