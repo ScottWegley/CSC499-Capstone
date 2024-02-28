@@ -141,6 +141,17 @@
 		}
 		return true;
 	}
+
+	/** Function to create a text file of our dictionary and allow the user to download it. */
+	function downloadDictionary() {
+		let link = document.createElement('a');
+		let file = new Blob([displayWordList], { type: 'text/plain' });
+		link.href = URL.createObjectURL(file);
+		link.download = 'dictionary.txt';
+		link.click();
+		URL.revokeObjectURL(link.href);
+	}
+
 </script>
 
 <title>Dictionary</title>
@@ -172,11 +183,12 @@
 			<Button outline color="green" class="mb-1 ml-3 max-w-64" on:click={updateStoredWordlist}
 				>Save Changes</Button
 			>
-			<Button outline color="red" class="ml-3 max-w-64" on:click={resetWordlist}
+			<Button outline color="red" class="mb-1 ml-3 max-w-64" on:click={resetWordlist}
 				>Reset to Default</Button
 			>
-		</div>
-	</div>
+			<Button outline color="yellow" class="ml-3 max-w-64" on:click={downloadDictionary}>
+				Download Dictionary
+			</Button>
 </div>
 
 <style>
