@@ -42,6 +42,8 @@
 	</P>
 	<div class="flex flex-col justify-center">
 		<div class="flex flex-row justify-center">
+			<div class="flex flex-col">
+				<Button class="w-20 text-xs">Randomize</Button>
 				<div class="flex flex-row justify-center">
 					<div class="mb-1.5 mr-1 flex h-min min-w-fit flex-col rounded-lg shadow-sm">
 						{#each DEFAULT_ALPHABET as letter}
@@ -50,7 +52,18 @@
 							>
 						{/each}
 					</div>
+					<div class="mb-1.5 mr-1 flex h-min min-w-fit flex-col rounded-lg shadow-sm">
+						{#each premutationAlphabet as letter, i}
+							<VerticalInput
+								class="h-min w-9 max-w-9 text-center"
+								size="sm"
+								bind:value={premutationAlphabet[i]}
+							></VerticalInput>
+						{/each}
+					</div>
 				</div>
+			</div>
+
 			<div class="ml-3 flex min-w-[25%] flex-col">
 				<Textarea
 					placeholder="Input text"
