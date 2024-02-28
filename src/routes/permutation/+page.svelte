@@ -11,7 +11,7 @@
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	import VerticalInput from '$lib/components/VerticalInput.svelte';
 	import { DEFAULT_ALPHABET } from '$lib/scripts/caesar';
-	import { generateRandomAlphabet, isValidAlphabet } from '$lib/scripts/permutation';
+	import { generateRandomAlphabet, isValidAlphabet, permutationEncrypt } from '$lib/scripts/permutation';
 
 	/** This stores the permutated alphabet. */
 	let permutationAlphabet = DEFAULT_ALPHABET.map((l) => l);
@@ -25,6 +25,13 @@
 	/** A boolean to represent whether we are currently in encryption mode.  If false, we are in decryption mode. */
 	let encryptionMode = true;
 
+	/** Function to en/decrypt the input based on the encryption mode. */
+	function performOperation() {
+		inputText = inputText.toUpperCase();
+		outputText = encryptionMode
+			? permutationEncrypt(inputText, permutationAlphabet)
+			: '';
+	}
 </script>
 
 <title>Home</title>
@@ -95,7 +102,9 @@
 				<GradientButton
 					color="greenToBlue"
 					class="mt-1.5"
-					disabled={!isValidAlphabet(permutationAlphabet)}>Run</GradientButton
+					disabled={!isValidAlphabet(permutationAlphabet)}
+					on:click={performOperation}
+					>Run</GradientButton
 				>
 				<Textarea
 					placeholder="Output text"
