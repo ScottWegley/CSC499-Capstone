@@ -44,7 +44,7 @@
 	];
 
 	/** Stores the current shift being applied to the alphabet. */
-	let currentShift = 0;
+	let currentShift = 1;
 
 	/** A boolean to represent whether we are currently in encryption mode.  If false, we are in decryption mode. */
 	let encryptionMode = true;
@@ -111,8 +111,8 @@
 	<P class="text-md mb-2 dark:text-gray-400 sm:px-16" align="center" size="sm">
 		The Caesar Cipher is one of the oldest and most famous substitution ciphers. It works very
 		simply, only requiring knowledge of the order of the alphabet. You replace every letter in a
-		word with a letter a set distance away from it. For example, the word "Barnacle" becomes
-		"Cbsobdmf" after a 1-Right Shift or "Azqmzbkd" after a 1-Left Shift.
+		word with a letter a set distance away from it. For example, the word "BARNACLE" becomes
+		"{caesarEncryption("BARNACLE",currentShift)}" after a {(currentShift < 0 ? currentShift * -1 : currentShift) + `-${(currentShift>0 ? "Right" : "Left")}`} Shift or "{caesarEncryption("BARNACLE",currentShift * -1)}" after a {(currentShift < 0 ? currentShift * -1 : currentShift) + `-${(currentShift>0 ? "Left" : "Right")}`} Shift.
 	</P>
 	<div class="flex flex-col justify-center">
 		<div class="mb-1.5">
