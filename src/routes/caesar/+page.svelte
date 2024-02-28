@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Button, ButtonGroup, Heading, Listgroup, ListgroupItem, P, Range} from 'flowbite-svelte';
+	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	const DEFAULT_ALPHABET = [
 		'A',
 		'B',
@@ -56,6 +57,20 @@
 		<div class="mb-1.5">
 			<P align="center" class="text-sm dark:text-gray-400 sm:px-16">Current Shift: {currentShift}</P>
 			<Range bind:value={currentShift} class="max-w-[75%]" min="-26" max="26"></Range>
+		</div>
+		<div class="flex flex-row justify-center">
+			<div class="flex flex-row justify-center" id="alphabetDisplayDiv">
+				<div class="mb-1.5 mr-1 flex h-min min-w-fit flex-col rounded-lg shadow-sm">
+					{#each DEFAULT_ALPHABET as letter}
+						<VerticalStackButton size="xs" outline color="green">{letter}</VerticalStackButton>
+					{/each}
+				</div>
+				<div class="mb-1.5 ml-1 flex h-min min-w-fit flex-col rounded-lg shadow-sm">
+					{#each getCipherAlphabet(currentShift) as letter}
+						<VerticalStackButton size="xs" outline color="red">{letter}</VerticalStackButton>
+					{/each}
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
