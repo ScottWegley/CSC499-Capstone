@@ -1,12 +1,8 @@
 <script lang="ts">
-	import { Heading, P, Button, Fileupload, Textarea } from 'flowbite-svelte';
+	import { Heading, P, Button, Fileupload, Textarea, Footer, Alert } from 'flowbite-svelte';
 	import { writable } from 'svelte/store';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
-
-	let fileuploadprops = {
-		id: 'user_avatar'
-	};
 
 	/** Stores a reference to the fileupload element. */
 	let inputFileUpload: HTMLElement;
@@ -51,8 +47,8 @@
 		if (browser) {
 			let newlineCount = wordlist.match(/\n/g)?.length || 0;
 			newlineCount += 1.5;
-			if (newlineCount > window.innerHeight / 26) {
-				newlineCount = window.innerHeight / 26;
+			if (newlineCount > window.innerHeight / 30) {
+				newlineCount = window.innerHeight / 30;
 			}
 			return newlineCount;
 		}
@@ -152,6 +148,15 @@
 		URL.revokeObjectURL(link.href);
 	}
 
+	/** Boolean to track whether user has saved changes. */
+	let unsavedChanges = false;
+	/** Boolean to track whether the user has acknowledged our saving alert. */
+	let saveAcknowledged = true;
+
+	function alertUserToDictionaryChange(e: Event) {
+		unsavedChanges = true;
+		saveAcknowledged = true;
+	}
 </script>
 
 <title>Dictionary</title>
@@ -171,17 +176,24 @@
 			class="h-5/6 max-w-64"
 			bind:value={displayWordList}
 			style="resize:none"
+			on:change={alertUserToDictionaryChange}
 		/>
 		<div class="flex flex-col">
 			<Fileupload
-				{...fileuploadprops}
 				class="mb-3 ml-3 max-h-10 max-w-64"
 				accept=".txt"
 				name="fileUpload"
 				on:change={handleFileUpload}
 			/>
-			<Button outline color="green" class="mb-1 ml-3 max-w-64" on:click={updateStoredWordlist}
-				>Save Changes</Button
+			<Button
+				outline
+				color="green"
+				class="mb-1 ml-3 max-w-64"
+				on:click={() => {
+					updateStoredWordlist();
+					unsavedChanges = false;
+					saveAcknowledged = false;
+				}}>Save Changes</Button
 			>
 			<Button outline color="red" class="mb-1 ml-3 max-w-64" on:click={resetWordlist}
 				>Reset to Default</Button
@@ -189,6 +201,35 @@
 			<Button outline color="yellow" class="ml-3 max-w-64" on:click={downloadDictionary}>
 				Download Dictionary
 			</Button>
+		</div>
+		<div class="max"></div>
+	</div>
+</div>
+<div class="mt-3 flex flex-row justify-center">
+	<Footer>
+		{#if unsavedChanges}
+			<Alert color="red" border class="cursor-default"
+				><span class="font-medium">Danger!</span> You have unsaved changes. Click
+				<span
+					class="cursor-pointer underline"
+					on:click={() => {
+						unsavedChanges = false;
+					}}>here</span
+				> to dismiss.</Alert
+			>
+		{/if}
+		{#if !saveAcknowledged}
+			<Alert color="green" border class="cursor-default"
+				><span class="font-medium">Successfully saved changes!</span> Click
+				<span
+					class="cursor-pointer underline"
+					on:click={() => {
+						saveAcknowledged = true;
+					}}>here</span
+				> to dismiss.</Alert
+			>
+		{/if}
+	</Footer>
 </div>
 
 <style>
