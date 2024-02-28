@@ -15,28 +15,10 @@
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	import VerticalInput from '$lib/components/VerticalInput.svelte';
 	import { DEFAULT_ALPHABET } from '$lib/scripts/caesar';
+	import { isValidAlphabet } from '$lib/scripts/permutation';
 
 	/** This stores the permutated alphabet. */
-	let premutationAlphabet = DEFAULT_ALPHABET.map((l) => l);
-
-    /** Function to check if a specified alphabet array is valid. */
-	function isValidAlphabet(toCheck: string[]): boolean {
-		if (toCheck.length != 26) {
-			return false;
-		}
-		let charStorage: string[] = [];
-		let isValid = true;
-		toCheck.forEach((letter) => {
-			if (!DEFAULT_ALPHABET.includes(letter)) {
-				isValid = false;
-			} else if (!charStorage.includes(letter)) {
-				charStorage.push(letter);
-			} else {
-				isValid = false;
-			}
-		});
-		return isValid;
-	}
+	let permutationAlphabet = DEFAULT_ALPHABET.map((l) => l);
 
 	/** Stores the text the user gives us. */
 	let inputText = '';
@@ -72,11 +54,11 @@
 						{/each}
 					</div>
 					<div class="mb-1.5 mr-1 flex h-min min-w-fit flex-col rounded-lg shadow-sm">
-						{#each premutationAlphabet as letter, i}
+						{#each permutationAlphabet as letter, i}
 							<VerticalInput
 								class="h-min w-9 max-w-9 text-center"
 								size="sm"
-								bind:value={premutationAlphabet[i]}
+								bind:value={permutationAlphabet[i]}
 							></VerticalInput>
 						{/each}
 					</div>
@@ -98,12 +80,12 @@
 					class="mt-3"
 					on:click={() => {
 						encryptionMode = !encryptionMode;
-                        isValidAlphabet(premutationAlphabet);
+                        isValidAlphabet(permutationAlphabet);
 					}}
 					>Manual {encryptionMode ? 'Encryption' : 'Decryption'}
 				</GradientButton>
 				<Tooltip>Click to change to {!encryptionMode ? 'Encryption' : 'Decryption'}.</Tooltip>
-				<GradientButton color="greenToBlue" class="mt-1.5" disabled={!isValidAlphabet(premutationAlphabet)}>Run</GradientButton>
+				<GradientButton color="greenToBlue" class="mt-1.5" disabled={!isValidAlphabet(permutationAlphabet)}>Run</GradientButton>
 				<Textarea placeholder="Output text" rows="4" class="mt-3" disabled bind:value={outputText}
 				></Textarea>
 			</div>
