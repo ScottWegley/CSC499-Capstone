@@ -1,12 +1,8 @@
 <script lang="ts">
 	import {
 		Button,
-		ButtonGroup,
 		GradientButton,
 		Heading,
-		Input,
-		Listgroup,
-		ListgroupItem,
 		P,
 		Range,
 		Textarea,
