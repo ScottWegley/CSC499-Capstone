@@ -1,6 +1,5 @@
 /** This function loads the basic word list we provide from our text file. */
 export async function getBasicWordList() {
-	console.log('Fetching Basic Word List');
 	let response = await fetch('dictionary.txt');
 	return (await response.text()).split('\n').toString();
 }

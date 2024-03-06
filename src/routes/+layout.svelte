@@ -2,6 +2,9 @@
 	import '../app.pcss';
 	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
 	import { base } from '$app/paths';
+
+	/** @type {import('./$types').LayoutData} */
+	export let data;
 </script>
 
 <div class="flownavbar">
@@ -14,7 +17,7 @@
 			>
 		</NavBrand>
 		<NavHamburger />
-		<NavUl >
+		<NavUl>
 			<NavLi href="{base}/">Home</NavLi>
 			<NavLi href="{base}/about">About</NavLi>
 			<NavLi href="{base}/dictionary">Dictionary</NavLi>
