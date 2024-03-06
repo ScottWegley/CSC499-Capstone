@@ -11,8 +11,8 @@
 	} from 'flowbite-svelte';
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	import VerticalInput from '$lib/components/VerticalInput.svelte';
-	import { DEFAULT_ALPHABET } from '$lib/scripts/caesar';
-	import { generateRandomAlphabet, isValidAlphabet, permutationDecrypt, permutationEncrypt } from '$lib/scripts/permutation';
+	import { DEFAULT_ALPHABET } from '$lib/scripts/caesarCipher';
+	import { generateRandomAlphabet, isValidAlphabet, permutationDecrypt, permutationEncrypt } from '$lib/scripts/permutationCipher';
 
 	/** This stores the permutated alphabet. */
 	let permutationAlphabet = DEFAULT_ALPHABET.map((l) => l);
