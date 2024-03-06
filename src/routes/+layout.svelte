@@ -21,6 +21,7 @@
 			<NavLi href="{base}/password">Password</NavLi>
 			<NavLi href="{base}/caesar-cipher">Caesar Cipher</NavLi>
 			<NavLi href="{base}/permutation-cipher">Permutation Cipher</NavLi>
+			<NavLi href="{base}/permutation-cracker">Permutation Cracker</NavLi>
 		</NavUl>
 	</Navbar>
 </div>
