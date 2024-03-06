@@ -26,7 +26,7 @@
 				{#if tooltipsActive}
 					<Tooltip
 						>If you know your input text was encrypted with specifically a Caesar Cipher, turn this
-						switch on. <br/> The page will use Caesar specific cracking techniques and decrypt the text
+						switch on. <br /> The page will use Caesar specific cracking techniques and decrypt the text
 						exponentially faster.
 					</Tooltip>
 				{/if}
@@ -36,7 +36,7 @@
 			<Textarea
 				placeholder="Input Text"
 				rows="4"
-				class="resize-none mb-3"
+				class="mb-3 resize-none"
 				bind:value={inputText}
 				on:change={() => {
 					inputText = inputText.toUpperCase();
@@ -47,10 +47,10 @@
             <Textarea
 				placeholder="Output Text"
 				rows="4"
-				class="resize-none mb-3"
+				class="mb-3 resize-none"
 				bind:value={outputText}
 				align="center"
-                disabled
+				disabled
 			></Textarea>
 		</div>
 	</div>
