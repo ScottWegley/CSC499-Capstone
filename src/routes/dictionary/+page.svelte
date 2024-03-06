@@ -27,7 +27,6 @@
 	/** Load the default wordlist we provide into storage and display. */
 	async function resetWordlist() {
 		wordlist.set(await getBasicWordList());
-		console.log($wordlist.toString());
 		resyncDisplayWithSession();
 		(inputFileUpload as HTMLInputElement).value = '';
 	}
@@ -104,7 +103,6 @@
 			displayWordList.trim();
 			updateStoredWordlist();
 		} else {
-			console.log("Invalid Dictionary");
 			(e.target as HTMLInputElement).value = '';
 		}
 	}

@@ -137,7 +137,6 @@
 
 	/** This functions starts a benchmark to calculate how long it will take to generate 10,000 passwords based on the current ruleset. */
 	async function startBenchmark() {
-		console.log('Starting benchmark.');
 
 		let possibleChars = getCurrentCharset();
 		// If no rules are enabled for the password, there are no potential characters, and there is no point in running the benchmark.
@@ -192,7 +191,6 @@
 	let bruteforceActive = false;
 
 	async function startBruteforce() {
-		console.log('Starting bruteforce.');
 
 		let possibleChars = gennedCharset;
 		// If no rules are enabled for the password, there are no potential characters, and there is no point in running the benchmark.
@@ -211,7 +209,6 @@
 		bruteForceEndTime = Date.now();
 		bruteForceRun = true;
 		bruteforceActive = false;
-		console.log('Bruteforce finished.');
 	}
 
 	async function iterateBruteforce(charSet: String, prev: String, n: number, k: number) {
@@ -225,7 +222,6 @@
 			bruteForceGenerated += 1;
 			if (prev == demoPassword) {
 				bruteForceMatch = true;
-				console.log('Found match between ' + prev + '    ' + demoPassword);
 			}
 			return;
 		}
