@@ -42,7 +42,7 @@
 	<P class="text-md mb-2 dark:text-gray-400 sm:px-16" align="center" size="sm">
 		A permutation cipher is a twist on the classic Caesar cipher. Instead of translating between two
 		alphabets with one shifted, your second alphabet is randomly arranged. This
-		increases the number of possible alphabets from 26 to 4.032914611*10^26, or roughly
+		increases the number of possible alphabets from 26 to 4.032914611*10<sup>26</sup>, or roughly
 		four hundred and three septillion. A circle that many meters wide is comparable to the size of
 		the observable universe.  To use a specific alphabet instead of a random one, just click into any
 		letter of the blue alphabet and edit it.

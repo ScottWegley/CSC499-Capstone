@@ -110,28 +110,28 @@
 	function getRelevantTimeStat(ms: number) {
 		if (ms / 31556952000000 > 1) {
 			return (
-				(ms / 31556952000000).toFixed(2) + ' Millenni' + (ms / 31556952000000 == 1 ? 'um' : 'a')
+				parseFloat((ms / 31556952000000).toFixed(2)) + ' Millenni' + (ms / 31556952000000 == 1 ? 'um' : 'a')
 			);
 		} else if (ms / 3155695200000 > 1) {
-			return (ms / 3155695200000).toFixed(2) + ' Centur' + (ms / 3155695200000 == 1 ? 'y' : 'ies');
+			return parseFloat((ms / 3155695200000).toFixed(2)) + ' Centur' + (ms / 3155695200000 == 1 ? 'y' : 'ies');
 		} else if (ms / 315569520000 > 1) {
-			return (ms / 315569520000).toFixed(2) + ' Decade' + (ms / 315569520000 == 1 ? '' : 's');
+			return parseFloat((ms / 315569520000).toFixed(2)) + ' Decade' + (ms / 315569520000 == 1 ? '' : 's');
 		} else if (ms / 31556952000 > 1) {
-			return (ms / 31556952000).toFixed(2) + ' Year' + (ms / 31556952000 == 1 ? '' : 's');
+			return parseFloat((ms / 31556952000).toFixed(2)) + ' Year' + (ms / 31556952000 == 1 ? '' : 's');
 		} else if (ms / 2629746000 > 1) {
-			return (ms / 2629746000).toFixed(2) + ' Month' + (ms / 2629746000 == 1 ? '' : 's');
+			return parseFloat((ms / 2629746000).toFixed(2)) + ' Month' + (ms / 2629746000 == 1 ? '' : 's');
 		} else if (ms / 604800000 > 1) {
-			return (ms / 604800000).toFixed(2) + ' Week' + (ms / 604800000 == 1 ? '' : 's');
+			return parseFloat((ms / 604800000).toFixed(2)) + ' Week' + (ms / 604800000 == 1 ? '' : 's');
 		} else if (ms / 86400000 > 1) {
-			return (ms / 86400000).toFixed(2) + ' Day' + (ms / 86400000 == 1 ? '' : 's');
+			return parseFloat((ms / 86400000).toFixed(2)) + ' Day' + (ms / 86400000 == 1 ? '' : 's');
 		} else if (ms / 3600000 > 1) {
-			return (ms / 3600000).toFixed(2) + ' Hour' + (ms / 3600000 == 1 ? '' : 's');
+			return parseFloat((ms / 3600000).toFixed(2)) + ' Hour' + (ms / 3600000 == 1 ? '' : 's');
 		} else if (ms / 60000 > 1) {
-			return (ms / 60000).toFixed(2) + ' Minute' + (ms / 60000 == 1 ? '' : 's');
+			return parseFloat((ms / 60000).toFixed(2)) + ' Minute' + (ms / 60000 == 1 ? '' : 's');
 		} else if (ms / 1000 > 1) {
-			return (ms / 1000).toFixed(2) + ' Second' + (ms / 1000 == 1 ? '' : 's');
+			return parseFloat((ms / 1000).toFixed(2)) + ' Second' + (ms / 1000 == 1 ? '' : 's');
 		} else {
-			return ms.toFixed(2) + ' Millisecond' + (ms == 1 ? '' : 's');
+			return parseFloat(ms.toFixed(2)) + ' Millisecond' + (ms == 1 ? '' : 's');
 		}
 	}
 
