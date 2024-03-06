@@ -3,21 +3,17 @@
 	import { writable } from 'svelte/store';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
+	import { getBasicWordList, isValidDictionary } from '$lib/scripts/dictionary';
 
 	/** Stores a reference to the fileupload element. */
 	let inputFileUpload: HTMLElement;
 
 	/** This variable will store our wordlist.  If one exists in storage, use that.  If not, default to our basic word list. */
-	export const wordlist = writable(browser && (localStorage.getItem('wordlist') || 'empty'));
+	const wordlist = writable(browser && (localStorage.getItem('wordlist') || 'empty'));
 	/** When wordlist changes, update the session storage representation. */
 	wordlist.subscribe((val) => browser && localStorage.setItem('wordlist', val.toString()));
 
-	/** This function loads the basic word list we provide from our text file. */
-	async function getBasicWordList() {
-		console.log('Fetching Basic Word List');
-		let response = await fetch('dictionary.txt');
-		return (await response.text()).split('\n').toString();
-	}
+	
 
 	/** When the page has loaded, unless a different word list exists in memory, grab our default word list and load it. */
 	onMount(async () => {
@@ -69,8 +65,8 @@
 	/** Go through the displayed wordlist, fix any obvious issues, store the wordlist in session storage.*/
 	function updateStoredWordlist() {
 		displayWordList = displayWordList.trim();
-		if (!validDictionary(displayWordList)) {
-			return;
+		if (!isValidDictionary(displayWordList)) {
+			return false;
 		}
 		wordlist.set('');
 		displayWordList.split('\n').forEach((e) => {
@@ -79,12 +75,16 @@
 			}
 		});
 		wordlist.set($wordlist.toString().substring(0, $wordlist.toString().length - 1));
-		console.log($wordlist.toString());
 		resyncDisplayWithSession();
+		return true;
 	}
 
 	/** Storage of an inputted dictionary as a split array. */
 	let inputWordArr: string[] = [];
+
+	function storeInWordArray(data:string ) {
+		inputWordArr.push(data);
+	}
 
 	/** File upload handler.  Restricts upload to plain text and runs validity checks.*/
 	async function handleFileUpload(e: Event) {
@@ -95,7 +95,8 @@
 			return;
 		}
 		let inputText = await file.text();
-		if (validDictionary(inputText)) {
+		inputWordArr = [];
+		if (isValidDictionary(inputText, storeInWordArray)) {
 			displayWordList = '';
 			inputWordArr.forEach((word) => {
 				displayWordList = displayWordList + word + '\n';
@@ -103,39 +104,9 @@
 			displayWordList.trim();
 			updateStoredWordlist();
 		} else {
+			console.log("Invalid Dictionary");
 			(e.target as HTMLInputElement).value = '';
 		}
-	}
-
-	/** Function to assess if specified text is valid dictionary.  Stores results in inputWordArr if so.*/
-	function validDictionary(dictionary: string): boolean {
-		dictionary = dictionary.trim().toLowerCase();
-		dictionary = dictionary.replaceAll(',', '\n');
-		let invalidCharacters = '0123456789`-=[]\\;\',./~!@#$%^&*()_+{}|:"<>?';
-
-		for (let i = 0; i < invalidCharacters.length; i++) {
-			if (dictionary.indexOf(invalidCharacters.charAt(i)) != -1) {
-				alert(
-					`Dictionary contained invalid character: ${invalidCharacters.charAt(i)} on Line ${i + 1}`
-				);
-				return false;
-			}
-		}
-
-		inputWordArr = [];
-
-		let dictionaryArray = dictionary.split('\n');
-		for (let i = 0; i < dictionaryArray.length; i++) {
-			dictionaryArray[i] = dictionaryArray[i].trim();
-			if (dictionaryArray[i].indexOf(' ') != -1) {
-				alert(`Cannot have spaces in dictionary entries.  Line ${i + 1}`);
-				return false;
-			}
-			if (!(dictionaryArray[i].length == 0)) {
-				inputWordArr.push(dictionaryArray[i]);
-			}
-		}
-		return true;
 	}
 
 	/** Function to create a text file of our dictionary and allow the user to download it. */
@@ -190,9 +161,10 @@
 				color="green"
 				class="mb-1 ml-3 max-w-64"
 				on:click={() => {
-					updateStoredWordlist();
-					unsavedChanges = false;
-					saveAcknowledged = false;
+					if (updateStoredWordlist()) {
+						unsavedChanges = false;
+						saveAcknowledged = false;
+					}
 				}}>Save Changes</Button
 			>
 			<Button outline color="red" class="mb-1 ml-3 max-w-64" on:click={resetWordlist}
