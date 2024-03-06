@@ -19,8 +19,8 @@
 			<NavLi href="{base}/about">About</NavLi>
 			<NavLi href="{base}/dictionary">Dictionary</NavLi>
 			<NavLi href="{base}/password">Password</NavLi>
-			<NavLi href="{base}/caesar">Caesar Cipher</NavLi>
-			<NavLi href="{base}/permutation">Permutation Cipher</NavLi>
+			<NavLi href="{base}/caesar-cipher">Caesar Cipher</NavLi>
+			<NavLi href="{base}/permutation-cipher">Permutation Cipher</NavLi>
 		</NavUl>
 	</Navbar>
 </div>
