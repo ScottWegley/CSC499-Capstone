@@ -1,8 +1,32 @@
 <script lang="ts">
+	import { CaesarCracker } from '$lib/scripts/CaesarCracker';
 	import { Heading, P, Textarea, Card, Toggle, Tooltip, Button } from 'flowbite-svelte';
 
 	/** Stores the text given to us by the user. */
 	let inputText = '';
+	/** Stores the text we dsiplay to the user. */
+	let outputText = '';
+	/** Stores whether or not tooltips should be shown. */
+	let tooltipsActive = true;
+	/** Tracks whether the page is in Caesar mode or not. */
+	let caesarMode = false;
+	/** Tracks whether or not we are currently cracking. */
+	let crackInProgress = false;
+
+	/** Function to start the cracking process. */
+	async function startCracking() {
+		crackInProgress = true;
+		if (caesarMode) {
+			await caesarCrack();
+		} else {
+		}
+	}
+
+	async function caesarCrack() {
+		let caesarCracker = new CaesarCracker(inputText);
+		caesarCracker.crack();
+		console.log(caesarCracker.getResultSet());
+	}
 </script>
 
 <title>Home</title>
@@ -43,8 +67,13 @@
 				}}
 				align="center"
 			></Textarea>
-            <Button class="mb-3">Crack</Button>
-            <Textarea
+			<Button
+				class="mb-3"
+				on:click={async () => {
+					await startCracking();
+				}}>Crack</Button
+			>
+			<Textarea
 				placeholder="Output Text"
 				rows="4"
 				class="mb-3 resize-none"
