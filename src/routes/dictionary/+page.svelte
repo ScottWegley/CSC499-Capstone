@@ -29,6 +29,7 @@
 		wordlist.set(await getBasicWordList());
 		resyncDisplayWithSession();
 		(inputFileUpload as HTMLInputElement).value = '';
+		saveAcknowledged = false;
 	}
 
 	/** This stores the wordlist as \n seperated for display to the user. */
@@ -102,6 +103,7 @@
 			});
 			displayWordList.trim();
 			updateStoredWordlist();
+			saveAcknowledged = false;
 		} else {
 			(e.target as HTMLInputElement).value = '';
 		}
