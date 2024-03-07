@@ -44,10 +44,46 @@ export async function getDictionary() {
 		localStorage.setItem('wordlist', await getBasicWordList());
 		temp = browser && localStorage.getItem('wordlist');
 	} else {
-		if(typeof temp != "string"){
+		if (typeof temp != 'string') {
 			return '';
 		} else {
 			return temp;
 		}
+	}
+}
+
+/** Returns a percentage rating representing how many words in the string are in our dictionary. */
+export async function checkAccuracy(text: string) {
+	let dictionary = await getDictionary();
+	if (dictionary != undefined) {
+		/** Split the dictionary into an array. */
+		let dictArray = dictionary.split(',');
+		/** Split the input text into an array. */
+		let textArray = text.split(' ');
+		/** The total number of words in the input array. */
+		let totalWords = textArray.length;
+		/** The amount of words that are in our dictionary. */
+		let realWordCount = 0;
+
+		/** Loop through every word in the dictionary while we are not at 100% accuracy. */
+		for (let i = 0; i < dictArray.length && realWordCount < totalWords; i++) {
+			
+			let k = 0;
+			while (k < textArray.length && textArray.length > 0) {
+				if (textArray[k] == dictArray[i]) {
+					realWordCount++;
+					for (let j = k; j < textArray.length - 1; j++) {
+						textArray[j] = textArray[j + 1];
+					}
+					textArray.pop();
+				} else {
+					k++;
+				}
+			}
+		}
+		return realWordCount / totalWords;
+	} else {
+		console.log('Dictionary was undefined.');
+		return 0;
 	}
 }
