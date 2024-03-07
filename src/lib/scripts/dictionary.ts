@@ -1,3 +1,5 @@
+import { browser } from '$app/environment';
+
 /** This function loads the basic word list we provide from our text file. */
 export async function getBasicWordList() {
 	let response = await fetch('dictionary.txt');
@@ -33,4 +35,19 @@ export function isValidDictionary(dictionary: string, storeData?: (d: string) =>
 		}
 	}
 	return true;
+}
+
+/** Gets the current dictionary from local storage, with the basic wordlist as a fallback.*/
+export async function getDictionary() {
+	let temp = browser && localStorage.getItem('wordlist');
+	if (temp == null) {
+		localStorage.setItem('wordlist', await getBasicWordList());
+		temp = browser && localStorage.getItem('wordlist');
+	} else {
+		if(typeof temp != "string"){
+			return '';
+		} else {
+			return temp;
+		}
+	}
 }
