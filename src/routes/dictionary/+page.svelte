@@ -18,7 +18,7 @@
 	/** When the page has loaded, unless a different word list exists in memory, grab our default word list and load it. */
 	onMount(async () => {
 		if (localStorage.getItem('wordlist') == 'empty') {
-			wordlist.set(await getBasicWordList());
+			wordlist.set(await getSpecificWordlist('10k.txt'));
 		}
 		resyncDisplayWithSession();
 		inputFileUpload = document.getElementsByName('fileUpload')[0];

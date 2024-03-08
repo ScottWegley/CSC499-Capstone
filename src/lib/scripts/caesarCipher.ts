@@ -42,6 +42,7 @@ export function getCipherAlphabet(shift: number) {
 
 /** This function encrypts a given input with a Caesar Cipher of a specified shift. */
 export function caesarEncryption(input: string, shift: number) {
+    input = input.toUpperCase();
     let shiftedAlphabet = getCipherAlphabet(shift);
     let output = "";
     for (let i = 0; i < input.length; i++) {
@@ -56,6 +57,7 @@ export function caesarEncryption(input: string, shift: number) {
 
 /** This function encrypts a given output with a Caesar Cipher of a specified shift. */
 export function caesarDecryption(input: string, shift: number) {
+    input = input.toUpperCase();
     let shiftedAlphabet = getCipherAlphabet(shift);
     let output = "";
     for (let i = 0; i < input.length; i++) {

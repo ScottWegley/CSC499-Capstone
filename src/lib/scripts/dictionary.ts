@@ -1,9 +1,9 @@
 import { browser } from '$app/environment';
 
-/** This function loads the basic word list we provide from our text file. */
-export async function getBasicWordList() {
-	let response = await fetch('dictionary.txt');
-	return (await response.text()).split('\n').toString();
+/** Load a specified word list from a file. */
+export async function getSpecificWordlist(filename: string) {
+	let response = await fetch(filename);
+	return (await response.text()).replaceAll('\r', '').toLowerCase().split('\n').toString();
 }
 
 /** Function to assess if specified text is valid dictionary.  Stores results in storage array if so.*/
@@ -41,7 +41,7 @@ export function isValidDictionary(dictionary: string, storeData?: (d: string) =>
 export async function getDictionary() {
 	let temp = browser && localStorage.getItem('wordlist');
 	if (temp == null) {
-		localStorage.setItem('wordlist', await getBasicWordList());
+		localStorage.setItem('wordlist', await getSpecificWordlist('10k.txt'));
 		temp = browser && localStorage.getItem('wordlist');
 	} else {
 		if (typeof temp != 'string') {
@@ -54,8 +54,12 @@ export async function getDictionary() {
 
 /** Returns a percentage rating representing how many words in the string are in our dictionary. */
 export async function checkAccuracy(text: string) {
+	text = text.toLowerCase();
 	let dictionary = await getDictionary();
+	console.log(`Checking accuracy of: ${text}`);
 	if (dictionary != undefined) {
+		dictionary = dictionary.toLowerCase();
+
 		/** Split the dictionary into an array. */
 		let dictArray = dictionary.split(',');
 		/** Split the input text into an array. */
@@ -65,9 +69,10 @@ export async function checkAccuracy(text: string) {
 		/** The amount of words that are in our dictionary. */
 		let realWordCount = 0;
 
+		console.log(dictArray);
+
 		/** Loop through every word in the dictionary while we are not at 100% accuracy. */
 		for (let i = 0; i < dictArray.length && realWordCount < totalWords; i++) {
-			
 			let k = 0;
 			while (k < textArray.length && textArray.length > 0) {
 				if (textArray[k] == dictArray[i]) {
@@ -81,6 +86,8 @@ export async function checkAccuracy(text: string) {
 				}
 			}
 		}
+		console.log('Remaining words: ' + textArray.toString());
+		console.log('Accuracy: ' + realWordCount / totalWords);
 		return realWordCount / totalWords;
 	} else {
 		console.log('Dictionary was undefined.');
