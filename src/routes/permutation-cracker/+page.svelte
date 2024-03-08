@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { CaesarCracker } from '$lib/scripts/CaesarCracker';
+	import { DEFAULT_ALPHABET } from '$lib/scripts/caesarCipher';
+	import { checkAccuracy } from '$lib/scripts/dictionary';
 	import { Heading, P, Textarea, Card, Toggle, Tooltip, Button } from 'flowbite-svelte';
 
 	/** Stores the text given to us by the user. */
@@ -23,9 +25,20 @@
 	}
 
 	async function caesarCrack() {
+		checkAccuracy(sanitizeInput('The quick brown fox jumps over the lazy dog.'));
 		let caesarCracker = new CaesarCracker(inputText);
 		caesarCracker.crack();
-		console.log(caesarCracker.getResultSet());
+	}
+
+	function sanitizeInput(text: string) {
+		text = text.toUpperCase();
+		let output = '';
+		for (let i = 0; i < text.length; i++) {
+			if ((DEFAULT_ALPHABET + ' ').indexOf(text.charAt(i)) != -1) {
+				output = output + text.charAt(i);
+			}
+		}
+		return output;
 	}
 </script>
 
@@ -63,10 +76,13 @@
 				class="mb-3 resize-none"
 				bind:value={inputText}
 				on:change={() => {
-					inputText = inputText.toUpperCase();
+					inputText = sanitizeInput(inputText);
 				}}
 				align="center"
 			></Textarea>
+			{#if tooltipsActive}
+				<Tooltip>Inputs with non-letter characters will be sanitized on entry.</Tooltip>
+			{/if}
 			<Button
 				class="mb-3"
 				on:click={async () => {
