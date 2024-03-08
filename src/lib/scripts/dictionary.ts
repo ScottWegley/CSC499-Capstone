@@ -56,7 +56,6 @@ export async function getDictionary() {
 export async function checkAccuracy(text: string) {
 	text = text.toLowerCase();
 	let dictionary = await getDictionary();
-	console.log(`Checking accuracy of: ${text}`);
 	if (dictionary != undefined) {
 		dictionary = dictionary.toLowerCase();
 
@@ -68,8 +67,6 @@ export async function checkAccuracy(text: string) {
 		let totalWords = textArray.length;
 		/** The amount of words that are in our dictionary. */
 		let realWordCount = 0;
-
-		console.log(dictArray);
 
 		/** Loop through every word in the dictionary while we are not at 100% accuracy. */
 		for (let i = 0; i < dictArray.length && realWordCount < totalWords; i++) {
@@ -86,8 +83,6 @@ export async function checkAccuracy(text: string) {
 				}
 			}
 		}
-		console.log('Remaining words: ' + textArray.toString());
-		console.log('Accuracy: ' + realWordCount / totalWords);
 		return realWordCount / totalWords;
 	} else {
 		console.log('Dictionary was undefined.');

@@ -25,7 +25,6 @@
 	}
 
 	async function caesarCrack() {
-		checkAccuracy(sanitizeInput('The quick brown fox jumps over the lazy dog.'));
 		let caesarCracker = new CaesarCracker(inputText);
 		caesarCracker.crack();
 	}
