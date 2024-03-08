@@ -1,9 +1,19 @@
 <script lang="ts">
-	import { Heading, P, Button, Fileupload, Textarea, Footer, Alert } from 'flowbite-svelte';
+	import {
+		Heading,
+		P,
+		Button,
+		Fileupload,
+		Textarea,
+		Footer,
+		Alert,
+		Tooltip,
+		Modal
+	} from 'flowbite-svelte';
 	import { writable } from 'svelte/store';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
-	import { getBasicWordList, isValidDictionary } from '$lib/scripts/dictionary';
+	import { getSpecificWordlist, isValidDictionary } from '$lib/scripts/dictionary';
 
 	/** Stores a reference to the fileupload element. */
 	let inputFileUpload: HTMLElement;
@@ -12,8 +22,6 @@
 	const wordlist = writable(browser && (localStorage.getItem('wordlist') || 'empty'));
 	/** When wordlist changes, update the session storage representation. */
 	wordlist.subscribe((val) => browser && localStorage.setItem('wordlist', val.toString()));
-
-	
 
 	/** When the page has loaded, unless a different word list exists in memory, grab our default word list and load it. */
 	onMount(async () => {
@@ -24,12 +32,22 @@
 		inputFileUpload = document.getElementsByName('fileUpload')[0];
 	});
 
-	/** Load the default wordlist we provide into storage and display. */
-	async function resetWordlist() {
-		wordlist.set(await getBasicWordList());
+	/** Grab the default 10k wordlist or allow the user to select one. */
+	async function resetWordlist(e: Event) {
+		if ((e as PointerEvent).shiftKey) {
+			dictionarySelectPopUp = true;
+		} else {
+			resetToAltWordlist('10k.txt');
+		}
+	}
+
+	/** Dynamically pick a wordlist based on filename. */
+	async function resetToAltWordlist(filename: string) {
+		wordlist.set(await getSpecificWordlist(filename));
 		resyncDisplayWithSession();
 		(inputFileUpload as HTMLInputElement).value = '';
 		saveAcknowledged = false;
+		unsavedChanges = false;
 	}
 
 	/** This stores the wordlist as \n seperated for display to the user. */
@@ -71,10 +89,13 @@
 		wordlist.set('');
 		displayWordList.split('\n').forEach((e) => {
 			if (e.trim() != '') {
-				wordlist.set($wordlist.toString() + e + ',');
+				wordlist.set($wordlist.toString() + e.trim() + ',');
 			}
 		});
 		wordlist.set($wordlist.toString().substring(0, $wordlist.toString().length - 1));
+		wordlist.set(
+			$wordlist.toString().replaceAll('\r', '').replaceAll('\n', '').trim().toLowerCase()
+		);
 		resyncDisplayWithSession();
 		return true;
 	}
@@ -82,7 +103,7 @@
 	/** Storage of an inputted dictionary as a split array. */
 	let inputWordArr: string[] = [];
 
-	function storeInWordArray(data:string ) {
+	function storeInWordArray(data: string) {
 		inputWordArr.push(data);
 	}
 
@@ -104,6 +125,7 @@
 			displayWordList.trim();
 			updateStoredWordlist();
 			saveAcknowledged = false;
+			unsavedChanges = false;
 		} else {
 			(e.target as HTMLInputElement).value = '';
 		}
@@ -123,6 +145,9 @@
 	let unsavedChanges = false;
 	/** Boolean to track whether the user has acknowledged our saving alert. */
 	let saveAcknowledged = true;
+
+	/** Boolean to control opening the dictionary selection modal. */
+	let dictionarySelectPopUp = false;
 
 	function alertUserToDictionaryChange(e: Event) {
 		unsavedChanges = true;
@@ -170,6 +195,35 @@
 			<Button outline color="red" class="mb-1 ml-3 max-w-64" on:click={resetWordlist}
 				>Reset to Default</Button
 			>
+			<Tooltip
+				>We provide a default wordlist composed of Google's 10,000 most common english words. <br />
+				To select another from our default lists, press shift and click the reset button.
+			</Tooltip>
+			<Modal size="xs" bind:open={dictionarySelectPopUp} autoclose>
+				<div class="flex flex-col text-center">
+					<Heading tag="h3" class="mb-5">Please select a dictionary.</Heading>
+					<div class="flex flex-row justify-center">
+						<Button
+							class="mr-3"
+							on:click={() => {
+								resetToAltWordlist('20k.txt');
+							}}>20,000</Button
+						>
+						<Button
+							class=""
+							on:click={() => {
+								resetToAltWordlist('30k.txt');
+							}}>30,000</Button
+						>
+						<Button
+							class="ml-3"
+							on:click={() => {
+								resetToAltWordlist('100k.txt');
+							}}>100,000</Button
+						>
+					</div>
+				</div>
+			</Modal>
 			<Button outline color="yellow" class="ml-3 max-w-64" on:click={downloadDictionary}>
 				Download Dictionary
 			</Button>
@@ -197,6 +251,7 @@
 					class="cursor-pointer underline"
 					on:click={() => {
 						saveAcknowledged = true;
+						unsavedChanges = false;
 					}}>here</span
 				> to dismiss.</Alert
 			>
