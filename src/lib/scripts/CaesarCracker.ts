@@ -25,7 +25,7 @@ export class CaesarCracker {
 	public async crack() {
         for (let i = 0; i < DEFAULT_ALPHABET.length; i++) {
             this.resultSet.push(caesarDecryption(this.input, i));
-			// this.accuracySet.push(await checkAccuracy(this.resultSet[i]));
+			this.accuracySet.push(await checkAccuracy(this.resultSet[i]));
         }
     }
 
