@@ -1,8 +1,17 @@
 <script lang="ts">
 	import { CaesarCracker } from '$lib/scripts/CaesarCracker';
 	import { DEFAULT_ALPHABET } from '$lib/scripts/caesarCipher';
-	import { checkAccuracy } from '$lib/scripts/dictionary';
-	import { Heading, P, Textarea, Card, Toggle, Tooltip, Button } from 'flowbite-svelte';
+	import {
+		Heading,
+		P,
+		Textarea,
+		Card,
+		Toggle,
+		Tooltip,
+		Button,
+		Range,
+		Label
+	} from 'flowbite-svelte';
 
 	/** Stores the text given to us by the user. */
 	let inputText = '';
@@ -11,9 +20,11 @@
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
-	let caesarMode = false;
+	let caesarMode = true;
 	/** Tracks whether or not we are currently cracking. */
 	let crackInProgress = false;
+	/** Tracks the current threshold for accuracy reporting. */
+	let accuracyThreshold = 100;
 
 	/** Function to start the cracking process. */
 	async function startCracking() {
@@ -25,8 +36,9 @@
 	}
 
 	async function caesarCrack() {
-		let caesarCracker = new CaesarCracker(inputText);
-		caesarCracker.crack();
+		let caesarCracker = new CaesarCracker(inputText, accuracyThreshold);
+		await caesarCracker.crack();
+		console.log(caesarCracker.getResultsWithAccuracy());
 	}
 
 	function sanitizeInput(text: string) {
@@ -52,13 +64,13 @@
 		over an element to see these tips.
 	</P>
 	<div class="flex w-full flex-row justify-center" id="panel-parent">
-		<Card class="mr-1 max-w-fit">
-			<div class="flex flex-col justify-center" id="control-panel">
-				<Toggle size="small" bind:checked={tooltipsActive} class="mb-3">Show Tooltips</Toggle>
+		<Card class="min-w-5/6 mr-1 max-w-fit">
+			<div class="min-w-5/6 flex flex-col justify-center" id="control-panel">
+				<Toggle size="small" bind:checked={tooltipsActive} class="mb-3">Toggle Tooltips</Toggle>
 				{#if tooltipsActive}
 					<Tooltip>Toggle this switch to turn tooltips on/off</Tooltip>
 				{/if}
-				<Toggle size="small" bind:checked={caesarMode}>Caesar Mode</Toggle>
+				<Toggle size="small" bind:checked={caesarMode} class="mb-4">Caesar Cipher Mode</Toggle>
 				{#if tooltipsActive}
 					<Tooltip
 						>If you know your input text was encrypted with specifically a Caesar Cipher, turn this
@@ -66,6 +78,8 @@
 						exponentially faster.
 					</Tooltip>
 				{/if}
+				<Label class="mb-1.5">{'Accuracy Threshold: ' + accuracyThreshold}</Label>
+				<Range size="sm" bind:value={accuracyThreshold} min="0" max="100" />
 			</div>
 		</Card>
 		<div class="ml-1 flex w-5/12 flex-col justify-center">
@@ -91,7 +105,7 @@
 			<Textarea
 				placeholder="Output Text"
 				rows="4"
-				class="mb-3 resize-none"
+				class="resize-none"
 				bind:value={outputText}
 				align="center"
 				disabled
