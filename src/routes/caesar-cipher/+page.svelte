@@ -13,6 +13,7 @@
 	} from 'flowbite-svelte';
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	import { DEFAULT_ALPHABET, caesarDecryption, caesarEncryption, getCipherAlphabet } from '$lib/scripts/CaesarCipher';
+	import { sanitizeInput } from '$lib/scripts/dictionary';
 
 	/** Stores the current shift being applied to the alphabet. */
 	let currentShift = 1;
@@ -69,7 +70,7 @@
 					bind:value={inputText}
 					class="resize-none"
 					on:change={() => {
-						inputText = inputText.toUpperCase();
+						inputText = sanitizeInput(inputText);
 					}}
 				></Textarea>
 				<GradientButton

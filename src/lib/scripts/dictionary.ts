@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { DEFAULT_ALPHABET } from './CaesarCipher';
 
 /** Load a specified word list from a file. */
 export async function getSpecificWordlist(filename: string) {
@@ -50,6 +51,18 @@ export async function getDictionary() {
 			return temp;
 		}
 	}
+}
+
+/** Function to reduce a string of text to alphabet and space. */
+export function sanitizeInput(text: string) {
+	text = text.toUpperCase().replaceAll(/[ \t]{2,}/g,' ');
+	let output = '';
+	for (let i = 0; i < text.length; i++) {
+		if ((DEFAULT_ALPHABET + ' ').indexOf(text.charAt(i)) != -1) {
+			output = output + text.charAt(i);
+		}
+	}
+	return output;
 }
 
 /** Returns a percentage rating representing how many words in the string are in our dictionary. */
