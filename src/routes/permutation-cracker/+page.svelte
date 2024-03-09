@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CaesarCracker } from '$lib/scripts/CaesarCracker';
-	import { DEFAULT_ALPHABET } from '$lib/scripts/caesarCipher';
+	import { DEFAULT_ALPHABET } from '$lib/scripts/CaesarCipher';
 	import {
 		Heading,
 		P,

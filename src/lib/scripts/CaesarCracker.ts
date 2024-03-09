@@ -1,5 +1,5 @@
-import { caesarDecryption, DEFAULT_ALPHABET, getCipherAlphabet } from './caesarCipher';
-import { checkAccuracy } from './dictionary';
+import { caesarDecryption, DEFAULT_ALPHABET, getCipherAlphabet } from './CaesarCipher';
+import { checkAccuracy } from './Dictionary';
 
 export class CaesarCracker {
 	/** Stores the text to crack. */
@@ -11,6 +11,7 @@ export class CaesarCracker {
 	/** An array of all possible outputs corresponding to all 26 possible Caesar Alphabets. */
 	private resultSet: string[] = [];
 
+	/** An array of accuracy ratings corresponding to all the possible results. */
 	private accuracySet: number[] = [];
 
 	/** Create a new instance of Caesar Cracking with text to crack. */
@@ -62,5 +63,26 @@ export class CaesarCracker {
 			}
 		}
 		return index;
+	}
+
+	/** Returns the index of the least accurate potential decryption. */
+	public getLeastAccurateIndex(): number {
+		let index = 0;
+		let prevAccuracy = 1;
+		for (let i = 1; i < this.resultSet.length; i++) {
+			if (this.accuracySet[i] < prevAccuracy) {
+				index = i;
+				prevAccuracy = this.accuracySet[i];
+			}
+		}
+		return index;
+	}
+
+	public static getMostAccurateIndex(results: string[], accuracy: number[]) {
+
+	}
+
+	public static getLeastAccurateIndex(results: string[], accuracy: number[]) {
+
 	}
 }

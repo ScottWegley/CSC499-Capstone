@@ -12,7 +12,7 @@
 		Tooltip
 	} from 'flowbite-svelte';
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
-	import { DEFAULT_ALPHABET, caesarDecryption, caesarEncryption, getCipherAlphabet } from '$lib/scripts/caesarCipher';
+	import { DEFAULT_ALPHABET, caesarDecryption, caesarEncryption, getCipherAlphabet } from '$lib/scripts/CaesarCipher';
 
 	/** Stores the current shift being applied to the alphabet. */
 	let currentShift = 1;
