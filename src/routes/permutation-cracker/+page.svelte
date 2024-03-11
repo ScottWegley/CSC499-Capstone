@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CaesarCracker } from '$lib/scripts/CaesarCracker';
-	import { DEFAULT_ALPHABET } from '$lib/scripts/CaesarCipher';
+	import { sanitizeInput } from '$lib/scripts/dictionary';
 	import {
 		Heading,
 		P,
@@ -14,7 +14,7 @@
 	} from 'flowbite-svelte';
 
 	/** Stores the text given to us by the user. */
-	let inputText = '';
+	let inputText = 'UIF RVJDL CSPXO GPY KVNQT PWFS UIF MBAZ EPH';
 	/** Stores the text we dsiplay to the user. */
 	let outputText = '';
 	/** Stores whether or not tooltips should be shown. */
@@ -24,7 +24,9 @@
 	/** Tracks whether or not we are currently cracking. */
 	let crackInProgress = false;
 	/** Tracks the current threshold for accuracy reporting. */
-	let accuracyThreshold = 100;
+	let accuracyThreshold = 0;
+	/** Tracks how much of the results should be displayed to the user.*/
+	let returnPercentage = 100;
 
 	/** Function to start the cracking process. */
 	async function startCracking() {
@@ -36,20 +38,11 @@
 	}
 
 	async function caesarCrack() {
-		let caesarCracker = new CaesarCracker(inputText, accuracyThreshold);
+		let caesarCracker = new CaesarCracker(inputText, accuracyThreshold / 100, returnPercentage/100);
 		await caesarCracker.crack();
+		// console.log(caesarCracker.getResultsWithAccuracy());
 		console.log(caesarCracker.getResultsWithAccuracy());
-	}
-
-	function sanitizeInput(text: string) {
-		text = text.toUpperCase();
-		let output = '';
-		for (let i = 0; i < text.length; i++) {
-			if ((DEFAULT_ALPHABET + ' ').indexOf(text.charAt(i)) != -1) {
-				output = output + text.charAt(i);
-			}
-		}
-		return output;
+		console.log(caesarCracker.getResultsSortedByAccuracy(true, true, true));
 	}
 </script>
 
@@ -78,8 +71,17 @@
 						exponentially faster.
 					</Tooltip>
 				{/if}
-				<Label class="mb-1.5">{'Accuracy Threshold: ' + accuracyThreshold}</Label>
-				<Range size="sm" bind:value={accuracyThreshold} min="0" max="100" />
+				<Label class="mb-1.5">{'Accuracy Threshold: ' + accuracyThreshold + '%'}</Label>
+				{#if tooltipsActive}
+					<Tooltip>
+						Determines what percentage of a result must be words in the specified dictionary to be
+						displayed.
+					</Tooltip>
+				{/if}
+				<Range class="mb-3" size="sm" bind:value={accuracyThreshold} min="0" max="100" />
+
+				<Label class="mb-1.5">{'Percentage Returned: ' + returnPercentage + '%'}</Label>
+				<Range size="sm" bind:value={returnPercentage} min="0" max="100" />
 			</div>
 		</Card>
 		<div class="ml-1 flex w-5/12 flex-col justify-center">

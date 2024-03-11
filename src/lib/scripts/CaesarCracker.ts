@@ -6,15 +6,15 @@ import { checkAccuracy } from './Dictionary';
 export class CaesarCracker extends CipherCracker {
 
 	/** Create a new instance of Caesar Cracking with text to crack. */
-	public constructor(text: string, threshold?: number) {
-		super(text, threshold);
+	public constructor(text: string, threshold?: number, percentage?:number) {
+		super(text, threshold, percentage);
 	}
 
 	/** Decrypt the input using all possible Caesar alphabets.  Store the resulting text and it's measured accuracy.*/
 	public async crack() {
-		for (let i = 0; i < DEFAULT_ALPHABET.length; i++) {
+		for (let i = 1; i < DEFAULT_ALPHABET.length; i++) {
 			this.resultSet.push(caesarDecryption(this.input, i));
-			this.accuracySet.push(await checkAccuracy(this.resultSet[i]));
+			this.accuracySet.push(await checkAccuracy(this.resultSet[i-1]));
 		}
 	}
 }
