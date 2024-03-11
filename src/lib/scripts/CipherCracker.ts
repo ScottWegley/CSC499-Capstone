@@ -1,3 +1,5 @@
+import { ResultsData } from './ResultsData';
+
 /** Base class with necessary functions  */
 export abstract class CipherCracker {
 	/** Stores the text to crack. */
@@ -8,16 +10,13 @@ export abstract class CipherCracker {
 	/** The percentage of results to be displayed to the user. */
 	protected returnPercentage: number = 1;
 	/** Whether the results should be displayed in ascending order or descending order. */
-	protected ascendingOrder:boolean = false;
-
+	protected ascendingOrder: boolean = false;
 	/** An array of all possible outputs. */
 	protected resultSet: string[] = [];
-
 	/** An array of accuracy ratings corresponding to all the possible results. */
 	protected accuracySet: number[] = [];
-
 	/** Create a new instance of a Cipher Cracker with text to crack. */
-	public constructor(text: string, threshold?: number, percentage?: number, ascending?:boolean) {
+	public constructor(text: string, threshold?: number, percentage?: number, ascending?: boolean) {
 		this.input = text;
 		this.accuracyThreshold = threshold == undefined ? this.accuracyThreshold : threshold;
 		this.returnPercentage = percentage == undefined ? this.returnPercentage : percentage;
@@ -44,32 +43,6 @@ export abstract class CipherCracker {
 	public getAccuracySet(): number[] {
 		return this.accuracySet;
 	}
-	/** Prepends the accuracy to each possible decrypted text and returns them all. */
-	public getResultsReport(): string {
-		return CipherCracker.getResultsReport([this.resultSet, this.accuracySet]);
-	}
-	/** Prepends the accuracy to each possible decrypted text and returns them all. If mutations are specified, they will be noted. */
-	public static getResultsReport(set: [results: string[], accuracy: number[]], threshold?:number, percentage?:number, ascending?:boolean): string {
-		let output = '';
-		if(!(threshold == undefined && percentage == undefined && ascending == undefined)){
-			output = `${ascending == undefined ? '' : `${ascending ? "Ascending" : "Descending"}`} Accuracy Report ${threshold == undefined ? '' : `w/ ${parseFloat((threshold * 100).toFixed(2))}% Threshold`}`;
-			output = output + `\n${percentage == undefined ? '' : `Displaying ${percentage * 100}% of Results\n`}`;
-		} else {
-			output = "Unsorted Accuracy Breakdown\n";
-		}
-		for (let i = 0; i < set[0].length; i++) {
-			output =
-				output +
-				i +
-				' || ' +
-				parseFloat((set[1][i] * 100).toFixed(2)) +
-				'% Accurate: ' +
-				set[0][i] +
-				'\n';
-		}
-		return output;
-	}
-
 	/** Returns the index of the most accurate potential decryption. */
 	public getMostAccurateIndex(): number {
 		return CipherCracker.getMostAccurateIndex(this.resultSet, this.accuracySet);
@@ -102,86 +75,69 @@ export abstract class CipherCracker {
 		}
 		return index;
 	}
-	/** Returns a tuple of of results and accuracy, in ascending or descending order and thresholded if a threshold is provided. */
-	public static getMutatedResultsAndAccuracy(
+	/** Returns an instance of ResultsData with only the relevant data and the applied mutations stored.*/
+	public static getMutatedResultsData(
 		results: string[],
 		accuracy: number[],
 		ascending: boolean = false,
 		threshold: number = 0,
-		percentage: number = -1
-	): [results: string[], accuracy: number[]] {
-		CipherCracker.pairedQuickSort(accuracy, results);
+		percentage: number = 1
+	): ResultsData {
+		CipherCracker.basedQuickSort(accuracy, [results]);
 		let outResults: string[] = [];
 		let outAccuracy: number[] = [];
 		if (ascending) {
 			/** If we are using a percentage */
-			if (percentage != -1) {
-				let thresholdMin = 0;
-				let stillSearching = true;
-				for (let i = 0; i < results.length && stillSearching; i++) {
-					if (accuracy[i] < threshold) {
-						thresholdMin++;
-						continue;
-					} else {
-						stillSearching = false;
-					}
+
+			let thresholdMin = 0;
+			let stillSearching = true;
+			for (let i = 0; i < results.length && stillSearching; i++) {
+				if (accuracy[i] < threshold) {
+					thresholdMin++;
+					continue;
+				} else {
+					stillSearching = false;
 				}
-				for (
-					let i = thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
-					i < results.length;
-					i++
-				) {
-					outAccuracy.push(accuracy[i]);
-					outResults.push(results[i]);
-				}
-			} else {
-				for (let i = 0; i < results.length; i++) {
-					if (accuracy[i] < threshold) {
-						continue;
-					}
-					outAccuracy.push(accuracy[i]);
-					outResults.push(results[i]);
-				}
+			}
+			for (
+				let i = thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
+				i < results.length;
+				i++
+			) {
+				outAccuracy.push(accuracy[i]);
+				outResults.push(results[i]);
 			}
 		} else {
-			if (percentage != -1) {
-				let thresholdMin = 0;
-				let stillSearching = true;
-				for (let i = 0; i < results.length && stillSearching; i++) {
-					if (accuracy[i] < threshold) {
-						thresholdMin++;
-						continue;
-					} else {
-						stillSearching = false;
-					}
-				}
-				for (
-					let i = results.length-1;
-					i >= thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
-					i--
-				) {
-					outAccuracy.push(accuracy[i]);
-					outResults.push(results[i]);
-				}
-			} else {
-				for (let i = results.length - 1; i >= 0; i--) {
-					if (accuracy[i] < threshold) {
-						continue;
-					}
-					outAccuracy.push(accuracy[i]);
-					outResults.push(results[i]);
+			let thresholdMin = 0;
+			let stillSearching = true;
+			for (let i = 0; i < results.length && stillSearching; i++) {
+				if (accuracy[i] < threshold) {
+					thresholdMin++;
+					continue;
+				} else {
+					stillSearching = false;
 				}
 			}
+			for (
+				let i = results.length - 1;
+				i >= thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
+				i--
+			) {
+				outAccuracy.push(accuracy[i]);
+				outResults.push(results[i]);
+			}
 		}
-		return [outResults, outAccuracy];
+		return new ResultsData(outResults, outAccuracy, threshold, percentage, ascending);
 	}
-	/** Returns a list of of results, prepended with accuracy, in ascending or descending order and thresholded if a threshold is provided.  The results will be cut to a percentage if percent limiting is enabled. */
-	public getMutatedResultsAndAccuracy(
-		ascending: boolean,
-		threshold: boolean = false,
-		percentage: boolean = false
-	): [results: string[], accuracy: number[]] {
-		return CipherCracker.getMutatedResultsAndAccuracy(
+	/** Returns an insance of ResultsData with only the relevant data and the applied mutations stored.  Generated based
+	 * on what's stored in our class.
+	 */
+	public getMutatedResultsData(
+		ascending: boolean = true,
+		threshold: boolean = true,
+		percentage: boolean = true
+	): ResultsData {
+		return CipherCracker.getMutatedResultsData(
 			this.resultSet,
 			this.accuracySet,
 			ascending ? this.ascendingOrder : undefined,
