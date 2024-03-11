@@ -206,6 +206,7 @@ export abstract class CipherCracker {
 		return i;
 	}
 
+	/** Function to perform quicksort on two arrays based on the ordering of the first array. */
 	public static pairedQuickSort(
 		array: number[],
 		array2: string[],

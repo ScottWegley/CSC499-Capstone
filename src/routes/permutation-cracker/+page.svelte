@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CaesarCracker } from '$lib/scripts/CaesarCracker';
-	import { sanitizeInput } from '$lib/scripts/dictionary';
+	import { sanitizeInput } from '$lib/scripts/Dictionary';
 	import {
 		Heading,
 		P,

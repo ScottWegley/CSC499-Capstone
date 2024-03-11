@@ -5,14 +5,14 @@
 		GradientButton,
 		Heading,
 		P,
-		Range,
 		Textarea,
 		Tooltip
 	} from 'flowbite-svelte';
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	import VerticalInput from '$lib/components/VerticalInput.svelte';
-	import { DEFAULT_ALPHABET } from '$lib/scripts/CaesarCipher';
 	import { generateRandomAlphabet, isValidAlphabet, permutationDecrypt, permutationEncrypt } from '$lib/scripts/PermutationCipher';
+	import { DEFAULT_ALPHABET } from '$lib/scripts/CaesarCipher';
+	import { sanitizeInput } from '$lib/scripts/Dictionary';
 
 	/** This stores the permutated alphabet. */
 	let permutationAlphabet = DEFAULT_ALPHABET.map((l) => l);
@@ -87,7 +87,7 @@
 					bind:value={inputText}
 					class="resize-none"
 					on:change={() => {
-						inputText = inputText.toUpperCase();
+						inputText = sanitizeInput(inputText);
 					}}
 				></Textarea>
 				<GradientButton

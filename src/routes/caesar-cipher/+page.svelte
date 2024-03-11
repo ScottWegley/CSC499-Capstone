@@ -1,11 +1,7 @@
 <script lang="ts">
 	import {
-		Button,
-		ButtonGroup,
 		GradientButton,
 		Heading,
-		Listgroup,
-		ListgroupItem,
 		P,
 		Range,
 		Textarea,
@@ -13,7 +9,7 @@
 	} from 'flowbite-svelte';
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	import { DEFAULT_ALPHABET, caesarDecryption, caesarEncryption, getCipherAlphabet } from '$lib/scripts/CaesarCipher';
-	import { sanitizeInput } from '$lib/scripts/dictionary';
+	import { sanitizeInput } from '$lib/scripts/Dictionary';
 
 	/** Stores the current shift being applied to the alphabet. */
 	let currentShift = 1;
