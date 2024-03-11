@@ -17,10 +17,8 @@ export abstract class CipherCracker {
 	/** Create a new instance of a Cipher Cracker with text to crack. */
 	public constructor(text: string, threshold?: number, percentage?: number) {
 		this.input = text;
-		this.accuracyThreshold = (threshold == undefined ? this.accuracyThreshold : threshold)
-		this.returnPercentage = (percentage == undefined ? this.returnPercentage : percentage);
-		console.log(`Creating a Cipher Cracker with threshold of ${this.accuracyThreshold} and percentage ${this.returnPercentage}`);
-
+		this.accuracyThreshold = threshold == undefined ? this.accuracyThreshold : threshold;
+		this.returnPercentage = percentage == undefined ? this.returnPercentage : percentage;
 	}
 
 	/** Get the input text that we are attempting to decrypt. */
@@ -53,7 +51,9 @@ export abstract class CipherCracker {
 		let output = 'Unsorted Accuracy Breakdown\n';
 		for (let i = 0; i < this.resultSet.length; i++) {
 			output =
-				output + i+ " || " +
+				output +
+				i +
+				' || ' +
 				parseFloat((this.accuracySet[i] * 100).toFixed(2)) +
 				'% Accurate: ' +
 				this.resultSet[i] +
@@ -120,17 +120,21 @@ export abstract class CipherCracker {
 					} else {
 						stillSearching = false;
 					}
-					
 				}
-				output = output + `Displaying ${percentage*100}%\n`;
-				for (let i = thresholdMin + Math.floor((1-percentage) * (results.length - thresholdMin)); i < results.length; i++) {
+				output = output + `Displaying ${percentage * 100}%\n`;
+				for (
+					let i = thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
+					i < results.length;
+					i++
+				) {
 					output =
-						output + i + " || " + 
+						output +
+						i +
+						' || ' +
 						parseFloat((accuracy[i] * 100).toFixed(2)) +
 						'% Accurate: ' +
 						results[i] +
 						'\n';
-					
 				}
 			} else {
 				for (let i = 0; i < results.length; i++) {
@@ -146,12 +150,44 @@ export abstract class CipherCracker {
 				}
 			}
 		} else {
-			for (let i = results.length - 1; i >= 0; i--) {
-				if (accuracy[i] < threshold) {
-					continue;
+			if (percentage != -1) {
+				let thresholdMin = 0;
+				let stillSearching = true;
+				for (let i = 0; i < results.length && stillSearching; i++) {
+					if (accuracy[i] < threshold) {
+						thresholdMin++;
+						continue;
+					} else {
+						stillSearching = false;
+					}
 				}
-				output =
-					output + parseFloat((accuracy[i] * 100).toFixed(2)) + '% Accurate: ' + results[i] + '\n';
+				output = output + `Displaying ${percentage * 100}%\n`;
+				for (
+					let i = results.length-1;
+					i >= thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
+					i--
+				) {
+					output =
+						output +
+						i +
+						' || ' +
+						parseFloat((accuracy[i] * 100).toFixed(2)) +
+						'% Accurate: ' +
+						results[i] +
+						'\n';
+				}
+			} else {
+				for (let i = results.length - 1; i >= 0; i--) {
+					if (accuracy[i] < threshold) {
+						continue;
+					}
+					output =
+						output +
+						parseFloat((accuracy[i] * 100).toFixed(2)) +
+						'% Accurate: ' +
+						results[i] +
+						'\n';
+				}
 			}
 		}
 		return output;

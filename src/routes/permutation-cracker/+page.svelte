@@ -27,6 +27,8 @@
 	let accuracyThreshold = 0;
 	/** Tracks how much of the results should be displayed to the user.*/
 	let returnPercentage = 100;
+	/** Whether the results should be displayed in ascending order. */
+	let ascendingResults = false;
 
 	/** Function to start the cracking process. */
 	async function startCracking() {
@@ -38,11 +40,13 @@
 	}
 
 	async function caesarCrack() {
-		let caesarCracker = new CaesarCracker(inputText, accuracyThreshold / 100, returnPercentage/100);
+		let caesarCracker = new CaesarCracker(
+			inputText,
+			accuracyThreshold / 100,
+			returnPercentage / 100
+		);
 		await caesarCracker.crack();
-		// console.log(caesarCracker.getResultsWithAccuracy());
-		console.log(caesarCracker.getResultsWithAccuracy());
-		console.log(caesarCracker.getResultsSortedByAccuracy(true, true, true));
+		console.log(caesarCracker.getResultsSortedByAccuracy(ascendingResults, true, true));
 	}
 </script>
 
@@ -71,6 +75,14 @@
 						exponentially faster.
 					</Tooltip>
 				{/if}
+				<Toggle size="small" bind:checked={ascendingResults} class="mb-3"
+					>{ascendingResults ? 'Ascending' : 'Descending'} Results</Toggle
+				>
+				{#if tooltipsActive}
+					<Tooltip
+						>Display results in {ascendingResults ? 'ascending' : 'descending'} accuracy. Click to toggle.</Tooltip
+					>
+				{/if}
 				<Label class="mb-1.5">{'Accuracy Threshold: ' + accuracyThreshold + '%'}</Label>
 				{#if tooltipsActive}
 					<Tooltip>
@@ -81,6 +93,11 @@
 				<Range class="mb-3" size="sm" bind:value={accuracyThreshold} min="0" max="100" />
 
 				<Label class="mb-1.5">{'Percentage Returned: ' + returnPercentage + '%'}</Label>
+				{#if tooltipsActive}
+					<Tooltip>
+						Determines what percentage of the results should be shown after all other filtering is done.
+					</Tooltip>
+				{/if}
 				<Range size="sm" bind:value={returnPercentage} min="0" max="100" />
 			</div>
 		</Card>
