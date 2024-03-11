@@ -43,10 +43,11 @@
 		let caesarCracker = new CaesarCracker(
 			inputText,
 			accuracyThreshold / 100,
-			returnPercentage / 100
+			returnPercentage / 100,
+			ascendingResults
 		);
 		await caesarCracker.crack();
-		console.log(caesarCracker.getMutatedResultsAndAccuracy(ascendingResults, true, true));
+		console.log(caesarCracker.getMutatedResultsData().getResultsReport());
 	}
 </script>
 
