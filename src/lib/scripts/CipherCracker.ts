@@ -198,7 +198,7 @@ export abstract class CipherCracker {
 	// Helper function to find the partition position
 	public static partition(
 		array: number[],
-		array2: string[],
+		altArray: Array<Array<any>>,
 		left: number = 0,
 		right: number = array.length - 1
 	): number {
@@ -214,27 +214,29 @@ export abstract class CipherCracker {
 			}
 			if (i <= j) {
 				CipherCracker.swap(array, i, j); // swap two elements
-				CipherCracker.swap(array2, i, j);
+				for (let k = 0; k < altArray.length; k++) {
+					CipherCracker.swap(altArray[k], i, j);
+				}
 				i++;
 				j--;
 			}
 		}
 		return i;
 	}
-	/** Function to perform quicksort on two arrays based on the ordering of the first array. */
-	public static pairedQuickSort(
+	/** Function to perform quicksort on multiple arrays based on the ordering of the first array. */
+	public static basedQuickSort(
 		array: number[],
-		array2: string[],
+		altArrays: Array<Array<any>>,
 		left: number = 0,
 		right: number = array.length - 1
 	): number[] {
 		if (array.length > 1) {
-			const index = CipherCracker.partition(array, array2, left, right);
+			const index = CipherCracker.partition(array, altArrays, left, right);
 			if (left < index - 1) {
-				CipherCracker.pairedQuickSort(array, array2, left, index - 1);
+				CipherCracker.basedQuickSort(array, altArrays, left, index - 1);
 			}
 			if (index < right) {
-				CipherCracker.pairedQuickSort(array, array2, index, right);
+				CipherCracker.basedQuickSort(array, altArrays, index, right);
 			}
 		}
 		return array;
