@@ -20,12 +20,14 @@ export class ResultsData {
 		this.ascending = ascendingOrder;
 	}
 
-    /** Generated report connecting accuracy to results and displaying applied mutations. */
-	public getResultsReport() {
-		let output = '';
+	/** Generated report connecting accuracy to results and displaying applied mutations. */
+	public getResultsReport(): string {
+		return this.generateMutationHeader() + '\n' + this.prependAccuracyToResults();
+	}
 
-		output = `${`${this.ascending ? 'Ascending' : 'Descending'}`} Accuracy Report ${`w/ ${parseFloat((this.threshold * 100).toFixed(2))}% Threshold`}`;
-		output = output + `\n${`Displaying ${this.percentage * 100}% of Results\n`}`;
+	/** Loop through every result, prepend the accuracy, return one big string with all the info. */
+	private prependAccuracyToResults(): string {
+		let output = '';
 
 		for (let i = 0; i < this.results.length; i++) {
 			output =
@@ -33,10 +35,17 @@ export class ResultsData {
 				i +
 				' || ' +
 				parseFloat((this.accuracy[i] * 100).toFixed(2)) +
-				"% Accurate: " +
+				'% Accurate: ' +
 				this.results[i] +
 				'\n';
 		}
+		return output;
+	}
+
+	/** Generates a Report Header based on specified mutations. */
+	private generateMutationHeader(): string {
+		let output = `${`${this.ascending ? 'Ascending' : 'Descending'}`} Accuracy Report ${`w/ ${parseFloat((this.threshold * 100).toFixed(2))}% Threshold`}`;
+		output = output + `\n${`Displaying ${this.percentage * 100}% of Results`}`;
 		return output;
 	}
 }
