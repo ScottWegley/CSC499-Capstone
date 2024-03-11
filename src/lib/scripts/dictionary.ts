@@ -42,6 +42,7 @@ export function isValidDictionary(dictionary: string, storeData?: (d: string) =>
 export async function getDictionary() {
 	let temp = browser && localStorage.getItem('wordlist');
 	if (temp == null) {
+		console.log("Falling back to default wordlist");
 		localStorage.setItem('wordlist', await getSpecificWordlist('10k.txt'));
 		temp = browser && localStorage.getItem('wordlist');
 	} else {

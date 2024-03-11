@@ -23,6 +23,7 @@ export abstract class CipherCracker {
 		this.ascendingOrder = ascending == undefined ? this.ascendingOrder : ascending;
 	}
 
+	//#region Basic Getters
 	/** Get the input text that we are attempting to decrypt. */
 	public getInput(): string {
 		return this.input;
@@ -43,6 +44,8 @@ export abstract class CipherCracker {
 	public getAccuracySet(): number[] {
 		return this.accuracySet;
 	}
+	//#endregion
+	//#region Index Getters
 	/** Returns the index of the most accurate potential decryption. */
 	public getMostAccurateIndex(): number {
 		return CipherCracker.getMostAccurateIndex(this.resultSet, this.accuracySet);
@@ -75,6 +78,7 @@ export abstract class CipherCracker {
 		}
 		return index;
 	}
+	//#endregion
 	/** Returns an instance of ResultsData with only the relevant data and the applied mutations stored.*/
 	public static getMutatedResultsData(
 		results: string[],
@@ -87,8 +91,6 @@ export abstract class CipherCracker {
 		let outResults: string[] = [];
 		let outAccuracy: number[] = [];
 		if (ascending) {
-			/** If we are using a percentage */
-
 			let thresholdMin = 0;
 			let stillSearching = true;
 			for (let i = 0; i < results.length && stillSearching; i++) {
@@ -145,6 +147,7 @@ export abstract class CipherCracker {
 			percentage ? this.returnPercentage : undefined
 		);
 	}
+	//#region QuickSort functions
 	// Helper function to swap two elements in an array
 	public static swap(items: any[], leftIndex: number, rightIndex: number) {
 		const temp = items[leftIndex];
@@ -197,4 +200,5 @@ export abstract class CipherCracker {
 		}
 		return array;
 	}
+	//#endregion
 }

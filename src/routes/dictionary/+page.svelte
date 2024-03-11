@@ -8,7 +8,8 @@
 		Footer,
 		Alert,
 		Tooltip,
-		Modal
+		Modal,
+		Kbd
 	} from 'flowbite-svelte';
 	import { writable } from 'svelte/store';
 	import { browser } from '$app/environment';
@@ -44,6 +45,7 @@
 	/** Dynamically pick a wordlist based on filename. */
 	async function resetToAltWordlist(filename: string) {
 		wordlist.set(await getSpecificWordlist(filename));
+		console.log("Setting dictionary to " + filename);
 		resyncDisplayWithSession();
 		(inputFileUpload as HTMLInputElement).value = '';
 		saveAcknowledged = false;
@@ -197,7 +199,7 @@
 			>
 			<Tooltip
 				>We provide a default wordlist composed of Google's 10,000 most common english words. <br />
-				To select another from our default lists, press shift and click the reset button.
+				To select another from our default lists, press <Kbd class="px-1.5 py-1">shift</Kbd> and click the reset button.
 			</Tooltip>
 			<Modal size="xs" bind:open={dictionarySelectPopUp} autoclose>
 				<div class="flex flex-col text-center">

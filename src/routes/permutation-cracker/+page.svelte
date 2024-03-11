@@ -15,8 +15,6 @@
 
 	/** Stores the text given to us by the user. */
 	let inputText = 'UIF RVJDL CSPXO GPY KVNQT PWFS UIF MBAZ EPH';
-	/** Stores the text we dsiplay to the user. */
-	let outputText = '';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -122,14 +120,7 @@
 					await startCracking();
 				}}>Crack</Button
 			>
-			<Textarea
-				placeholder="Output Text"
-				rows="4"
-				class="resize-none"
-				bind:value={outputText}
-				align="center"
-				disabled
-			></Textarea>
+			
 		</div>
 	</div>
 </div>
