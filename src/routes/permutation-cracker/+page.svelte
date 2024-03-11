@@ -46,7 +46,7 @@
 			returnPercentage / 100
 		);
 		await caesarCracker.crack();
-		console.log(caesarCracker.getResultsSortedByAccuracy(ascendingResults, true, true));
+		console.log(caesarCracker.getMutatedResultsAndAccuracy(ascendingResults, true, true));
 	}
 </script>
 
