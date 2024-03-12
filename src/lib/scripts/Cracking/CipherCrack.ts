@@ -80,58 +80,58 @@ export abstract class CipherCracker {
 	}
 	//#endregion
 	/** Returns an instance of ResultsData with only the relevant data and the applied mutations stored.*/
-	public static getMutatedResultsData(
-		results: string[],
-		accuracy: number[],
-		ascending: boolean = false,
-		threshold: number = 0,
-		percentage: number = 1
-	): ResultData {
-		CipherCracker.basedQuickSort(accuracy, [results]);
-		let outResults: string[] = [];
-		let outAccuracy: number[] = [];
-		let thresholdMin = 0;
-		let stillSearching = true;
-		for (let i = 0; i < results.length && stillSearching; i++) {
-			if (accuracy[i] < threshold) {
-				thresholdMin++;
-				continue;
-			} else {
-				stillSearching = false;
-			}
-		}
-		for (
-			let i = thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
-			i < results.length;
-			i++
-		) {
-			outAccuracy.push(accuracy[i]);
-			outResults.push(results[i]);
-		}
-		return new ResultData(
-			!ascending ? outResults.reverse() : outResults,
-			!ascending ? outAccuracy.reverse() : outAccuracy,
-			threshold,
-			percentage,
-			ascending
-		);
-	}
+	// public static getMutatedResultsData(
+	// 	results: string[],
+	// 	accuracy: number[],
+	// 	ascending: boolean = false,
+	// 	threshold: number = 0,
+	// 	percentage: number = 1
+	// ): ResultData {
+	// 	CipherCracker.basedQuickSort(accuracy, [results]);
+	// 	let outResults: string[] = [];
+	// 	let outAccuracy: number[] = [];
+	// 	let thresholdMin = 0;
+	// 	let stillSearching = true;
+	// 	for (let i = 0; i < results.length && stillSearching; i++) {
+	// 		if (accuracy[i] < threshold) {
+	// 			thresholdMin++;
+	// 			continue;
+	// 		} else {
+	// 			stillSearching = false;
+	// 		}
+	// 	}
+	// 	for (
+	// 		let i = thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
+	// 		i < results.length;
+	// 		i++
+	// 	) {
+	// 		outAccuracy.push(accuracy[i]);
+	// 		outResults.push(results[i]);
+	// 	}
+	// 	return new ResultData(
+	// 		!ascending ? outResults.reverse() : outResults,
+	// 		!ascending ? outAccuracy.reverse() : outAccuracy,
+	// 		threshold,
+	// 		percentage,
+	// 		ascending
+	// 	);
+	// }
 	/** Returns an insance of ResultsData with only the relevant data and the applied mutations stored.  Generated based
 	 * on what's stored in our class.
 	 */
-	public getMutatedResultsData(
-		ascending: boolean = true,
-		threshold: boolean = true,
-		percentage: boolean = true
-	): ResultData {
-		return CipherCracker.getMutatedResultsData(
-			this.resultSet,
-			this.accuracySet,
-			ascending ? this.ascendingOrder : undefined,
-			threshold ? this.accuracyThreshold : undefined,
-			percentage ? this.returnPercentage : undefined
-		);
-	}
+	// public getMutatedResultsData(
+	// 	ascending: boolean = true,
+	// 	threshold: boolean = true,
+	// 	percentage: boolean = true
+	// ): ResultData {
+	// 	return CipherCracker.getMutatedResultsData(
+	// 		this.resultSet,
+	// 		this.accuracySet,
+	// 		ascending ? this.ascendingOrder : undefined,
+	// 		threshold ? this.accuracyThreshold : undefined,
+	// 		percentage ? this.returnPercentage : undefined
+	// 	);
+	// }
 	//#region QuickSort functions
 	// Helper function to swap two elements in an array
 	public static swap(items: any[], leftIndex: number, rightIndex: number) {
