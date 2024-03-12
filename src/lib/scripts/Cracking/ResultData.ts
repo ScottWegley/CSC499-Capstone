@@ -1,4 +1,4 @@
-export class ResultsData {
+export class ResultData {
 	protected results: string[];
 	protected accuracy: number[];
 
@@ -26,16 +26,16 @@ export class ResultsData {
 	}
 
 	/** Loop through every result, prepend the accuracy, return one big string with all the info. */
-	private prependAccuracyToResults(): string {
+	protected prependAccuracyToResults(): string {
 		let output = '';
 
 		for (let i = 0; i < this.results.length; i++) {
 			output =
 				output +
 				i +
-				' || ' +
+				" || " +
 				parseFloat((this.accuracy[i] * 100).toFixed(2)) +
-				'% Accurate: ' +
+				"% Accurate: " +
 				this.results[i] +
 				'\n';
 		}
@@ -43,7 +43,7 @@ export class ResultsData {
 	}
 
 	/** Generates a Report Header based on specified mutations. */
-	private generateMutationHeader(): string {
+	protected generateMutationHeader(): string {
 		let output = `${`${this.ascending ? 'Ascending' : 'Descending'}`} Accuracy Report ${`w/ ${parseFloat((this.threshold * 100).toFixed(2))}% Threshold`}`;
 		output = output + `\n${`Displaying ${this.percentage * 100}% of Results`}`;
 		return output;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CaesarCracker } from '$lib/scripts/Cracking/CaesarCrack';
+	import { CaesarCrack } from '$lib/scripts/Cracking/CaesarCrack';
 	import { sanitizeInput } from '$lib/scripts/Dictionary';
 	import {
 		Heading,
@@ -38,7 +38,7 @@
 	}
 
 	async function caesarCrack() {
-		let caesarCracker = new CaesarCracker(
+		let caesarCracker = new CaesarCrack(
 			inputText,
 			accuracyThreshold / 100,
 			returnPercentage / 100,
