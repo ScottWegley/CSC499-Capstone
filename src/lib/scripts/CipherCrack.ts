@@ -1,4 +1,4 @@
-import { ResultsData } from './tempresultsdata';
+import { ResultsData } from './ResultData';
 
 /** Base class with necessary functions  */
 export abstract class CipherCracker {

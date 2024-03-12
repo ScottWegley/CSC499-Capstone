@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { DEFAULT_ALPHABET } from './tempCaesarcipher';
+import { DEFAULT_ALPHABET } from './CaesarCipher';
 
 /** Load a specified word list from a file. */
 export async function getSpecificWordlist(filename: string) {
