@@ -1,4 +1,4 @@
-import { ResultsData } from './ResultData';
+import { ResultData } from './ResultData';
 
 /** Base class with necessary functions  */
 export abstract class CipherCracker {
@@ -86,50 +86,35 @@ export abstract class CipherCracker {
 		ascending: boolean = false,
 		threshold: number = 0,
 		percentage: number = 1
-	): ResultsData {
+	): ResultData {
 		CipherCracker.basedQuickSort(accuracy, [results]);
 		let outResults: string[] = [];
 		let outAccuracy: number[] = [];
-		if (ascending) {
-			let thresholdMin = 0;
-			let stillSearching = true;
-			for (let i = 0; i < results.length && stillSearching; i++) {
-				if (accuracy[i] < threshold) {
-					thresholdMin++;
-					continue;
-				} else {
-					stillSearching = false;
-				}
-			}
-			for (
-				let i = thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
-				i < results.length;
-				i++
-			) {
-				outAccuracy.push(accuracy[i]);
-				outResults.push(results[i]);
-			}
-		} else {
-			let thresholdMin = 0;
-			let stillSearching = true;
-			for (let i = 0; i < results.length && stillSearching; i++) {
-				if (accuracy[i] < threshold) {
-					thresholdMin++;
-					continue;
-				} else {
-					stillSearching = false;
-				}
-			}
-			for (
-				let i = results.length - 1;
-				i >= thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
-				i--
-			) {
-				outAccuracy.push(accuracy[i]);
-				outResults.push(results[i]);
+		let thresholdMin = 0;
+		let stillSearching = true;
+		for (let i = 0; i < results.length && stillSearching; i++) {
+			if (accuracy[i] < threshold) {
+				thresholdMin++;
+				continue;
+			} else {
+				stillSearching = false;
 			}
 		}
-		return new ResultsData(outResults, outAccuracy, threshold, percentage, ascending);
+		for (
+			let i = thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
+			i < results.length;
+			i++
+		) {
+			outAccuracy.push(accuracy[i]);
+			outResults.push(results[i]);
+		}
+		return new ResultData(
+			!ascending ? outResults.reverse() : outResults,
+			!ascending ? outAccuracy.reverse() : outAccuracy,
+			threshold,
+			percentage,
+			ascending
+		);
 	}
 	/** Returns an insance of ResultsData with only the relevant data and the applied mutations stored.  Generated based
 	 * on what's stored in our class.
@@ -138,7 +123,7 @@ export abstract class CipherCracker {
 		ascending: boolean = true,
 		threshold: boolean = true,
 		percentage: boolean = true
-	): ResultsData {
+	): ResultData {
 		return CipherCracker.getMutatedResultsData(
 			this.resultSet,
 			this.accuracySet,
