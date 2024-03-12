@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CaesarCracker } from '$lib/scripts/CaesarCracker';
+	import { CaesarCracker } from '$lib/scripts/Cracking/CaesarCrack';
 	import { sanitizeInput } from '$lib/scripts/Dictionary';
 	import {
 		Heading,
