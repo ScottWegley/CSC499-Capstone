@@ -1,7 +1,8 @@
 <script lang="ts">
 	import '../app.pcss';
-	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
+	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, MegaMenu, Dropdown, DropdownItem, DropdownDivider } from 'flowbite-svelte';
 	import { base } from '$app/paths';
+	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
 	/** @type {import('./$types').LayoutData} */
 	export let data;
@@ -21,10 +22,15 @@
 			<NavLi href="{base}/">Home</NavLi>
 			<NavLi href="{base}/about">About</NavLi>
 			<NavLi href="{base}/dictionary">Dictionary</NavLi>
+			<NavLi class="cursor-pointer">
+				Ciphers and Crackers<ChevronDownOutline class="w-3 h-3 ms-2 text-primary-800 dark:text-white inline" />
+			  </NavLi>
+			  <Dropdown class="w-44 z-20">
+				<DropdownItem href="{base}/caesar-cipher">Caesar Cipher</DropdownItem>
+				<DropdownItem href="{base}/permutation-cipher">Permutation Cipher</DropdownItem>
+				<DropdownItem href="{base}/permutation-cracker">Permutation Cracker</DropdownItem>
+			  </Dropdown>
 			<NavLi href="{base}/password">Password</NavLi>
-			<NavLi href="{base}/caesar-cipher">Caesar Cipher</NavLi>
-			<NavLi href="{base}/permutation-cipher">Permutation Cipher</NavLi>
-			<NavLi href="{base}/permutation-cracker">Permutation Cracker</NavLi>
 		</NavUl>
 	</Navbar>
 </div>
