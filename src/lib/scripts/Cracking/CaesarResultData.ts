@@ -30,4 +30,8 @@ export class CaesarResultData extends ResultData {
 		}
 		return output;
 	}
+
+    public getShifts(){
+        return this.shifts;
+    }
 }

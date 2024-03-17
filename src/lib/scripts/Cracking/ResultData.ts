@@ -48,4 +48,24 @@ export class ResultData {
 		output = output + `\n${`Displaying ${this.percentage * 100}% of Results`}`;
 		return output;
 	}
+
+	public getResults(){
+		return this.results;
+	}
+
+	public getAccuracy(){
+		return this.accuracy;
+	}
+
+	public getThreshold(){
+		return this.threshold;
+	}
+
+	public getPercentage(){
+		return this.percentage;
+	}	
+
+	public getAscending() {
+		return this.ascending;
+	}
 }
