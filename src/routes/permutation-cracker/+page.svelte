@@ -19,7 +19,6 @@
 		TableBody,
 		TableBodyCell,
 		TableBodyRow
-
 	} from 'flowbite-svelte';
 
 	/** Stores the text given to us by the user. */
@@ -39,7 +38,7 @@
 	/** Whether or not the results should be displayed. */
 	let displayResults = true;
 
-	let caesarResults: CaesarResultData = new CaesarResultData([],[],[],0,0,false);
+	let caesarResults: CaesarResultData = new CaesarResultData([], [], [], 0, 0, false);
 
 	/** Function to start the cracking process. */
 	async function startCracking() {
@@ -142,9 +141,17 @@
 						await startCracking();
 					}}>Crack</Button
 				>
+				{#if tooltipsActive}
+					{#if caesarMode}
+						<Tooltip
+							>Press crack to generate the potential results<br />
+							with the settings specified in the panel to the left.</Tooltip
+						>
+					{/if}
+				{/if}
 			</div>
 		</div>
-		<div class="flex w-full flex-row justify-center mt-3">
+		<div class="mt-3 flex w-full flex-row justify-center">
 			{#if displayResults}
 				<Table shadow>
 					<TableHead>
@@ -153,13 +160,19 @@
 						<TableHeadCell>Alphabet</TableHeadCell>
 					</TableHead>
 					<TableBody>
-							{#each caesarResults.getResults() as result, i}
+						{#each caesarResults.getResults() as result, i}
 							<TableBodyRow>
-								<TableBodyCell>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</TableBodyCell>
+								<TableBodyCell
+									>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</TableBodyCell
+								>
 								<TableBodyCell>{result}</TableBodyCell>
-								<TableBodyCell>{getCipherAlphabet(caesarResults.getShifts()[i]).toString().replaceAll(',','')}</TableBodyCell>
+								<TableBodyCell
+									>{getCipherAlphabet(caesarResults.getShifts()[i])
+										.toString()
+										.replaceAll(',', '')}</TableBodyCell
+								>
 							</TableBodyRow>
-							{/each}
+						{/each}
 					</TableBody>
 				</Table>
 			{/if}
