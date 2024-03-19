@@ -1,31 +1,44 @@
 import { caesarDecryption, DEFAULT_ALPHABET } from '../Ciphers/CaesarCipher';
 import { CipherCracker } from './CipherCrack';
-import { checkAccuracy } from '../Dictionary';
-import { ResultData } from './ResultData';
 import { CaesarResultData } from './CaesarResultData';
+import { Dictionary } from '../Dictionary';
 
 /** Class to bruteforce crack a Caesar Cipher encrypted piece of text. */
 export class CaesarCrack extends CipherCracker {
-
 	/** Stores the Caesar Alphabet shifts corresponding to each potential decrypted text. */
 	protected shiftSet: number[] = [];
+	/** List of words that the Dictionary found as accurate. */
+	public realWords: string[] = [];
+
+	/** Add a real word to our list of real words. */
+	public storeRealWord: (w: string) => void;
 
 	/** Create a new instance of Caesar Cracking with text to crack. */
-	public constructor(text: string, threshold?: number, percentage?:number, ascending?:boolean) {
+	public constructor(text: string, threshold?: number, percentage?: number, ascending?: boolean, storageFunction?: (w: string) => void) {
 		super(text, threshold, percentage, ascending);
+		if(storageFunction){
+			this.storeRealWord = storageFunction;
+		} else {
+			this.storeRealWord = (x:string) => {};
+		}
 	}
 
 	/** Decrypt the input using all possible Caesar alphabets.  Store the resulting text and it's measured accuracy.*/
-	public async crack() {
+	public crack() {
+		this.realWords = [];
 		for (let i = 1; i < DEFAULT_ALPHABET.length; i++) {
 			this.resultSet.push(caesarDecryption(this.input, i));
-			this.accuracySet.push(await checkAccuracy(this.resultSet[i-1]));
+			this.accuracySet.push(Dictionary.checkAccuracy(this.resultSet[i - 1], this.storeRealWord));
 			this.shiftSet.push(i);
 		}
 	}
 
 	public getShiftSet(): number[] {
 		return this.shiftSet;
+	}
+
+	public getRealWords(): string[] {
+		return this.realWords;
 	}
 
 	/** Returns an instance of CaesarResultsData with only the relevant data and the applied mutations stored.*/
@@ -58,7 +71,7 @@ export class CaesarCrack extends CipherCracker {
 		) {
 			outAccuracy.push(accuracy[i]);
 			outResults.push(results[i]);
-			outShift.push(shifts[i])
+			outShift.push(shifts[i]);
 		}
 		return new CaesarResultData(
 			!ascending ? outResults.reverse() : outResults,
