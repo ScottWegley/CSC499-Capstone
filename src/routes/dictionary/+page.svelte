@@ -22,7 +22,7 @@
 	/** This variable will store our wordlist.  If one exists in storage, use that.  If not, default to our basic word list. */
 	const wordlist = writable(browser && (localStorage.getItem('wordlist') || 'empty'));
 	/** When wordlist changes, update the session storage representation. */
-	wordlist.subscribe((val) => browser && localStorage.setItem('wordlist', val.toString()));
+	wordlist.subscribe((val) => browser && localStorage.setItem('wordlist', val.toString().toUpperCase()));
 
 	/** When the page has loaded, unless a different word list exists in memory, grab our default word list and load it. */
 	onMount(async () => {
@@ -79,7 +79,7 @@
 			.forEach((e) => {
 				displayWordList = displayWordList + e + '\n';
 			});
-		displayWordList = displayWordList.substring(0, displayWordList.length - 1);
+		displayWordList = displayWordList.substring(0, displayWordList.length - 1).toUpperCase();
 	}
 
 	/** Go through the displayed wordlist, fix any obvious issues, store the wordlist in session storage.*/
@@ -96,7 +96,7 @@
 		});
 		wordlist.set($wordlist.toString().substring(0, $wordlist.toString().length - 1));
 		wordlist.set(
-			$wordlist.toString().replaceAll('\r', '').replaceAll('\n', '').trim().toLowerCase()
+			$wordlist.toString().replaceAll('\r', '').replaceAll('\n', '').trim().toUpperCase()
 		);
 		resyncDisplayWithSession();
 		return true;
