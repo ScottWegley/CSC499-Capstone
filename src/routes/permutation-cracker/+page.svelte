@@ -2,7 +2,7 @@
 	import { getCipherAlphabet } from '$lib/scripts/Ciphers/CaesarCipher';
 	import { CaesarCrack } from '$lib/scripts/Cracking/CaesarCrack';
 	import { CaesarResultData } from '$lib/scripts/Cracking/CaesarResultData';
-	import { sanitizeInput } from '$lib/scripts/Dictionary';
+	import { Dictionary, sanitizeInput } from '$lib/scripts/Dictionary';
 	import {
 		Heading,
 		P,
@@ -20,6 +20,7 @@
 		TableBodyCell,
 		TableBodyRow
 	} from 'flowbite-svelte';
+	import { onMount } from 'svelte';
 
 	/** Stores the text given to us by the user. */
 	let inputText = 'UIF RVJDL CSPXO GPY KVNQT PWFS UIF MBAZ EPH';
@@ -40,25 +41,57 @@
 
 	let caesarResults: CaesarResultData = new CaesarResultData([], [], [], 0, 0, false);
 
+	onMount(async () => {
+		Dictionary.syncDictionary();
+	});
+
 	/** Function to start the cracking process. */
-	async function startCracking() {
+	function startCracking() {
 		crackInProgress = true;
 		if (caesarMode) {
-			await caesarCrack();
+			caesarCrack();
 		} else {
+
 		}
 	}
+	
 
-	async function caesarCrack() {
+	let things = [
+		{ id: 1, name: 'apple' },
+		{ id: 2, name: 'banana' },
+		{ id: 3, name: 'carrot' },
+		{ id: 4, name: 'doughnut' },
+		{ id: 5, name: 'egg' }
+	];
+
+	/** Storage of all words from the dictionary that showed up in any result. */
+	let realWordSet = new Set<String>;
+	/** Function to add things to our real word set. */
+	function addToRealWords(word: string){
+		realWordSet.add(word)
+	}
+
+	function generateDisplayForResult(result: string){
+		let displayWords: {text: string, accurate: boolean}[] = [];
+		result.split(" ").forEach((x) => {
+			
+		});
+		return displayWords;
+	}
+
+	/** This function calls a Caesar Crack into existence, cracks, and then gets the results data, before printing the results.*/
+	function caesarCrack() {
+		realWordSet = new Set<String>;
 		let caesarCracker = new CaesarCrack(
 			inputText,
 			accuracyThreshold / 100,
 			returnPercentage / 100,
-			ascendingResults
+			ascendingResults,
+			addToRealWords
 		);
-		await caesarCracker.crack();
+		caesarCracker.crack();
 		caesarResults = caesarCracker.getMutatedResultsData();
-		console.log(caesarResults.getResultsReport());
+		console.log(realWordSet);
 		crackInProgress = false;
 	}
 </script>
@@ -137,8 +170,8 @@
 				{/if}
 				<Button
 					class="mb-3"
-					on:click={async () => {
-						await startCracking();
+					on:click={() => {
+						startCracking();
 					}}>Crack</Button
 				>
 				{#if tooltipsActive}
