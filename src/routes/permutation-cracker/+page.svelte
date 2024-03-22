@@ -72,6 +72,7 @@
 
 	/** This function calls a Caesar Crack into existence, cracks, and then gets the results data, before printing the results.*/
 	function caesarCrack() {
+		realWordSet = new Set<String>();
 		let caesarCracker = new CaesarCrack(
 			inputText,
 			accuracyThreshold / 100,
