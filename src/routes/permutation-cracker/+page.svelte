@@ -46,16 +46,13 @@
 	/** Make sure the dictionary has been loaded so we don't do async shenanigans. ''*/
 	onMount(async () => {
 		Dictionary.syncDictionary();
+		caesarCrack();
 	});
 
 	/** Function to start the cracking process. */
 	function startCracking() {
 		crackInProgress = true;
 		realWordSet = new Set<String>();
-		if (caesarMode) {
-			caesarCrack();
-		} else {
-		}
 	}
 
 	/** Storage of all words from the dictionary that showed up in any result. */
