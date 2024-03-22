@@ -241,8 +241,8 @@
 			</div>
 		</div>
 		<div class="flex w-4/5 flex-col content-center justify-center">
-			<div class="mt-3 flex flex-row justify-center justify-self-center">
-				{#if displayResults}
+			<div class="mt-3 flex flex-row justify-center justify-self-center" id="table-div">
+				{#if displayResults && caesarMode}
 					<Table shadow>
 						<TableHead>
 							<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
@@ -265,7 +265,47 @@
 											<span class={(!displayResult.accurate ? 'text-red-500 ' : '') + 'text-xs'}
 												>{displayResult.text}</span
 											>
-											{#if ((i+1) % 20) == 0}
+											{#if (i + 1) % 20 == 0}
+												<br />
+											{/if}
+										{/each}
+									</TableBodyCell>
+									<TableBodyCell
+										><span class="text-xs"
+											>{getCipherAlphabet(caesarResults.getShifts()[i])
+												.toString()
+												.replaceAll(',', '')}</span
+										></TableBodyCell
+									>
+								</TableBodyRow>
+							{/each}
+						</TableBody>
+					</Table>
+				{/if}
+				{#if displayResults && !caesarMode}
+					<Table shadow>
+						<TableHead>
+							<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
+							<TableHeadCell class="text-xs">Results</TableHeadCell>
+							<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
+						</TableHead>
+						{#if tooltipsActive && realWordSet.size != 0}
+							<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
+						{/if}
+						<TableBody>
+							{#each caesarResults.getResults() as result, i}
+								<TableBodyRow>
+									<TableBodyCell
+										><span class="text-xs"
+											>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</span
+										></TableBodyCell
+									>
+									<TableBodyCell>
+										{#each generateDisplayForResult(result) as displayResult, i}
+											<span class={(!displayResult.accurate ? 'text-red-500 ' : '') + 'text-xs'}
+												>{displayResult.text}</span
+											>
+											{#if (i + 1) % 20 == 0}
 												<br />
 											{/if}
 										{/each}
