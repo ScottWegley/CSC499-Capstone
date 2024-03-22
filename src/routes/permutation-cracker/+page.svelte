@@ -204,7 +204,7 @@
 					<Range size="sm" bind:value={returnPercentage} min="0" max="100" />
 				</div>
 			</Card>
-			<div class="ml-1 flex w-5/12 flex-col justify-center">
+			<div class="ml-1 mr-1 flex w-5/12 flex-col justify-center" id="inputs-panel">
 				<Textarea
 					placeholder="Input Text"
 					rows="4"
@@ -214,6 +214,8 @@
 						inputText = sanitizeInput(inputText);
 						if (caesarMode) {
 							caesarCrack();
+						} else {
+							resetPermutationCracking();
 						}
 					}}
 					align="center"
