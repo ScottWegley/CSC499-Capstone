@@ -157,7 +157,14 @@
 					{#if tooltipsActive}
 						<Tooltip>Toggle this switch to turn tooltips on/off</Tooltip>
 					{/if}
-					<Toggle size="small" bind:checked={caesarMode} class="mb-4">Caesar Cipher Mode</Toggle>
+					<Toggle
+						size="small"
+						bind:checked={caesarMode}
+						class="mb-4"
+						on:click={() => {
+							caesarCrack();
+						}}>Caesar Cipher Mode</Toggle
+					>
 					{#if tooltipsActive}
 						<Tooltip
 							>If you know your input text was encrypted with specifically a Caesar Cipher, turn
