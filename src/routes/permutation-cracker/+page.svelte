@@ -239,6 +239,88 @@
 					{/if}
 				{/if}
 			</div>
+			{#if !caesarMode && true}
+				<Card class="ml-1 mr-1 min-w-fit">
+					<div class="flex max-w-fit flex-col justify-center" id="permutation-panel">
+						<div id="alphabet-display" class="mb-3 flex flex-col">
+							<div id="first-half-alphabet" class="mb-1 mt-1">
+								<ButtonGroup>
+									{#each DEFAULT_ALPHABET.slice(0, Math.floor(DEFAULT_ALPHABET.length / 2)) as letter}
+										{#key permutationUpdateTracker}
+											<Button
+												class="max-w-2 text-center"
+												size="xs"
+												outline
+												color={permutationCrack.getPossibleCharacters(letter).length > 0
+													? permutationCrack.getPossibleCharacters(letter).length == 1
+														? 'green'
+														: 'yellow'
+													: 'red'}
+												on:click={() => {
+													selectedPossibilityCharacter = letter;
+												}}>{letter}</Button
+											>
+										{/key}
+									{/each}
+								</ButtonGroup>
+							</div>
+							<div id="second-half-alphabet" class="mb-1 mt-1">
+								<ButtonGroup>
+									{#each DEFAULT_ALPHABET.slice(Math.floor(DEFAULT_ALPHABET.length / 2), DEFAULT_ALPHABET.length) as letter}
+										{#key permutationUpdateTracker}
+											<Button
+												class="max-w-2 text-center"
+												size="xs"
+												outline
+												color={permutationCrack.getPossibleCharacters(letter).length > 0
+													? permutationCrack.getPossibleCharacters(letter).length == 1
+														? 'green'
+														: 'yellow'
+													: 'red'}
+												on:click={() => {
+													selectedPossibilityCharacter = letter;
+												}}>{letter}</Button
+											>
+										{/key}
+									{/each}
+								</ButtonGroup>
+							</div>
+						</div>
+						{#if tooltipsActive}
+							<Tooltip
+								>This section displays what every letter of the alphabet could be <br /> equivalent
+								to in the permutation cipher we are looking for.<br /> Letters turn green if they are
+								solved, and red if they are not involved.</Tooltip
+							>
+						{/if}
+						<div id="permutation-settings">
+							<div id="character-possibility" class="text-left">
+								{#key permutationUpdateTracker}
+									<Label class="block"
+										><span class="text-xs">Letter {selectedPossibilityCharacter} Could Be</span
+										></Label
+									>
+									<Input
+										size="sm"
+										disabled
+										value={permutationCrack
+											.getPossibleCharacters(selectedPossibilityCharacter)
+											.toString()
+											.replaceAll(',', '')
+											.trim()}
+									></Input>
+									<Label class="mt-1 block"
+										><span class="text-xs"
+											>{permutationCrack.getCurrentPossibleAlphabets()} Remaining Alphabets</span
+										></Label
+									>
+									<Button on:click={debugButton}></Button>
+								{/key}
+							</div>
+						</div>
+					</div>
+				</Card>
+			{/if}
 		</div>
 		<div class="flex w-4/5 flex-col content-center justify-center">
 			<div class="mt-3 flex flex-row justify-center justify-self-center" id="table-div">
