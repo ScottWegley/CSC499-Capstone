@@ -23,4 +23,14 @@ export class PermutationCrack extends CipherCracker {
 
 	public updateComponents: () => void;
 
+
+	/** Returns a mapping of letters to the letters they might be. */
+	public getPossibleCharacterSet() {
+		return this.possibleCharacters;
+	}
+
+	/** Returns a list of possible letters for a specified letter. */
+	public getPossibleCharacters(letter: string) {
+		return this.possibleCharacters[getLetterIndex(letter.charAt(0))].possible;
+	}
 }
