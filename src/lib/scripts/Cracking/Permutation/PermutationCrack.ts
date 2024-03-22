@@ -23,6 +23,17 @@ export class PermutationCrack extends CipherCracker {
 
 	public updateComponents: () => void;
 
+	/** Resets our mapping of letters to possible letters to default state, where every letter can be every letter. */
+	private resetCharacterPossibilities() {
+		this.possibleCharacters = [];
+		for (let i = 0; i < DEFAULT_ALPHABET.length; i++) {
+			this.possibleCharacters.push({
+				header: DEFAULT_ALPHABET[i],
+				possible: [...DEFAULT_ALPHABET]
+			});
+		}
+		this.updateComponents();
+	}
 
 	/** Returns a mapping of letters to the letters they might be. */
 	public getPossibleCharacterSet() {
