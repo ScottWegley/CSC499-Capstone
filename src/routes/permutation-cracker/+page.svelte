@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { getCipherAlphabet } from '$lib/scripts/Ciphers/CaesarCipher';
-	import { CaesarCrack } from '$lib/scripts/Cracking/CaesarCrack';
-	import { CaesarResultData } from '$lib/scripts/Cracking/CaesarResultData';
+	import { DEFAULT_ALPHABET, getCipherAlphabet } from '$lib/scripts/Ciphers/CaesarCipher';
+	import { CaesarCrack } from '$lib/scripts/Cracking/Caesar/CaesarCrack';
+	import { CaesarResultData } from '$lib/scripts/Cracking/Caesar/CaesarResultData';
+	import { PermutationCrack } from '$lib/scripts/Cracking/Permutation/PermutationCrack';
+	import { PermutationResultData } from '$lib/scripts/Cracking/Permutation/PermutationResultData';
 	import { Dictionary, sanitizeInput } from '$lib/scripts/Dictionary';
 	import {
 		Heading,
@@ -18,36 +20,64 @@
 		Table,
 		TableBody,
 		TableBodyCell,
-		TableBodyRow
+		TableBodyRow,
+		ButtonGroup,
+		Input
 	} from 'flowbite-svelte';
-	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 
 	/** Stores the text given to us by the user. */
-	let inputText =
-		'THIS IS A TEST';
+	let inputText = 'THIS IS A TEST';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
-	let caesarMode = true;
-	/** Tracks whether or not we are currently cracking. */
+	let caesarMode = false;
+	/** Tracks whether or not we are currently permutation cracking. */
 	let crackInProgress = false;
 	/** Tracks the current threshold for accuracy reporting. */
 	let accuracyThreshold = 0;
-	/** Tracks how much of the results should be displayed to the user.*/
+	/** Tracks what percentage of the results should be displayed to the user.*/
 	let returnPercentage = 100;
 	/** Whether the results should be displayed in ascending order. */
 	let ascendingResults = false;
 	/** Whether or not the results should be displayed. */
 	let displayResults = true;
+	/** Represents the character the user would like to view the possible character equivalents to.  Defaults to first letter of alphabet. */
+	let selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
+	/** Variable to update whenever we want to refresh permutation crack dependent components. */
+	let permutationUpdateTracker = 0;
 
 	/** Public access for the results of a caesar crack. */
 	let caesarResults: CaesarResultData = new CaesarResultData([], [], [], 0, 0, false);
+	/** Public access for the results of a permutation crack. */
+	let permutationResults: PermutationResultData = new PermutationResultData(
+		[],
+		[],
+		[],
+		0,
+		0,
+		false
+	);
+	/** Public access and storage for our Permutation Crack*/
+	let permutationCrack: PermutationCrack = new PermutationCrack(
+		'',
+		0,
+		0,
+		true,
+		() => {},
+		updatePermutationComponents
+	);
+
+	function updatePermutationComponents() {
+		permutationUpdateTracker++;
+	}
 
 	/** Make sure the dictionary has been loaded so we don't do async shenanigans. ''*/
 	onMount(async () => {
 		await Dictionary.syncDictionary();
-		caesarCrack();
+		if (caesarMode) {
+			caesarCrack();
+		}
 	});
 
 	/** Function to start the cracking process. */
