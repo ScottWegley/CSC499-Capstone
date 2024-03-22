@@ -93,6 +93,7 @@
 		realWordSet.add(word);
 	}
 
+	/** Pair words to whether or not they are accurate for colored display in table. */
 	function generateDisplayForResult(result: string) {
 		let displayWords: { text: string; accurate: boolean }[] = [];
 		result.split(' ').forEach((x) => {
@@ -100,6 +101,9 @@
 		});
 		return displayWords;
 	}
+
+	/** Function to reset the permutation cracker to their default state. */
+	function resetPermutationCracking() {}
 
 	/** This function calls a Caesar Crack into existence, cracks, and then gets the results data, before printing the results.*/
 	function caesarCrack() {
@@ -114,6 +118,24 @@
 		caesarCracker.crack();
 		caesarResults = caesarCracker.getMutatedResultsData();
 		crackInProgress = false;
+	}
+
+	function debugButton(e: Event) {
+		if ((e as PointerEvent).shiftKey) {
+			DEFAULT_ALPHABET.forEach((l) => {
+				for (let index = 0; index < 23; index++) {
+					permutationCrack.removeLettersFromPossible(
+						l,
+						permutationCrack.getPossibleCharacters(l)[0]
+					);
+				}
+			});
+		} else {
+			permutationCrack.removeLettersFromPossible(
+				selectedPossibilityCharacter,
+				permutationCrack.getPossibleCharacters(selectedPossibilityCharacter)[0]
+			);
+		}
 	}
 </script>
 
