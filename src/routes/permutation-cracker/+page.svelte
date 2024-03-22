@@ -24,7 +24,8 @@
 	import { onMount } from 'svelte';
 
 	/** Stores the text given to us by the user. */
-	let inputText = 'UIF RVJDL CSPXO GPY KVNQT PWFS UIF MBAZ EPH';
+	let inputText =
+		'GZ TGQ ZWJW OW YG SYSAF MZ GZ LZAK AK S DGL GX OGJVK SFV LWPL KMJWDQ LZAK OADD FGL YWL UJSUCWV';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -96,8 +97,8 @@
 		element are enabled by default and recommended if this is your first time using this tool. Hover
 		over an element to see these tips.
 	</P>
-	<div class="flex w-full flex-col justify-center">
-		<div class="flex w-full flex-row justify-center" id="panel-parent">
+	<div class="flex w-full flex-col content-center items-center justify-center">
+		<div class="flex w-full flex-row justify-center justify-self-center" id="panel-parent">
 			<Card class="min-w-5/6 mr-1 max-w-fit">
 				<div class="min-w-5/6 flex flex-col justify-center" id="control-panel">
 					<Toggle size="small" bind:checked={tooltipsActive} class="mb-3">Toggle Tooltips</Toggle>
@@ -152,6 +153,9 @@
 					bind:value={inputText}
 					on:change={() => {
 						inputText = sanitizeInput(inputText);
+						if (caesarMode) {
+							caesarCrack();
+						}
 					}}
 					align="center"
 				></Textarea>
@@ -160,56 +164,64 @@
 				{/if}
 				<Button
 					class="mb-3"
+					disabled={caesarMode && !crackInProgress}
 					on:click={() => {
 						startCracking();
-					}}>Crack</Button
+					}}>Start Cracking</Button
 				>
 				{#if tooltipsActive}
 					{#if caesarMode}
 						<Tooltip
-							>Press crack to generate the potential results<br />
-							with the settings specified in the panel to the left.</Tooltip
+							>Press crack to generate the potential results with the settings <br />specified in
+							the panel to the left. Does not apply for Caesar Mode.</Tooltip
 						>
 					{/if}
 				{/if}
 			</div>
 		</div>
-		<div class="mt-3 flex w-full flex-row justify-center">
-			{#if displayResults}
-				<Table shadow>
-					<TableHead>
-						<TableHeadCell>Accuracy</TableHeadCell>
-						<TableHeadCell>Result</TableHeadCell>
-						<TableHeadCell>Alphabet</TableHeadCell>
-					</TableHead>
-					{#if tooltipsActive && realWordSet.size != 0}
-						<Tooltip>
-							Red words were not found in dictionary you are using.
-						</Tooltip>
-					{/if}
-					<TableBody>
-						{#each caesarResults.getResults() as result, i}
-							<TableBodyRow>
-								<TableBodyCell
-									>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</TableBodyCell
-								>
-								<TableBodyCell>
-									{#each generateDisplayForResult(result) as displayResult}
-										<span class={!displayResult.accurate ? 'text-red-500' : ''}
-											>{displayResult.text}</span
-										>
-									{/each}
-								</TableBodyCell>
-								<TableBodyCell
-									>{getCipherAlphabet(caesarResults.getShifts()[i])
-										.toString()
-										.replaceAll(',', '')}</TableBodyCell
-								>
-							</TableBodyRow>
-						{/each}
-					</TableBody>
-				</Table>
-			{/if}
+		<div class="flex w-4/5 flex-col content-center justify-center">
+			<div class="mt-3 flex flex-row justify-center justify-self-center">
+				{#if displayResults}
+					<Table shadow>
+						<TableHead>
+							<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
+							<TableHeadCell class="text-xs">Results</TableHeadCell>
+							<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
+						</TableHead>
+						{#if tooltipsActive && realWordSet.size != 0}
+							<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
+						{/if}
+						<TableBody>
+							{#each caesarResults.getResults() as result, i}
+								<TableBodyRow>
+									<TableBodyCell
+										><span class="text-xs"
+											>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</span
+										></TableBodyCell
+									>
+									<TableBodyCell>
+										{#each generateDisplayForResult(result) as displayResult, i}
+											<span class={(!displayResult.accurate ? 'text-red-500 ' : '') + 'text-xs'}
+												>{displayResult.text}</span
+											>
+											{#if ((i+1) % 20) == 0}
+												<br />
+											{/if}
+										{/each}
+									</TableBodyCell>
+									<TableBodyCell
+										><span class="text-xs"
+											>{getCipherAlphabet(caesarResults.getShifts()[i])
+												.toString()
+												.replaceAll(',', '')}</span
+										></TableBodyCell
+									>
+								</TableBodyRow>
+							{/each}
+						</TableBody>
+					</Table>
+				{/if}
+			</div>
 		</div>
 	</div>
 </div>
