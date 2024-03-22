@@ -20,6 +20,7 @@
 		TableBodyCell,
 		TableBodyRow
 	} from 'flowbite-svelte';
+	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 
 	/** Stores the text given to us by the user. */
@@ -39,8 +40,10 @@
 	/** Whether or not the results should be displayed. */
 	let displayResults = true;
 
+	/** Public access for the results of a caesar crack. */
 	let caesarResults: CaesarResultData = new CaesarResultData([], [], [], 0, 0, false);
 
+	/** Make sure the dictionary has been loaded so we don't do async shenanigans. ''*/
 	onMount(async () => {
 		Dictionary.syncDictionary();
 	});
@@ -48,40 +51,30 @@
 	/** Function to start the cracking process. */
 	function startCracking() {
 		crackInProgress = true;
+		realWordSet = new Set<String>();
 		if (caesarMode) {
 			caesarCrack();
 		} else {
-
 		}
 	}
-	
-
-	let things = [
-		{ id: 1, name: 'apple' },
-		{ id: 2, name: 'banana' },
-		{ id: 3, name: 'carrot' },
-		{ id: 4, name: 'doughnut' },
-		{ id: 5, name: 'egg' }
-	];
 
 	/** Storage of all words from the dictionary that showed up in any result. */
-	let realWordSet = new Set<String>;
+	let realWordSet = new Set<String>();
 	/** Function to add things to our real word set. */
-	function addToRealWords(word: string){
-		realWordSet.add(word)
+	function addToRealWords(word: string) {
+		realWordSet.add(word);
 	}
 
-	function generateDisplayForResult(result: string){
-		let displayWords: {text: string, accurate: boolean}[] = [];
-		result.split(" ").forEach((x) => {
-			
+	function generateDisplayForResult(result: string) {
+		let displayWords: { text: string; accurate: boolean }[] = [];
+		result.split(' ').forEach((x) => {
+			displayWords.push({ text: x + ' ', accurate: realWordSet.has(x) });
 		});
 		return displayWords;
 	}
 
 	/** This function calls a Caesar Crack into existence, cracks, and then gets the results data, before printing the results.*/
 	function caesarCrack() {
-		realWordSet = new Set<String>;
 		let caesarCracker = new CaesarCrack(
 			inputText,
 			accuracyThreshold / 100,
@@ -91,7 +84,6 @@
 		);
 		caesarCracker.crack();
 		caesarResults = caesarCracker.getMutatedResultsData();
-		console.log(realWordSet);
 		crackInProgress = false;
 	}
 </script>
@@ -189,16 +181,27 @@
 				<Table shadow>
 					<TableHead>
 						<TableHeadCell>Accuracy</TableHeadCell>
-						<TableHeadCell>Text</TableHeadCell>
+						<TableHeadCell>Result</TableHeadCell>
 						<TableHeadCell>Alphabet</TableHeadCell>
 					</TableHead>
+					{#if tooltipsActive && realWordSet.size != 0}
+						<Tooltip>
+							Red words were not found in dictionary you are using.
+						</Tooltip>
+					{/if}
 					<TableBody>
 						{#each caesarResults.getResults() as result, i}
 							<TableBodyRow>
 								<TableBodyCell
 									>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</TableBodyCell
 								>
-								<TableBodyCell>{result}</TableBodyCell>
+								<TableBodyCell>
+									{#each generateDisplayForResult(result) as displayResult}
+										<span class={!displayResult.accurate ? 'text-red-500' : ''}
+											>{displayResult.text}</span
+										>
+									{/each}
+								</TableBodyCell>
 								<TableBodyCell
 									>{getCipherAlphabet(caesarResults.getShifts()[i])
 										.toString()
