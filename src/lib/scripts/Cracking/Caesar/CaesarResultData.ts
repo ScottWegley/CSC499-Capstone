@@ -1,4 +1,4 @@
-import { ResultData } from './ResultData';
+import { ResultData } from '../ResultData';
 
 export class CaesarResultData extends ResultData {
 	protected shifts: number[];

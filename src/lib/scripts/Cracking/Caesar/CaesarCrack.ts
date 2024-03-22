@@ -1,7 +1,7 @@
-import { caesarDecryption, DEFAULT_ALPHABET } from '../Ciphers/CaesarCipher';
-import { CipherCracker } from './CipherCrack';
+import { caesarDecryption, DEFAULT_ALPHABET } from '../../Ciphers/CaesarCipher';
+import { CipherCracker } from '../CipherCrack';
 import { CaesarResultData } from './CaesarResultData';
-import { Dictionary } from '../Dictionary';
+import { Dictionary } from '../../Dictionary';
 
 /** Class to bruteforce crack a Caesar Cipher encrypted piece of text. */
 export class CaesarCrack extends CipherCracker {
