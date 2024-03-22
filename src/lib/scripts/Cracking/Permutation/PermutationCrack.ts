@@ -57,4 +57,19 @@ export class PermutationCrack extends CipherCracker {
 		});
 		this.updateComponents();
 	}
+
+	/** Return the predicted number of possible alphabets, defaulting to the toal octual possible number if our prediction is too large. */
+	public getCurrentPossibleAlphabets() {
+		let total =
+			this.possibleCharacters[0].possible.length == 0
+				? 1
+				: this.possibleCharacters[0].possible.length;
+		for (let index = this.possibleCharacters.length - 1; index > 0; index--) {
+			total *=
+				this.possibleCharacters[index].possible.length == 0
+					? 1
+					: this.possibleCharacters[index].possible.length;
+		}
+		return total;
+	}
 }
