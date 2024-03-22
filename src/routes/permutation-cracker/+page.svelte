@@ -25,7 +25,7 @@
 
 	/** Stores the text given to us by the user. */
 	let inputText =
-		'GZ TGQ ZWJW OW YG SYSAF MZ GZ LZAK AK S DGL GX OGJVK SFV LWPL KMJWDQ LZAK OADD FGL YWL UJSUCWV';
+		'THIS IS A TEST';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -46,7 +46,7 @@
 
 	/** Make sure the dictionary has been loaded so we don't do async shenanigans. ''*/
 	onMount(async () => {
-		Dictionary.syncDictionary();
+		await Dictionary.syncDictionary();
 		caesarCrack();
 	});
 

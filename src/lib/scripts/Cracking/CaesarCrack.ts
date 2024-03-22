@@ -26,9 +26,9 @@ export class CaesarCrack extends CipherCracker {
 	/** Decrypt the input using all possible Caesar alphabets.  Store the resulting text and it's measured accuracy.*/
 	public crack() {
 		this.realWords = [];
-		for (let i = 1; i < DEFAULT_ALPHABET.length; i++) {
+		for (let i = 0; i < DEFAULT_ALPHABET.length; i++) {
 			this.resultSet.push(caesarDecryption(this.input, i));
-			this.accuracySet.push(Dictionary.checkAccuracy(this.resultSet[i - 1], this.storeRealWord));
+			this.accuracySet.push(Dictionary.checkAccuracy(this.resultSet[i], this.storeRealWord));
 			this.shiftSet.push(i);
 		}
 	}
