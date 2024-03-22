@@ -44,4 +44,17 @@ export class PermutationCrack extends CipherCracker {
 	public getPossibleCharacters(letter: string) {
 		return this.possibleCharacters[getLetterIndex(letter.charAt(0))].possible;
 	}
+
+	/** Removes specifies letter from the list of possibilities for a specified header letter. */
+	public removeLettersFromPossible(inHeader: string, ...letters: string[]) {
+		letters.forEach((l) => {
+			if (this.possibleCharacters[getLetterIndex(inHeader)].possible.indexOf(l) != -1) {
+				this.possibleCharacters[getLetterIndex(inHeader)].possible.splice(
+					this.possibleCharacters[getLetterIndex(inHeader)].possible.indexOf(l),
+					1
+				);
+			}
+		});
+		this.updateComponents();
+	}
 }
