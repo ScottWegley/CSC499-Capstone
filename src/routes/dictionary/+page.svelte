@@ -162,7 +162,8 @@
 <div class="text-center">
 	<Heading tag="h2" class="mb-4">Dictionary</Heading>
 	<P class="mb-6 text-lg dark:text-gray-400 sm:px-16" align="center" size="sm">
-		This page allows you to customize the default wordlist we use or replace it with your own.
+		This page allows you to customize the default wordlist we use or replace it with your own. <br/>
+		Editing word lists of more than 20,000 words is likely to crash your browser.  For lengthy word lists, edit on your computer and upload the .txt file.
 	</P>
 	<div class="flex min-h-[75%] flex-row justify-center">
 		<Textarea

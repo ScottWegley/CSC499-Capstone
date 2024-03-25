@@ -162,9 +162,11 @@
 	<Heading tag="h4" class="mb-4">Permutation Cracker</Heading>
 	<P class="text-md mb-2 dark:text-gray-400 sm:px-16" align="center" size="sm">
 		This page hosts a tool for cracking text encrypted by a Permutation Cipher. Due to the nature of
-		a Permutation Cipher, it also will crack text encrypted by a Caesar Cipher. Tooltips on every
-		element are enabled by default and recommended if this is your first time using this tool. Hover
-		over an element to see these tips.
+		a Permutation Cipher, it will crack text encrypted by a Caesar Cipher too. Tooltips on every
+		element are enabled by default and recommended if this is your first time with this tool. Hover
+		over an element to see these tips.  For this tool to work, I recommended that 
+		you use an incredibly lengthy word list for permutation cracking.  If a word in your encrypted text
+		is not in the dictionary you use, this tool may not work.
 	</P>
 	<div class="flex w-full flex-col content-center items-center justify-center">
 		<div class="flex w-full flex-row justify-center justify-self-center" id="panel-parent">
