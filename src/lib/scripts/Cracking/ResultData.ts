@@ -68,4 +68,8 @@ export class ResultData {
 	public getAscending() {
 		return this.ascending;
 	}
+
+	public getResultCount() {
+		return this.results.length;
+	}
 }
