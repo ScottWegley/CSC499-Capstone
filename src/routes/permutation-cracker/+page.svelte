@@ -22,12 +22,13 @@
 		TableBodyCell,
 		TableBodyRow,
 		ButtonGroup,
-		Input
+		Input,
+		Select
 	} from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 
 	/** Stores the text given to us by the user. */
-	let inputText = 'THIS IS A TEST';
+	$: inputText = 'THIS IS A TEST';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -46,6 +47,8 @@
 	let selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 	/** Variable to update whenever we want to refresh permutation crack dependent components. */
 	let permutationUpdateTracker = 0;
+	/** The current word the user wants to analyze to reduce the possibilities. */
+	let wordToAnalyze = '';
 
 	/** Public access for the results of a caesar crack. */
 	let caesarResults: CaesarResultData = new CaesarResultData([], [], [], 0, 0, false);
@@ -68,11 +71,12 @@
 		updatePermutationComponents
 	);
 
+	/** Function that hits a variable with an update.  Permutation components listen to that variable and rerender.*/
 	function updatePermutationComponents() {
 		permutationUpdateTracker++;
 	}
 
-	/** Make sure the dictionary has been loaded so we don't do async shenanigans. ''*/
+	/** Make sure the dictionary has been loaded so we don't do async shenanigans.*/
 	onMount(async () => {
 		await Dictionary.syncDictionary();
 		if (caesarMode) {
@@ -100,6 +104,19 @@
 			displayWords.push({ text: x + ' ', accurate: realWordSet.has(x) });
 		});
 		return displayWords;
+	}
+
+	function generateWordAnalysisItems(input: string) {
+		let items: { value: string; name: string }[] = [];
+		let tempSet = new Set<string>();
+
+		input.split(' ').forEach((i) => {
+			tempSet.add(i);
+		});
+		tempSet.forEach((i, j, k) => {
+			items.push({ value: i, name: i });
+		});
+		return items;
 	}
 
 	/** Function to reset the permutation cracker to their default state. */
@@ -192,7 +209,14 @@
 							displayed.
 						</Tooltip>
 					{/if}
-					<Range class="mb-3" size="sm" bind:value={accuracyThreshold} min="0" max="100" />
+					<Range
+						class="mb-3"
+						size="sm"
+						bind:value={accuracyThreshold}
+						on:change={caesarCrack}
+						min="0"
+						max="100"
+					/>
 
 					<Label class="mb-1.5">{'Percentage Returned: ' + returnPercentage + '%'}</Label>
 					{#if tooltipsActive}
@@ -201,7 +225,13 @@
 							done.
 						</Tooltip>
 					{/if}
-					<Range size="sm" bind:value={returnPercentage} min="0" max="100" />
+					<Range
+						size="sm"
+						bind:value={returnPercentage}
+						on:change={caesarCrack}
+						min="0"
+						max="100"
+					/>
 				</div>
 			</Card>
 			<div class="ml-1 mr-1 flex w-5/12 flex-col justify-center" id="inputs-panel">
@@ -240,6 +270,7 @@
 				{/if}
 			</div>
 			{#if !caesarMode && true}
+				<!-- This will eventually be if not caesarmode and if cracking started-->
 				<Card class="ml-1 mr-1 min-w-fit">
 					<div class="flex max-w-fit flex-col justify-center" id="permutation-panel">
 						<div id="alphabet-display" class="mb-3 flex flex-col">
@@ -250,7 +281,7 @@
 											<Button
 												class="max-w-2 text-center"
 												size="xs"
-												outline
+												outline={selectedPossibilityCharacter != letter}
 												color={permutationCrack.getPossibleCharacters(letter).length > 0
 													? permutationCrack.getPossibleCharacters(letter).length == 1
 														? 'green'
@@ -314,9 +345,29 @@
 											>{permutationCrack.getCurrentPossibleAlphabets()} Remaining Alphabets</span
 										></Label
 									>
-									<Button on:click={debugButton}></Button>
 								{/key}
 							</div>
+							<div id="reduce-by-word" class="mt-3 text-left">
+								<Label
+									><span class="text-xs">Word to Analyze</span>
+									{#if tooltipsActive}
+										<Tooltip>
+											When you run word analysis, we look for patterns in the selected word and use
+											it to reduce the number of possible remaining alphabets.
+										</Tooltip>
+									{/if}
+									<div class="flex flex-row items-center justify-center">
+										<Select
+											class="mr-1 mt-1"
+											size="sm"
+											items={generateWordAnalysisItems(inputText)}
+											bind:value={wordToAnalyze}
+										></Select>
+										<Button size="xs" color="purple">Analyze</Button>
+									</div>
+								</Label>
+							</div>
+							<Button on:click={debugButton} class="mt-3"></Button>
 						</div>
 					</div>
 				</Card>
@@ -328,7 +379,9 @@
 					<Table shadow>
 						<TableHead>
 							<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
-							<TableHeadCell class="text-xs">Results</TableHeadCell>
+							<TableHeadCell class="text-xs"
+								>Results {'(' + caesarResults.getResultCount() + ' Total)'}</TableHeadCell
+							>
 							<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
 						</TableHead>
 						{#if tooltipsActive && realWordSet.size != 0}
@@ -357,14 +410,17 @@
 											>{getCipherAlphabet(caesarResults.getShifts()[i])
 												.toString()
 												.replaceAll(',', '')}</span
-										></TableBodyCell
+										><Tooltip>
+											Shift of {caesarResults.getShifts()[i]}
+										</Tooltip></TableBodyCell
 									>
 								</TableBodyRow>
 							{/each}
 						</TableBody>
 					</Table>
 				{/if}
-				{#if displayResults && !caesarMode}
+				{#if displayResults && false}
+					<!-- Edit this table for permutation results eventually-->
 					<Table shadow>
 						<TableHead>
 							<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
