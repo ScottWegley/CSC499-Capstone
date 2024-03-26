@@ -71,6 +71,8 @@
 		updatePermutationComponents
 	);
 
+	// THis is a comment
+
 	/** Function that hits a variable with an update.  Permutation components listen to that variable and rerender.*/
 	function updatePermutationComponents() {
 		permutationUpdateTracker++;
