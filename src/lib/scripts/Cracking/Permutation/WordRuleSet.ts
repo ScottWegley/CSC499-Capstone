@@ -35,14 +35,21 @@ export class WordRuleSet {
 		return new WordRuleSet(inWord);
 	}
 
+	/** Returns a boolean representing whether the specified word is similar based on the rules in calling instance of WordRuleSet. */
 	public isSimilar(inWord: string): boolean {
 		inWord = sanitizeInput(inWord);
-		let match: boolean = true;
-        match = match && inWord.length == this.getWordLength();
-        this.matchingChars.forEach((v,k) => {
-            match = match && inWord.charAt(v) == inWord.charAt(v);
-        });
-        return match;
+		let wordIsMatch: boolean = true;
+		wordIsMatch = wordIsMatch && inWord.length == this.getWordLength();
+		for(let i = 0; i < inWord.length - 1 && wordIsMatch; i++){
+			for(let k = i+1; k < inWord.length && wordIsMatch; k++){
+				if(this.matchingChars.get(i) == k){
+					wordIsMatch = wordIsMatch && inWord.charAt(i) == inWord.charAt(k);
+				} else {
+					wordIsMatch = wordIsMatch && inWord.charAt(i) != inWord.charAt(k);
+				}
+			}
+		}
+		return wordIsMatch;
 	}
 
 	/** Returns a string representation of a WordRuleSet. */
