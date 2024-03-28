@@ -24,7 +24,7 @@ export class PermutationCrack extends CipherCracker {
 	public updateComponents: () => void;
 
 	/** Resets our mapping of letters to possible letters to default state, where every letter can be every letter. */
-	private resetCharacterPossibilities() {
+	private resetCharacterPossibilities(): void {
 		this.possibleCharacters = [];
 		for (let i = 0; i < DEFAULT_ALPHABET.length; i++) {
 			this.possibleCharacters.push({
@@ -36,17 +36,20 @@ export class PermutationCrack extends CipherCracker {
 	}
 
 	/** Returns a mapping of letters to the letters they might be. */
-	public getPossibleCharacterSet() {
+	public getPossibleCharacterSet(): {
+		header: string;
+		possible: string[];
+	}[] {
 		return this.possibleCharacters;
 	}
 
 	/** Returns a list of possible letters for a specified letter. */
-	public getPossibleCharacters(letter: string) {
+	public getPossibleCharacters(letter: string): string[] {
 		return this.possibleCharacters[getLetterIndex(letter.charAt(0))].possible;
 	}
 
 	/** Removes specifies letter from the list of possibilities for a specified header letter. */
-	public removeLettersFromPossible(inHeader: string, ...letters: string[]) {
+	public removeLettersFromPossible(inHeader: string, ...letters: string[]): void {
 		letters.forEach((l) => {
 			if (this.possibleCharacters[getLetterIndex(inHeader)].possible.indexOf(l) != -1) {
 				this.possibleCharacters[getLetterIndex(inHeader)].possible.splice(
@@ -59,7 +62,7 @@ export class PermutationCrack extends CipherCracker {
 	}
 
 	/** Return the predicted number of possible alphabets, defaulting to the toal octual possible number if our prediction is too large. */
-	public getCurrentPossibleAlphabets() {
+	public getCurrentPossibleAlphabets(): number {
 		let total =
 			this.possibleCharacters[0].possible.length == 0
 				? 1

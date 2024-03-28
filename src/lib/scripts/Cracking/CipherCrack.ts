@@ -67,7 +67,7 @@ export abstract class CipherCracker {
 		return index;
 	}
 	/** Returns the index of the least accurate potential decryption in a specified result and accuracy array. */
-	public static getLeastAccurateIndex(results: string[], accuracy: number[]) {
+	public static getLeastAccurateIndex(results: string[], accuracy: number[]): number {
 		let index = 0;
 		let prevAccuracy = 1;
 		for (let i = 1; i < results.length; i++) {
@@ -79,7 +79,7 @@ export abstract class CipherCracker {
 		return index;
 	}
 	// Helper function to swap two elements in an array
-	public static swap(items: any[], leftIndex: number, rightIndex: number) {
+	public static swap(items: any[], leftIndex: number, rightIndex: number): void {
 		const temp = items[leftIndex];
 		items[leftIndex] = items[rightIndex];
 		items[rightIndex] = temp;

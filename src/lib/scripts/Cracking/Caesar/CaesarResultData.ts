@@ -16,7 +16,7 @@ export class CaesarResultData extends ResultData {
 	}
 
 	/** Loop through every result, prepend the accuracy, return one big string with all the info. */
-	protected override prependAccuracyToResults(): string {
+	protected override toString(): string {
 		let output = '';
 
 		for (let i = 0; i < this.results.length; i++) {
@@ -31,7 +31,7 @@ export class CaesarResultData extends ResultData {
 		return output;
 	}
 
-    public getShifts(){
+    public getShifts(): number[] {
         return this.shifts;
     }
 }

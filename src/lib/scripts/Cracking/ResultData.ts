@@ -22,20 +22,20 @@ export class ResultData {
 
 	/** Generated report connecting accuracy to results and displaying applied mutations. */
 	public getResultsReport(): string {
-		return this.generateMutationHeader() + '\n' + this.prependAccuracyToResults();
+		return this.generateMutationHeader() + '\n' + this.toString();
 	}
 
 	/** Loop through every result, prepend the accuracy, return one big string with all the info. */
-	protected prependAccuracyToResults(): string {
+	protected toString(): string {
 		let output = '';
 
 		for (let i = 0; i < this.results.length; i++) {
 			output =
 				output +
 				i +
-				" || " +
+				' || ' +
 				parseFloat((this.accuracy[i] * 100).toFixed(2)) +
-				"% Accurate: " +
+				'% Accurate: ' +
 				this.results[i] +
 				'\n';
 		}
@@ -49,27 +49,27 @@ export class ResultData {
 		return output;
 	}
 
-	public getResults(){
+	public getResults(): string[] {
 		return this.results;
 	}
 
-	public getAccuracy(){
+	public getAccuracy(): number[] {
 		return this.accuracy;
 	}
 
-	public getThreshold(){
+	public getThreshold(): number {
 		return this.threshold;
 	}
 
-	public getPercentage(){
+	public getPercentage(): number {
 		return this.percentage;
-	}	
+	}
 
-	public getAscending() {
+	public getAscending(): boolean {
 		return this.ascending;
 	}
 
-	public getResultCount() {
+	public getResultCount(): number {
 		return this.results.length;
 	}
 }
