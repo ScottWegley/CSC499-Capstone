@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import { DEFAULT_ALPHABET } from './Ciphers/CaesarCipher';
+import { WordRuleSet } from './Cracking/Permutation/WordRuleSet';
 
 /** Load a specified word list from a file. */
 export async function getSpecificWordlist(filename: string) {
@@ -16,6 +17,20 @@ export class Dictionary {
 	public static async syncDictionary() {
 		this.dictionary = (await getDictionary())!;
 		Dictionary.ready = true;
+	}
+
+	public static getMatchingWords(rules:WordRuleSet): string[]{
+		if(!Dictionary.ready) {
+			console.log('Dictionary class is not ready.  Call Sync Dictionary.');
+			return [];
+		}
+		let output: string[] = [];
+		this.dictionary.split(',').forEach((word) => {
+			if(rules.isSimilar(word)){
+				output.push(word);
+			}
+		});
+		return output;
 	}
 
 	/** Returns a percentage accuracy rating for how many words in a given text are in a given dictionary. */
