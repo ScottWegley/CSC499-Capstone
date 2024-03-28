@@ -106,6 +106,7 @@
 		return displayWords;
 	}
 
+	/** Push unique items for */
 	function generateWordAnalysisItems(input: string) {
 		let items: { value: string; name: string }[] = [];
 		let tempSet = new Set<string>();
@@ -304,7 +305,7 @@
 											<Button
 												class="max-w-2 text-center"
 												size="xs"
-												outline
+												outline={selectedPossibilityCharacter != letter}
 												color={permutationCrack.getPossibleCharacters(letter).length > 0
 													? permutationCrack.getPossibleCharacters(letter).length == 1
 														? 'green'
