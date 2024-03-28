@@ -4,6 +4,7 @@
 	import { CaesarResultData } from '$lib/scripts/Cracking/Caesar/CaesarResultData';
 	import { PermutationCrack } from '$lib/scripts/Cracking/Permutation/PermutationCrack';
 	import { PermutationResultData } from '$lib/scripts/Cracking/Permutation/PermutationResultData';
+	import { WordRuleSet } from '$lib/scripts/Cracking/Permutation/WordRuleSet';
 	import { Dictionary, sanitizeInput } from '$lib/scripts/Dictionary';
 	import {
 		Heading,
@@ -118,6 +119,16 @@
 			items.push({ value: i, name: i });
 		});
 		return items;
+	}
+
+	/** Runs our analysis and subsequent reduction functions on the selected word. */
+	function analyzeSelectedWord(){
+		if(inputText.indexOf(wordToAnalyze) == -1 || wordToAnalyze.length < 1){
+			console.log("Select a word before attempting to analyze.");
+			return;
+		}
+		let rules = new WordRuleSet(wordToAnalyze);
+		console.log(rules.toString());
 	}
 
 	/** Function to reset the permutation cracker to their default state. */
@@ -258,7 +269,7 @@
 				{/if}
 				<Button
 					class="mb-3"
-					disabled={caesarMode && !crackInProgress}
+					disabled={caesarMode || crackInProgress}
 					on:click={() => {
 						startCracking();
 					}}>Start Cracking</Button
@@ -272,7 +283,7 @@
 					{/if}
 				{/if}
 			</div>
-			{#if !caesarMode && true}
+			{#if !caesarMode && crackInProgress}
 				<!-- This will eventually be if not caesarmode and if cracking started-->
 				<Card class="ml-1 mr-1 min-w-fit">
 					<div class="flex max-w-fit flex-col justify-center" id="permutation-panel">
@@ -366,7 +377,7 @@
 											items={generateWordAnalysisItems(inputText)}
 											bind:value={wordToAnalyze}
 										></Select>
-										<Button size="xs" color="purple">Analyze</Button>
+										<Button size="xs" color="purple" on:click={analyzeSelectedWord}>Analyze</Button>
 									</div>
 								</Label>
 							</div>
