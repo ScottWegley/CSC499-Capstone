@@ -29,7 +29,7 @@
 	import { onMount } from 'svelte';
 
 	/** Stores the text given to us by the user. */
-	$: inputText = 'THIS IS A TEST';
+	$: inputText = 'BNNB';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -122,13 +122,14 @@
 	}
 
 	/** Runs our analysis and subsequent reduction functions on the selected word. */
-	function analyzeSelectedWord(){
-		if(inputText.indexOf(wordToAnalyze) == -1 || wordToAnalyze.length < 1){
-			console.log("Select a word before attempting to analyze.");
+	function analyzeSelectedWord() {
+		if (inputText.indexOf(wordToAnalyze) == -1 || wordToAnalyze.length < 1) {
+			console.log('Select a word before attempting to analyze.');
 			return;
 		}
 		let rules = new WordRuleSet(wordToAnalyze);
 		console.log(rules.toString());
+		console.log(Dictionary.getMatchingWords(rules));
 	}
 
 	/** Function to reset the permutation cracker to their default state. */
@@ -183,9 +184,9 @@
 		This page hosts a tool for cracking text encrypted by a Permutation Cipher. Due to the nature of
 		a Permutation Cipher, it will crack text encrypted by a Caesar Cipher too. Tooltips on every
 		element are enabled by default and recommended if this is your first time with this tool. Hover
-		over an element to see these tips.  For this tool to work, I recommended that 
-		you use an incredibly lengthy word list for permutation cracking.  If a word in your encrypted text
-		is not in the dictionary you use, this tool may not work.
+		over an element to see these tips. For this tool to work, I recommended that you use an
+		incredibly lengthy word list for permutation cracking. If a word in your encrypted text is not
+		in the dictionary you use, this tool may not work.
 	</P>
 	<div class="flex w-full flex-col content-center items-center justify-center">
 		<div class="flex w-full flex-row justify-center justify-self-center" id="panel-parent">
