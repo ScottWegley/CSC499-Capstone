@@ -132,7 +132,14 @@
 	}
 
 	/** Function to reset the permutation cracker to their default state. */
-	function resetPermutationCracking() {}
+	function resetPermutationCracking() {
+		crackInProgress = false;
+		wordToAnalyze = '';
+		selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
+		displayResults = false;
+		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
+		permutationCrack = new PermutationCrack('', 0, 0, true, () => {}, updatePermutationComponents);
+	}
 
 	/** This function calls a Caesar Crack into existence, cracks, and then gets the results data, before printing the results.*/
 	function caesarCrack() {
