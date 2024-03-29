@@ -27,6 +27,7 @@
 		Select
 	} from 'flowbite-svelte';
 	import { onMount } from 'svelte';
+	import { PossibleCharacterSet } from '$lib/scripts/Cracking/Permutation/PossibleCharacterSet';
 
 	/** Stores the text given to us by the user. */
 	$: inputText = 'BLESSING';
@@ -142,7 +143,10 @@
 		}
 		let rules = new WordRuleSet(wordToAnalyze);
 		console.log(rules.toString());
-		console.log(Dictionary.getMatchingWords(rules));
+		let matches = Dictionary.getMatchingWords(rules);
+		console.log(matches);
+		let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
+		console.log(resultingPossibleChars.toString());
 	}
 
 	/** Function to reset the permutation cracker to their default state. */
@@ -161,14 +165,14 @@
 				for (let index = 0; index < 23; index++) {
 					permutationCrack.removeLettersFromPossible(
 						l,
-						permutationCrack.getPossibleCharacters(l)[0]
+						[...permutationCrack.getPossibleCharacters(l)][0]
 					);
 				}
 			});
 		} else {
 			permutationCrack.removeLettersFromPossible(
 				selectedPossibilityCharacter,
-				permutationCrack.getPossibleCharacters(selectedPossibilityCharacter)[0]
+				[...permutationCrack.getPossibleCharacters(selectedPossibilityCharacter)][0]
 			);
 		}
 	}
@@ -302,8 +306,8 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack.getPossibleCharacters(letter).length > 0
-													? permutationCrack.getPossibleCharacters(letter).length == 1
+												color={permutationCrack.getPossibleCharacters(letter).size > 0
+													? permutationCrack.getPossibleCharacters(letter).size == 1
 														? 'green'
 														: 'yellow'
 													: 'red'}
@@ -323,8 +327,8 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack.getPossibleCharacters(letter).length > 0
-													? permutationCrack.getPossibleCharacters(letter).length == 1
+												color={permutationCrack.getPossibleCharacters(letter).size > 0
+													? permutationCrack.getPossibleCharacters(letter).size == 1
 														? 'green'
 														: 'yellow'
 													: 'red'}
@@ -354,15 +358,15 @@
 									<Input
 										size="sm"
 										disabled
-										value={permutationCrack
-											.getPossibleCharacters(selectedPossibilityCharacter)
+										value={[...permutationCrack.getPossibleCharacters(selectedPossibilityCharacter)]
 											.toString()
 											.replaceAll(',', '')
 											.trim()}
 									></Input>
 									<Label class="mt-1 block"
 										><span class="text-xs"
-											>{permutationCrack.getCurrentPossibleAlphabets()} Remaining Alphabets</span
+											>{permutationCrack.getPossibleCharacterSet().calculatePossibleAlphabets()} Remaining
+											Alphabets</span
 										></Label
 									>
 								{/key}
