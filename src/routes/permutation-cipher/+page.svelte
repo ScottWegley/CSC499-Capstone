@@ -11,14 +11,13 @@
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	import VerticalInput from '$lib/components/VerticalInput.svelte';
 	import { generateRandomAlphabet, isValidAlphabet, permutationDecrypt, permutationEncrypt } from '$lib/scripts/Ciphers/PermutationCipher';
-	import { DEFAULT_ALPHABET } from '$lib/scripts/Ciphers/CaesarCipher';
-	import { sanitizeInput } from '$lib/scripts/Util/Dictionary';
+	import { DEFAULT_ALPHABET, sanitizeInput } from '$lib/scripts/Util/Dictionary';
 
 	/** This stores the permutated alphabet. */
 	let permutationAlphabet = DEFAULT_ALPHABET.map((l) => l);
 
 	/** Stores the text the user gives us. */
-	let inputText = '';
+	let inputText = "BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE";
 
 	/** Stores the text we give back to the user. */
 	let outputText = '';

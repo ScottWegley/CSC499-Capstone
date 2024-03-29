@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { DEFAULT_ALPHABET, getCipherAlphabet } from '$lib/scripts/Ciphers/CaesarCipher';
+	import { getCipherAlphabet } from '$lib/scripts/Ciphers/CaesarCipher';
 	import { CaesarCrack } from '$lib/scripts/Cracking/Caesar/CaesarCrack';
 	import { CaesarResultData } from '$lib/scripts/Cracking/Caesar/CaesarResultData';
 	import { PermutationCrack } from '$lib/scripts/Cracking/Permutation/PermutationCrack';
 	import { PermutationResultData } from '$lib/scripts/Cracking/Permutation/PermutationResultData';
 	import { WordRuleSet } from '$lib/scripts/Util/WordRuleSet';
-	import { Dictionary, sanitizeInput } from '$lib/scripts/Util/Dictionary';
+	import { DEFAULT_ALPHABET, Dictionary, sanitizeInput } from '$lib/scripts/Util/Dictionary';
 	import {
 		Heading,
 		P,
@@ -27,9 +27,13 @@
 		Select
 	} from 'flowbite-svelte';
 	import { onMount } from 'svelte';
+	import { PossibleCharacterSet } from '$lib/scripts/Cracking/Permutation/PossibleCharacterSet';
 
+	// PERMED VERSION OF INPUT TEXT
+	// GKVYYOCB SVEMNJDJF TPCLSONCDK O DE SWV GNNI FNP YWDKK JVDZ SWOY ZDF D LJOYOY GVTDKKY SWV KDCZ UWDSVRVJ SWNPBWSY DJV OEMNYYOGKV
 	/** Stores the text given to us by the user. */
-	$: inputText = 'BLESSING';
+	$: inputText =
+		'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -63,14 +67,7 @@
 		false
 	);
 	/** Public access and storage for our Permutation Crack*/
-	let permutationCrack: PermutationCrack = new PermutationCrack(
-		'',
-		0,
-		0,
-		true,
-		() => {},
-		updatePermutationComponents
-	);
+	let permutationCrack: PermutationCrack = new PermutationCrack(inputText);
 
 	/** Make sure the dictionary has been loaded so we don't do async shenanigans.*/
 	onMount(async () => {
@@ -135,14 +132,50 @@
 	}
 
 	/** Runs our analysis and subsequent reduction functions on the selected word. */
-	function analyzeSelectedWord() {
-		if (inputText.indexOf(wordToAnalyze) == -1 || wordToAnalyze.length < 1) {
+	function analyzeSelectedWord(e: Event) {
+		if (
+			(inputText.indexOf(wordToAnalyze) == -1 || wordToAnalyze.length < 1) &&
+			!(e as PointerEvent).shiftKey
+		) {
 			console.log('Select a word before attempting to analyze.');
 			return;
 		}
-		let rules = new WordRuleSet(wordToAnalyze);
-		console.log(rules.toString());
-		console.log(Dictionary.getMatchingWords(rules));
+		if ((e as PointerEvent).shiftKey) {
+			console.log(generateWordAnalysisItems(inputText));
+			generateWordAnalysisItems(inputText).forEach((item) => {
+				let rules = new WordRuleSet(item.name);
+				console.log(rules.toString());
+				let matches = Dictionary.getMatchingWords(rules, item.name, permutationCrack.getPossibleCharacterSet());
+				if (matches.length == 0) {
+					console.log('No word matches.');
+					// ALERT USER NO MATCHES
+				} else {
+					console.log(matches);
+					let resultingPossibleChars = new PossibleCharacterSet(item.name, matches);
+					console.log(resultingPossibleChars.toString());
+					permutationCrack
+						.getPossibleCharacterSet()
+						.reduceToOverlappingPossibilities(resultingPossibleChars);
+					updatePermutationComponents();
+				}
+			});
+		} else {
+			let rules = new WordRuleSet(wordToAnalyze);
+			console.log(rules.toString());
+			let matches = Dictionary.getMatchingWords(rules, wordToAnalyze, permutationCrack.getPossibleCharacterSet());
+			if (matches.length == 0) {
+				console.log('No word matches.');
+				// ALERT USER NO MATCHES
+			} else {
+				console.log(matches);
+				let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
+				console.log(resultingPossibleChars.toString());
+				permutationCrack
+					.getPossibleCharacterSet()
+					.reduceToOverlappingPossibilities(resultingPossibleChars);
+				updatePermutationComponents();
+			}
+		}
 	}
 
 	/** Function to reset the permutation cracker to their default state. */
@@ -152,24 +185,38 @@
 		selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 		displayResults = false;
 		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
-		permutationCrack = new PermutationCrack('', 0, 0, true, () => {}, updatePermutationComponents);
+		permutationCrack = new PermutationCrack(
+			inputText,
+			0,
+			0,
+			true,
+			() => {},
+			updatePermutationComponents
+		);
 	}
 
 	function debugButton(e: Event) {
 		if ((e as PointerEvent).shiftKey) {
-			DEFAULT_ALPHABET.forEach((l) => {
-				for (let index = 0; index < 23; index++) {
-					permutationCrack.removeLettersFromPossible(
-						l,
-						permutationCrack.getPossibleCharacters(l)[0]
-					);
-				}
-			});
 		} else {
-			permutationCrack.removeLettersFromPossible(
-				selectedPossibilityCharacter,
-				permutationCrack.getPossibleCharacters(selectedPossibilityCharacter)[0]
+			let rules = new WordRuleSet(wordToAnalyze);
+			console.log(rules.toString());
+			let matches = Dictionary.getMatchingWords(
+				rules,
+				wordToAnalyze,
+				permutationCrack.getPossibleCharacterSet()
 			);
+			if (matches.length == 0) {
+				console.log('No word matches.');
+				// ALERT USER NO MATCHES
+			} else {
+				console.log(matches);
+				let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
+				console.log(resultingPossibleChars.toString());
+				permutationCrack
+					.getPossibleCharacterSet()
+					.reduceToOverlappingPossibilities(resultingPossibleChars);
+				updatePermutationComponents();
+			}
 		}
 	}
 </script>
@@ -290,7 +337,6 @@
 				{/if}
 			</div>
 			{#if !caesarMode && crackInProgress}
-				<!-- This will eventually be if not caesarmode and if cracking started-->
 				<Card class="ml-1 mr-1 min-w-fit">
 					<div class="flex max-w-fit flex-col justify-center" id="permutation-panel">
 						<div id="alphabet-display" class="mb-3 flex flex-col">
@@ -302,8 +348,10 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack.getPossibleCharacters(letter).length > 0
-													? permutationCrack.getPossibleCharacters(letter).length == 1
+												color={permutationCrack.getPossibleCharacterSet().getPossibilities(letter)
+													.size > 0
+													? permutationCrack.getPossibleCharacterSet().getPossibilities(letter)
+															.size == 1
 														? 'green'
 														: 'yellow'
 													: 'red'}
@@ -323,8 +371,10 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack.getPossibleCharacters(letter).length > 0
-													? permutationCrack.getPossibleCharacters(letter).length == 1
+												color={permutationCrack.getPossibleCharacterSet().getPossibilities(letter)
+													.size > 0
+													? permutationCrack.getPossibleCharacterSet().getPossibilities(letter)
+															.size == 1
 														? 'green'
 														: 'yellow'
 													: 'red'}
@@ -354,15 +404,19 @@
 									<Input
 										size="sm"
 										disabled
-										value={permutationCrack
-											.getPossibleCharacters(selectedPossibilityCharacter)
+										value={[
+											...permutationCrack
+												.getPossibleCharacterSet()
+												.getPossibilities(selectedPossibilityCharacter)
+										]
 											.toString()
 											.replaceAll(',', '')
 											.trim()}
 									></Input>
 									<Label class="mt-1 block"
 										><span class="text-xs"
-											>{permutationCrack.getCurrentPossibleAlphabets()} Remaining Alphabets</span
+											>{permutationCrack.getPossibleCharacterSet().calculatePossibleAlphabets()} Remaining
+											Alphabets</span
 										></Label
 									>
 								{/key}

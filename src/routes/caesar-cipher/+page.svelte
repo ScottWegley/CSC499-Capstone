@@ -8,8 +8,8 @@
 		Tooltip
 	} from 'flowbite-svelte';
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
-	import { DEFAULT_ALPHABET, caesarDecryption, caesarEncryption, getCipherAlphabet } from '$lib/scripts/Ciphers/CaesarCipher';
-	import { sanitizeInput } from '$lib/scripts/Util/Dictionary';
+	import { caesarDecryption, caesarEncryption, getCipherAlphabet } from '$lib/scripts/Ciphers/CaesarCipher';
+	import { DEFAULT_ALPHABET, sanitizeInput } from '$lib/scripts/Util/Dictionary';
 
 	/** Stores the current shift being applied to the alphabet. */
 	let currentShift = 1;
