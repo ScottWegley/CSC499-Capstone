@@ -29,6 +29,7 @@
 	import { onMount } from 'svelte';
 	import { PossibleCharacterSet } from '$lib/scripts/Cracking/Permutation/PossibleCharacterSet';
 
+	// #region Global Settings & Functions
 	// PERMED VERSION OF INPUT TEXT
 	// GKVYYOCB SVEMNJDJF TPCLSONCDK O DE SWV GNNI FNP YWDKK JVDZ SWOY ZDF D LJOYOY GVTDKKY SWV KDCZ UWDSVRVJ SWNPBWSY DJV OEMNYYOGKV
 	/** Stores the text given to us by the user. */
@@ -48,6 +49,39 @@
 	let ascendingResults = false;
 	/** Whether or not the results should be displayed. */
 	let displayResults = false;
+
+	/** Make sure the dictionary has been loaded so we don't do async shenanigans.*/
+	onMount(async () => {
+		await Dictionary.syncDictionary();
+		if (caesarMode) {
+			caesarCrack();
+		}
+	});
+
+	/** Storage of all words from the dictionary that showed up in any result. */
+	let realWordSet = new Set<String>();
+	/** Function to add things to our real word set. */
+	function addToRealWords(word: string) {
+		realWordSet.add(word);
+	}
+
+	/** Push unique items for the analysis dropdown. */
+	function generateWordAnalysisItems(input: string) {
+		let items: { value: string; name: string }[] = [];
+		let tempSet = new Set<string>();
+
+		input.split(' ').forEach((i) => {
+			tempSet.add(i);
+		});
+		tempSet.forEach((i, j, k) => {
+			items.push({ value: i, name: i });
+		});
+		return items;
+	}
+
+	// #endregion
+
+	// #region Permutation Cracking Data Storage & Functions
 	/** Represents the character the user would like to view the possible character equivalents to.  Defaults to first letter of alphabet. */
 	let selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 	/** Variable to update whenever we want to refresh permutation crack dependent components. */
@@ -55,8 +89,6 @@
 	/** The current word the user wants to analyze to reduce the possibilities. */
 	let wordToAnalyze = '';
 
-	/** Public access for the results of a caesar crack. */
-	let caesarResults: CaesarResultData = new CaesarResultData([], [], [], 0, 0, false);
 	/** Public access for the results of a permutation crack. */
 	let permutationResults: PermutationResultData = new PermutationResultData(
 		[],
@@ -69,66 +101,15 @@
 	/** Public access and storage for our Permutation Crack*/
 	let permutationCrack: PermutationCrack = new PermutationCrack(inputText);
 
-	/** Make sure the dictionary has been loaded so we don't do async shenanigans.*/
-	onMount(async () => {
-		await Dictionary.syncDictionary();
-		if (caesarMode) {
-			caesarCrack();
-		}
-	});
-
 	/** Function that hits a variable with an update.  Permutation components listen to that variable and rerender.*/
 	function updatePermutationComponents() {
 		permutationUpdateTracker++;
-	}
-
-	/** Storage of all words from the dictionary that showed up in any result. */
-	let realWordSet = new Set<String>();
-	/** Function to add things to our real word set. */
-	function addToRealWords(word: string) {
-		realWordSet.add(word);
 	}
 
 	/** Function to start the cracking process. */
 	function startCracking() {
 		resetPermutationCracking();
 		crackInProgress = true;
-	}
-
-	/** This function calls a Caesar Crack into existence, cracks, and then gets the results data, before printing the results.*/
-	function caesarCrack() {
-		let caesarCracker = new CaesarCrack(
-			inputText,
-			accuracyThreshold / 100,
-			returnPercentage / 100,
-			ascendingResults,
-			addToRealWords
-		);
-		caesarResults = caesarCracker.getMutatedResultsData();
-		crackInProgress = false;
-	}
-
-	/** Pair words to whether or not they are accurate for colored display in table. */
-	function generateDisplayForResult(result: string) {
-		let displayWords: { text: string; accurate: boolean }[] = [];
-		result.split(' ').forEach((x) => {
-			displayWords.push({ text: x + ' ', accurate: realWordSet.has(x) });
-		});
-		return displayWords;
-	}
-
-	/** Push unique items for */
-	function generateWordAnalysisItems(input: string) {
-		let items: { value: string; name: string }[] = [];
-		let tempSet = new Set<string>();
-
-		input.split(' ').forEach((i) => {
-			tempSet.add(i);
-		});
-		tempSet.forEach((i, j, k) => {
-			items.push({ value: i, name: i });
-		});
-		return items;
 	}
 
 	/** Runs our analysis and subsequent reduction functions on the selected word. */
@@ -143,7 +124,11 @@
 		if ((e as PointerEvent).shiftKey) {
 			generateWordAnalysisItems(inputText).forEach((item) => {
 				let rules = new WordRuleSet(item.name);
-				let matches = Dictionary.getMatchingWords(rules, item.name, permutationCrack.getPossibleCharacterSet());
+				let matches = Dictionary.getMatchingWords(
+					rules,
+					item.name,
+					permutationCrack.getPossibleCharacterSet()
+				);
 				if (matches.length == 0) {
 					console.log('No word matches.');
 					// ALERT USER NO MATCHES
@@ -157,7 +142,11 @@
 			});
 		} else {
 			let rules = new WordRuleSet(wordToAnalyze);
-			let matches = Dictionary.getMatchingWords(rules, wordToAnalyze, permutationCrack.getPossibleCharacterSet());
+			let matches = Dictionary.getMatchingWords(
+				rules,
+				wordToAnalyze,
+				permutationCrack.getPossibleCharacterSet()
+			);
 			if (matches.length == 0) {
 				console.log('No word matches.');
 				// ALERT USER NO MATCHES
@@ -187,6 +176,34 @@
 			updatePermutationComponents
 		);
 	}
+	// #endregion
+
+	// #region Caesar Data and Functions
+	/** Public access for the results of a caesar crack. */
+	let caesarResults: CaesarResultData = new CaesarResultData([], [], [], 0, 0, false);
+
+	/** This function calls a Caesar Crack into existence, cracks, and then gets the results data, before printing the results.*/
+	function caesarCrack() {
+		let caesarCracker = new CaesarCrack(
+			inputText,
+			accuracyThreshold / 100,
+			returnPercentage / 100,
+			ascendingResults,
+			addToRealWords
+		);
+		caesarResults = caesarCracker.getMutatedResultsData();
+		crackInProgress = false;
+	}
+
+	/** Pair words to whether or not they are accurate for colored display in table. */
+	function generateDisplayForResult(result: string) {
+		let displayWords: { text: string; accurate: boolean }[] = [];
+		result.split(' ').forEach((x) => {
+			displayWords.push({ text: x + ' ', accurate: realWordSet.has(x) });
+		});
+		return displayWords;
+	}
+	// #endregion
 
 	function debugButton(e: Event) {
 		if ((e as PointerEvent).shiftKey) {
