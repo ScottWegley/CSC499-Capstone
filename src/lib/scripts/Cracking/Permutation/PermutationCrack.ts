@@ -34,11 +34,6 @@ export class PermutationCrack extends CipherCracker {
 		return this.possibleCharacters;
 	}
 
-	/** Returns a list of possible letters for a specified letter. */
-	public getPossibleCharacters(letter: string): Set<string> {
-		return this.possibleCharacters.getPossibilities(letter);
-	}
-
 	/** Removes specifies letters from the list of possibilities for a specified header letter. */
 	public removeLettersFromPossible(inHeader: string, ...letters: string[]): void {
 		letters.forEach((l) => {
