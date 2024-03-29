@@ -45,6 +45,7 @@ export class Dictionary {
 
 	/** Function to store the dictionary from local storage in our class as a static member. */
 	public static async syncDictionary() {
+		Dictionary.ready = false;
 		this.dictionary = (await getDictionary())!;
 		Dictionary.ready = true;
 	}
@@ -156,7 +157,7 @@ export async function getDictionary() {
 	}
 }
 
-/** Function to reduce a string of text to alphabet and space. */
+/** Function to reduce a string of text to alphabetical characters and spaces. */
 export function sanitizeInput(text: string): string {
 	text = text.toUpperCase().replaceAll(/[ \t]{2,}/g, ' ');
 	let output = '';

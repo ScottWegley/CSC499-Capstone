@@ -7,13 +7,11 @@ import { DEFAULT_ALPHABET, Dictionary } from '../../Util/Dictionary';
 export class CaesarCrack extends CipherCracker {
 	/** Stores the Caesar Alphabet shifts corresponding to each potential decrypted text. */
 	protected shiftSet: number[] = [];
-	/** List of words that the Dictionary found as accurate. */
-	public realWords: string[] = [];
 
 	/** Add a real word to our list of real words. */
 	public storeRealWord: (w: string) => void;
 
-	/** Create a new instance of Caesar Cracking with text to crack.   Subsequently cracks the text. */
+	/** Create a new instance of Caesar Cracking with text to crack.  Subsequently cracks the text. */
 	public constructor(text: string, threshold?: number, percentage?: number, ascending?: boolean, storageFunction?: (w: string) => void) {
 		super(text, threshold, percentage, ascending);
 		if(storageFunction){
@@ -21,7 +19,6 @@ export class CaesarCrack extends CipherCracker {
 		} else {
 			this.storeRealWord = (x:string) => {};
 		}
-		this.realWords = [];
 		for (let i = 0; i < DEFAULT_ALPHABET.length; i++) {
 			this.resultSet.push(caesarDecryption(this.input, i));
 			this.accuracySet.push(Dictionary.checkAccuracy(this.resultSet[i], this.storeRealWord));
@@ -29,12 +26,9 @@ export class CaesarCrack extends CipherCracker {
 		}
 	}
 
+	/** Returns an array of offsets in order of the potential decryptions they correspond to. */
 	public getShiftSet(): number[] {
 		return this.shiftSet;
-	}
-
-	public getRealWords(): string[] {
-		return this.realWords;
 	}
 
 	/** Returns an instance of CaesarResultsData with only the relevant data and the applied mutations stored.*/
