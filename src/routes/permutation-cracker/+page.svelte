@@ -29,7 +29,7 @@
 	import { onMount } from 'svelte';
 
 	/** Stores the text given to us by the user. */
-	$: inputText = 'BNNB';
+	$: inputText = 'A';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -72,11 +72,6 @@
 		updatePermutationComponents
 	);
 
-	/** Function that hits a variable with an update.  Permutation components listen to that variable and rerender.*/
-	function updatePermutationComponents() {
-		permutationUpdateTracker++;
-	}
-
 	/** Make sure the dictionary has been loaded so we don't do async shenanigans.*/
 	onMount(async () => {
 		await Dictionary.syncDictionary();
@@ -85,10 +80,9 @@
 		}
 	});
 
-	/** Function to start the cracking process. */
-	function startCracking() {
-		crackInProgress = true;
-		realWordSet = new Set<String>();
+	/** Function that hits a variable with an update.  Permutation components listen to that variable and rerender.*/
+	function updatePermutationComponents() {
+		permutationUpdateTracker++;
 	}
 
 	/** Storage of all words from the dictionary that showed up in any result. */
@@ -96,6 +90,26 @@
 	/** Function to add things to our real word set. */
 	function addToRealWords(word: string) {
 		realWordSet.add(word);
+	}
+
+	/** Function to start the cracking process. */
+	function startCracking() {
+		crackInProgress = true;
+		realWordSet = new Set<String>();
+	}
+
+	/** This function calls a Caesar Crack into existence, cracks, and then gets the results data, before printing the results.*/
+	function caesarCrack() {
+		realWordSet = new Set<String>();
+		let caesarCracker = new CaesarCrack(
+			inputText,
+			accuracyThreshold / 100,
+			returnPercentage / 100,
+			ascendingResults,
+			addToRealWords
+		);
+		caesarResults = caesarCracker.getMutatedResultsData();
+		crackInProgress = false;
 	}
 
 	/** Pair words to whether or not they are accurate for colored display in table. */
@@ -129,7 +143,7 @@
 		}
 		let rules = new WordRuleSet(wordToAnalyze);
 		console.log(rules.toString());
-		console.log(Dictionary.getMatchingWords(rules));
+		Dictionary.getMatchingWords(rules);
 	}
 
 	/** Function to reset the permutation cracker to their default state. */
@@ -140,21 +154,6 @@
 		displayResults = false;
 		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
 		permutationCrack = new PermutationCrack('', 0, 0, true, () => {}, updatePermutationComponents);
-	}
-
-	/** This function calls a Caesar Crack into existence, cracks, and then gets the results data, before printing the results.*/
-	function caesarCrack() {
-		realWordSet = new Set<String>();
-		let caesarCracker = new CaesarCrack(
-			inputText,
-			accuracyThreshold / 100,
-			returnPercentage / 100,
-			ascendingResults,
-			addToRealWords
-		);
-		caesarCracker.crack();
-		caesarResults = caesarCracker.getMutatedResultsData();
-		crackInProgress = false;
 	}
 
 	function debugButton(e: Event) {

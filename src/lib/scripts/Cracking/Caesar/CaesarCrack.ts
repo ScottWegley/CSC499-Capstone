@@ -13,7 +13,7 @@ export class CaesarCrack extends CipherCracker {
 	/** Add a real word to our list of real words. */
 	public storeRealWord: (w: string) => void;
 
-	/** Create a new instance of Caesar Cracking with text to crack. */
+	/** Create a new instance of Caesar Cracking with text to crack.   Subsequently cracks the text. */
 	public constructor(text: string, threshold?: number, percentage?: number, ascending?: boolean, storageFunction?: (w: string) => void) {
 		super(text, threshold, percentage, ascending);
 		if(storageFunction){
@@ -21,10 +21,6 @@ export class CaesarCrack extends CipherCracker {
 		} else {
 			this.storeRealWord = (x:string) => {};
 		}
-	}
-
-	/** Decrypt the input using all possible Caesar alphabets.  Store the resulting text and it's measured accuracy.*/
-	public crack(): void {
 		this.realWords = [];
 		for (let i = 0; i < DEFAULT_ALPHABET.length; i++) {
 			this.resultSet.push(caesarDecryption(this.input, i));
