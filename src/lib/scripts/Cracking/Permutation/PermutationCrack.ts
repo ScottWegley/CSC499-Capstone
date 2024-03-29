@@ -1,3 +1,4 @@
+import { DEFAULT_ALPHABET } from '$lib/scripts/Util/Dictionary';
 import { CipherCracker } from '../Generic/CipherCrack';
 import { PossibleCharacterSet } from './PossibleCharacterSet';
 
@@ -18,7 +19,9 @@ export class PermutationCrack extends CipherCracker {
 		if (componentUpdateFunction) {
 			this.updateComponents = componentUpdateFunction;
 		} else this.updateComponents = () => {};
-		this.resetCharacterPossibilities();
+		if (text !== undefined) {
+			this.resetCharacterPossibilities();
+		}
 	}
 
 	public updateComponents: () => void;
@@ -26,6 +29,11 @@ export class PermutationCrack extends CipherCracker {
 	/** Resets our mapping of letters to possible letters to default state, where every letter can be every letter. */
 	private resetCharacterPossibilities(): void {
 		this.possibleCharacters = new PossibleCharacterSet();
+		DEFAULT_ALPHABET.forEach((c) => {
+			if(this.input.indexOf(c) == -1){
+				this.possibleCharacters.prunePossibleLetters(c,DEFAULT_ALPHABET);
+			}
+		});
 		this.updateComponents();
 	}
 
@@ -37,7 +45,7 @@ export class PermutationCrack extends CipherCracker {
 	/** Removes specifies letters from the list of possibilities for a specified header letter. */
 	public removeLettersFromPossible(inHeader: string, ...letters: string[]): void {
 		letters.forEach((l) => {
-			this.possibleCharacters.prunePossibleLetters(inHeader,l);
+			this.possibleCharacters.prunePossibleLetters(inHeader, [l]);
 		});
 		this.updateComponents();
 	}
