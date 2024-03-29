@@ -1,5 +1,4 @@
 import { browser } from '$app/environment';
-import { DEFAULT_ALPHABET } from '../Ciphers/CaesarCipher';
 import { WordRuleSet } from './WordRuleSet';
 
 /** Load a specified word list from a file. */
@@ -7,6 +6,36 @@ export async function getSpecificWordlist(filename: string) {
 	let response = await fetch(filename);
 	return (await response.text()).replaceAll('\r', '').toUpperCase().split('\n').toString();
 }
+
+/** The default standard alphabet. */
+export const DEFAULT_ALPHABET = [
+	'A',
+	'B',
+	'C',
+	'D',
+	'E',
+	'F',
+	'G',
+	'H',
+	'I',
+	'J',
+	'K',
+	'L',
+	'M',
+	'N',
+	'O',
+	'P',
+	'Q',
+	'R',
+	'S',
+	'T',
+	'U',
+	'V',
+	'W',
+	'X',
+	'Y',
+	'Z'
+];
 
 /** Class based dictionary tools. */
 export class Dictionary {
@@ -19,14 +48,14 @@ export class Dictionary {
 		Dictionary.ready = true;
 	}
 
-	public static getMatchingWords(rules:WordRuleSet): string[]{
-		if(!Dictionary.ready) {
+	public static getMatchingWords(rules: WordRuleSet): string[] {
+		if (!Dictionary.ready) {
 			console.log('Dictionary class is not ready.  Call Sync Dictionary.');
 			return [];
 		}
 		let output: string[] = [];
 		this.dictionary.split(',').forEach((word, i) => {
-			if(rules.isSimilar(word)){
+			if (rules.isSimilar(word)) {
 				output.push(word);
 			}
 		});
@@ -57,7 +86,7 @@ export class Dictionary {
 			while (k < textArray.length && textArray.length > 0) {
 				if (textArray[k] == dictArray[i]) {
 					realWordCount++;
-					if(storeWord != undefined){
+					if (storeWord != undefined) {
 						storeWord(textArray[k]);
 					}
 					for (let j = k; j < textArray.length - 1; j++) {
@@ -131,4 +160,3 @@ export function sanitizeInput(text: string): string {
 	}
 	return output;
 }
-

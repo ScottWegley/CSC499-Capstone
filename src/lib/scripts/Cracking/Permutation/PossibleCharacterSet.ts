@@ -1,4 +1,4 @@
-import { DEFAULT_ALPHABET } from '$lib/scripts/Ciphers/CaesarCipher';
+import { DEFAULT_ALPHABET } from "$lib/scripts/Util/Dictionary";
 
 export class PossibleCharacterSet {
 	private possibleChars: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -55,8 +55,10 @@ export class PossibleCharacterSet {
 		return total;
 	}
 
+    /** Returns a string representation of the PossibleCharacterSet. */
     public toString(): string {
         let output = `Possible Character Set`;
+        output += `\n ${this.calculatePossibleAlphabets()} Alphabets`
         this.possibleChars.forEach((value,key)=>{
             output += `\n${key}: ${[...value].toString()}`
         });

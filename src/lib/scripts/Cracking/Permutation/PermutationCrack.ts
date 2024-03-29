@@ -1,4 +1,3 @@
-import { DEFAULT_ALPHABET, getLetterIndex } from '../../Ciphers/CaesarCipher';
 import { CipherCracker } from '../Generic/CipherCrack';
 import { PossibleCharacterSet } from './PossibleCharacterSet';
 

@@ -1,32 +1,4 @@
-/** The default standard alphabet. */
-export const DEFAULT_ALPHABET = [
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z'
-];
+import { DEFAULT_ALPHABET } from "../Util/Dictionary";
 
 /** Function to convert a letter in our uppercase alphabet to it's index in the alphabet. */
 export function getLetterIndex(letter:string){

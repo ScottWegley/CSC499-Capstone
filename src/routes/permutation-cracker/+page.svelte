@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { DEFAULT_ALPHABET, getCipherAlphabet } from '$lib/scripts/Ciphers/CaesarCipher';
+	import { getCipherAlphabet } from '$lib/scripts/Ciphers/CaesarCipher';
 	import { CaesarCrack } from '$lib/scripts/Cracking/Caesar/CaesarCrack';
 	import { CaesarResultData } from '$lib/scripts/Cracking/Caesar/CaesarResultData';
 	import { PermutationCrack } from '$lib/scripts/Cracking/Permutation/PermutationCrack';
 	import { PermutationResultData } from '$lib/scripts/Cracking/Permutation/PermutationResultData';
 	import { WordRuleSet } from '$lib/scripts/Util/WordRuleSet';
-	import { Dictionary, sanitizeInput } from '$lib/scripts/Util/Dictionary';
+	import { DEFAULT_ALPHABET, Dictionary, sanitizeInput } from '$lib/scripts/Util/Dictionary';
 	import {
 		Heading,
 		P,
@@ -29,8 +29,10 @@
 	import { onMount } from 'svelte';
 	import { PossibleCharacterSet } from '$lib/scripts/Cracking/Permutation/PossibleCharacterSet';
 
+	// PERMED VERSION OF INPUT TEXT 
+	// GKVYYOCB SVEMNJDJF TPCLSONCDK O DE SWV GNNI FNP YWDKK JVDZ SWOY ZDF D LJOYOY GVTDKKY SWV KDCZ UWDSVRVJ SWNPBWSY DJV OEMNYYOGKV
 	/** Stores the text given to us by the user. */
-	$: inputText = 'BLESSING';
+	$: inputText = "BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE";
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
