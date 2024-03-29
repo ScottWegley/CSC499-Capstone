@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
-import { DEFAULT_ALPHABET } from './Ciphers/CaesarCipher';
-import { WordRuleSet } from './Cracking/Permutation/WordRuleSet';
+import { DEFAULT_ALPHABET } from './CaesarCipher';
+import { WordRuleSet } from '../Cracking/Permutation/WordRuleSet';
 
 /** Load a specified word list from a file. */
 export async function getSpecificWordlist(filename: string) {
@@ -28,7 +28,6 @@ export class Dictionary {
 		this.dictionary.split(',').forEach((word, i) => {
 			if(rules.isSimilar(word)){
 				output.push(word);
-				console.log(`Word #${i}: ${word}`);
 			}
 		});
 		return output;

@@ -1,4 +1,4 @@
-import { ResultData } from '../ResultData';
+import { ResultData } from '../Generic/ResultData';
 
 export class PermutationResultData extends ResultData {
 	/** Stores all the alphabets corresponding to our results. */

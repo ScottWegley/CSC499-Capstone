@@ -1,5 +1,5 @@
 import { DEFAULT_ALPHABET, getLetterIndex } from '../../Ciphers/CaesarCipher';
-import { CipherCracker } from '../CipherCrack';
+import { CipherCracker } from '../Generic/CipherCrack';
 
 /** Class to bruteforce crack a Caesar Cipher encrypted piece of text. */
 export class PermutationCrack extends CipherCracker {
@@ -48,7 +48,7 @@ export class PermutationCrack extends CipherCracker {
 		return this.possibleCharacters[getLetterIndex(letter.charAt(0))].possible;
 	}
 
-	/** Removes specifies letter from the list of possibilities for a specified header letter. */
+	/** Removes specifies letters from the list of possibilities for a specified header letter. */
 	public removeLettersFromPossible(inHeader: string, ...letters: string[]): void {
 		letters.forEach((l) => {
 			if (this.possibleCharacters[getLetterIndex(inHeader)].possible.indexOf(l) != -1) {
