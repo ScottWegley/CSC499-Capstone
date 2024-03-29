@@ -1,4 +1,4 @@
-import { DEFAULT_ALPHABET } from "$lib/scripts/Util/Dictionary";
+import { DEFAULT_ALPHABET } from '$lib/scripts/Util/Dictionary';
 
 export class PossibleCharacterSet {
 	private possibleChars: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -7,13 +7,13 @@ export class PossibleCharacterSet {
 	public constructor(word?: string, matches?: string[]) {
 		if (word !== undefined && matches !== undefined) {
 			for (let charIndex = 0; charIndex < word.length; charIndex++) {
-                if(this.possibleChars.get(word.charAt(charIndex)) == undefined){
-                    this.possibleChars.set(word.charAt(charIndex),new Set<string>);
-                }
-                matches.forEach((match) => {
-                    this.possibleChars.get(word.charAt(charIndex))!.add(match.charAt(charIndex));
-                });
-            }
+				if (this.possibleChars.get(word.charAt(charIndex)) == undefined) {
+					this.possibleChars.set(word.charAt(charIndex), new Set<string>());
+				}
+				matches.forEach((match) => {
+					this.possibleChars.get(word.charAt(charIndex))!.add(match.charAt(charIndex));
+				});
+			}
 		} else {
 			for (let i = 0; i < DEFAULT_ALPHABET.length; i++) {
 				this.possibleChars.set(DEFAULT_ALPHABET[i], new Set<string>(DEFAULT_ALPHABET));
@@ -28,7 +28,7 @@ export class PossibleCharacterSet {
 
 	/** Returns the possible characters corresponding to a specified header character. */
 	public getPossibilities(header: string) {
-		return this.possibleChars.get(header) ?? new Set<string>;
+		return this.possibleChars.get(header) ?? new Set<string>();
 	}
 
 	/** Removes specified letters from the list of possible characters corresponding to a specified header character. */
@@ -38,8 +38,20 @@ export class PossibleCharacterSet {
 				this.possibleChars.get(header)?.has(character) &&
 				this.possibleChars.get(header) != undefined
 			) {
-				this.possibleChars
-					.get(header)!.delete(character);
+				this.possibleChars.get(header)!.delete(character);
+			}
+		});
+	}
+
+	/** Modifies the calling PossibleCharacterSet possibility sets, reducing them to only values that show up in both sets. */
+	public reduceToOverlappingPossibilities(comparison: PossibleCharacterSet) {
+		this.possibleChars.forEach((characterSet, header) => {
+			if (comparison.getPossibilities(header).size != 0) {
+				characterSet.forEach((c) => {
+					if (!comparison.getPossibilities(header).has(c)) {
+						this.possibleChars.get(header)!.delete(c);
+					}
+				});
 			}
 		});
 	}
@@ -55,13 +67,13 @@ export class PossibleCharacterSet {
 		return total;
 	}
 
-    /** Returns a string representation of the PossibleCharacterSet. */
-    public toString(): string {
-        let output = `Possible Character Set`;
-        output += `\n ${this.calculatePossibleAlphabets()} Alphabets`
-        this.possibleChars.forEach((value,key)=>{
-            output += `\n${key}: ${[...value].toString()}`
-        });
-        return output;
-    }
+	/** Returns a string representation of the PossibleCharacterSet. */
+	public toString(): string {
+		let output = `Possible Character Set`;
+		output += `\n ${this.calculatePossibleAlphabets()} Alphabets`;
+		this.possibleChars.forEach((value, key) => {
+			output += `\n${key}: ${[...value].toString()}`;
+		});
+		return output;
+	}
 }
