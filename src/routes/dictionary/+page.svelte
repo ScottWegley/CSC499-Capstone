@@ -27,7 +27,7 @@
 	/** When the page has loaded, unless a different word list exists in memory, grab our default word list and load it. */
 	onMount(async () => {
 		if (localStorage.getItem('wordlist') == 'empty') {
-			wordlist.set(await getSpecificWordlist('10k.txt'));
+			wordlist.set(await getSpecificWordlist('extrasmall.txt'));
 		}
 		resyncDisplayWithSession();
 		inputFileUpload = document.getElementsByName('fileUpload')[0];
@@ -38,7 +38,7 @@
 		if ((e as PointerEvent).shiftKey) {
 			dictionarySelectPopUp = true;
 		} else {
-			resetToAltWordlist('10k.txt');
+			resetToAltWordlist('extrasmall.txt');
 		}
 	}
 
@@ -209,21 +209,30 @@
 						<Button
 							class="mr-3"
 							on:click={() => {
-								resetToAltWordlist('20k.txt');
-							}}>20,000</Button
+								resetToAltWordlist('small.txt');
+							}}>Small</Button
 						>
+						<Tooltip>
+							Composed of 20,000 Words.
+						</Tooltip>
 						<Button
 							class=""
 							on:click={() => {
-								resetToAltWordlist('30k.txt');
-							}}>30,000</Button
+								resetToAltWordlist('medium.txt');
+							}}>Medium</Button
 						>
+						<Tooltip>
+							Composed of 30,000 Words.
+						</Tooltip>
 						<Button
 							class="ml-3"
 							on:click={() => {
-								resetToAltWordlist('100k.txt');
-							}}>100,000</Button
+								resetToAltWordlist('large.txt');
+							}}>Large</Button
 						>
+						<Tooltip>
+							Composed of ~63,000 Words.
+						</Tooltip>
 					</div>
 				</div>
 			</Modal>

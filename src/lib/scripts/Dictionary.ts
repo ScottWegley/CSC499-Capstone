@@ -25,9 +25,10 @@ export class Dictionary {
 			return [];
 		}
 		let output: string[] = [];
-		this.dictionary.split(',').forEach((word) => {
+		this.dictionary.split(',').forEach((word, i) => {
 			if(rules.isSimilar(word)){
 				output.push(word);
+				console.log(`Word #${i}: ${word}`);
 			}
 		});
 		return output;
@@ -109,7 +110,7 @@ export async function getDictionary() {
 	let temp = browser && localStorage.getItem('wordlist');
 	if (temp == null) {
 		console.log('Falling back to default wordlist');
-		localStorage.setItem('wordlist', await getSpecificWordlist('10k.txt'));
+		localStorage.setItem('wordlist', await getSpecificWordlist('extrasmall.txt'));
 		temp = browser && localStorage.getItem('wordlist');
 	} else {
 		if (typeof temp != 'string') {
@@ -121,7 +122,7 @@ export async function getDictionary() {
 }
 
 /** Function to reduce a string of text to alphabet and space. */
-export function sanitizeInput(text: string) {
+export function sanitizeInput(text: string): string {
 	text = text.toUpperCase().replaceAll(/[ \t]{2,}/g, ' ');
 	let output = '';
 	for (let i = 0; i < text.length; i++) {
