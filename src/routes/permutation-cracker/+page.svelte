@@ -5,7 +5,7 @@
 	import { PermutationCrack } from '$lib/scripts/Cracking/Permutation/PermutationCrack';
 	import { PermutationResultData } from '$lib/scripts/Cracking/Permutation/PermutationResultData';
 	import { WordRuleSet } from '$lib/scripts/Cracking/Permutation/WordRuleSet';
-	import { Dictionary, sanitizeInput } from '$lib/scripts/Dictionary';
+	import { Dictionary, sanitizeInput } from '$lib/scripts/Ciphers/Dictionary';
 	import {
 		Heading,
 		P,

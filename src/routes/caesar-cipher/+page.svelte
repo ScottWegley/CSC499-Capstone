@@ -9,7 +9,7 @@
 	} from 'flowbite-svelte';
 	import VerticalStackButton from '$lib/components/VerticalStackButton.svelte';
 	import { DEFAULT_ALPHABET, caesarDecryption, caesarEncryption, getCipherAlphabet } from '$lib/scripts/Ciphers/CaesarCipher';
-	import { sanitizeInput } from '$lib/scripts/Dictionary';
+	import { sanitizeInput } from '$lib/scripts/Ciphers/Dictionary';
 
 	/** Stores the current shift being applied to the alphabet. */
 	let currentShift = 1;
