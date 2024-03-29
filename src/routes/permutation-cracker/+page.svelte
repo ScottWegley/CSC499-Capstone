@@ -29,7 +29,7 @@
 	import { onMount } from 'svelte';
 
 	/** Stores the text given to us by the user. */
-	$: inputText = 'A';
+	$: inputText = 'BLESSING';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -43,7 +43,7 @@
 	/** Whether the results should be displayed in ascending order. */
 	let ascendingResults = false;
 	/** Whether or not the results should be displayed. */
-	let displayResults = true;
+	let displayResults = false;
 	/** Represents the character the user would like to view the possible character equivalents to.  Defaults to first letter of alphabet. */
 	let selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 	/** Variable to update whenever we want to refresh permutation crack dependent components. */
@@ -94,13 +94,12 @@
 
 	/** Function to start the cracking process. */
 	function startCracking() {
+		resetPermutationCracking();
 		crackInProgress = true;
-		realWordSet = new Set<String>();
 	}
 
 	/** This function calls a Caesar Crack into existence, cracks, and then gets the results data, before printing the results.*/
 	function caesarCrack() {
-		realWordSet = new Set<String>();
 		let caesarCracker = new CaesarCrack(
 			inputText,
 			accuracyThreshold / 100,
@@ -143,7 +142,7 @@
 		}
 		let rules = new WordRuleSet(wordToAnalyze);
 		console.log(rules.toString());
-		Dictionary.getMatchingWords(rules);
+		console.log(Dictionary.getMatchingWords(rules));
 	}
 
 	/** Function to reset the permutation cracker to their default state. */
