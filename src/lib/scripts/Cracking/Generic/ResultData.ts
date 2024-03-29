@@ -1,11 +1,17 @@
 export class ResultData {
+	/** An array of potential results. */
 	protected results: string[];
+	/** An array of accuracy ratings in the order of the results they represent. */
 	protected accuracy: number[];
 
+	/** The minimum accuracy that a result must have been to be stored. */
 	protected threshold: number;
+	/** The percentage of the total results that were stored in this class. */
 	protected percentage: number;
+	/** Whether the results were stored in ascending order. */
 	protected ascending: boolean;
 
+	/** Creates an instance of results data with the results, corresponding accuracy, and the thresholds, percentages, and other mutators applied to the result before storage. */
 	public constructor(
 		resultSet: string[],
 		accuracySet: number[],
@@ -49,27 +55,30 @@ export class ResultData {
 		return output;
 	}
 
+	// #region Accessors
+	/** Returns an array of strings containing all the results stored in this class. */
 	public getResults(): string[] {
 		return this.results;
 	}
-
+	/** Returns an array of results corresponding to the results stored in this class. */
 	public getAccuracy(): number[] {
 		return this.accuracy;
 	}
-
+	/** Returns the accuracy threshold that was applied to these results. */
 	public getThreshold(): number {
 		return this.threshold;
 	}
-
+	/** Returns the percentage of the total results this class contains. */
 	public getPercentage(): number {
 		return this.percentage;
 	}
-
+	/** Returns a boolean representing whether or not the results are stored in ascending or descending order. */
 	public getAscending(): boolean {
 		return this.ascending;
 	}
-
+	/** Returns the number of results stored in this class. */
 	public getResultCount(): number {
 		return this.results.length;
 	}
+	// #endregion
 }

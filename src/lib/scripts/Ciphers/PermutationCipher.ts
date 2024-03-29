@@ -1,4 +1,4 @@
-import { DEFAULT_ALPHABET } from "../Util/Dictionary";
+import { DEFAULT_ALPHABET } from '../Util/Dictionary';
 
 /** Function to check if a specified alphabet array is valid. */
 export function isValidAlphabet(toCheck: string[]): boolean {
@@ -32,14 +32,14 @@ export function generateRandomAlphabet(): string[] {
 }
 
 /** Function to encrypt a specified string given an alphabet. */
-export function permutationEncrypt(input: string, permAlphabet: string[]) {
-	let output = "";
-	if(!isValidAlphabet(permAlphabet)){
+export function permutationEncrypt(input: string, permAlphabet: string[]): string {
+	let output = '';
+	if (!isValidAlphabet(permAlphabet)) {
 		return output;
 	}
 	for (let i = 0; i < input.length; i++) {
-		if(DEFAULT_ALPHABET.includes(input.charAt(i))){
-			output = output + permAlphabet[DEFAULT_ALPHABET.indexOf(input.charAt(i))]
+		if (DEFAULT_ALPHABET.includes(input.charAt(i))) {
+			output = output + permAlphabet[DEFAULT_ALPHABET.indexOf(input.charAt(i))];
 		} else {
 			output = output + input.charAt(i);
 		}
@@ -48,14 +48,14 @@ export function permutationEncrypt(input: string, permAlphabet: string[]) {
 }
 
 /** Function to decrypt a specified string given an alphabet. */
-export function permutationDecrypt(input: string, permAlphabet: string[]){
-	let output = "";
-	if(!isValidAlphabet(permAlphabet)){
+export function permutationDecrypt(input: string, permAlphabet: string[]): string {
+	let output = '';
+	if (!isValidAlphabet(permAlphabet)) {
 		return output;
 	}
 	for (let i = 0; i < input.length; i++) {
-		if(DEFAULT_ALPHABET.includes(input.charAt(i))){
-			output = output + DEFAULT_ALPHABET[permAlphabet.indexOf(input.charAt(i))]
+		if (DEFAULT_ALPHABET.includes(input.charAt(i))) {
+			output = output + DEFAULT_ALPHABET[permAlphabet.indexOf(input.charAt(i))];
 		} else {
 			output = output + input.charAt(i);
 		}

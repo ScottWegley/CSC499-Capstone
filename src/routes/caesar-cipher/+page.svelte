@@ -43,12 +43,15 @@
 		"{caesarEncryption("BARNACLE",currentShift)}" after a {(currentShift < 0 ? currentShift * -1 : currentShift) + `-${(currentShift>0 ? "Right" : "Left")}`} Shift or "{caesarEncryption("BARNACLE",currentShift * -1)}" after a {(currentShift < 0 ? currentShift * -1 : currentShift) + `-${(currentShift>0 ? "Left" : "Right")}`} Shift.
 	</P>
 	<div class="flex flex-col justify-center">
+		<!-- #region Caesar Shift Inputs -->
 		<div class="mb-1.5">
 			<P align="center" class="text-sm dark:text-gray-400 sm:px-16">Current Shift: {currentShift}</P
 			>
 			<Range bind:value={currentShift} class="max-w-[35%]" min="-26" max="26"></Range>
 		</div>
+		<!-- #endregion -->
 		<div class="flex flex-row justify-center" id="alphabetDisplayDiv">
+			<!-- #region Alphabet Displays -->
 			<div class="mb-1.5 mr-1 flex h-min min-w-fit flex-col rounded-lg shadow-sm">
 				{#each DEFAULT_ALPHABET as letter}
 					<VerticalStackButton size="xs" outline color="green">{letter}</VerticalStackButton>
@@ -59,6 +62,8 @@
 					<VerticalStackButton size="xs" outline color="blue">{letter}</VerticalStackButton>
 				{/each}
 			</div>
+			<!-- #endregion -->
+			<!-- #region User Inputs + Buttons -->
 			<div class="ml-3 flex min-w-[25%] flex-col">
 				<Textarea
 					placeholder="Input text"
@@ -85,6 +90,7 @@
 				<Textarea placeholder="Output text" rows="4" class="mt-3 resize-none" disabled bind:value={outputText}
 				></Textarea>
 			</div>
+			<!-- #endregion -->
 		</div>
 	</div>
 </div>

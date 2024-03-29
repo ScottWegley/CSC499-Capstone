@@ -1,4 +1,3 @@
-import { ResultData } from './ResultData';
 
 /** Base class with necessary functions  */
 export abstract class CipherCracker {

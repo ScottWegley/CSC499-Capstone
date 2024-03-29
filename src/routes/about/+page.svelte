@@ -6,7 +6,7 @@
 
 <div class="text-center">
 	<Heading tag="h2" class="mb-4">About</Heading>
-	<div class="mx-auto max-w-screen-2xl">
+	<div class="mx-auto max-w-screen-2xl">  <!-- The main text div -->
 		<P class="mb-6 text-lg dark:text-gray-400 sm:px-16" align="center" size="sm">
 			This website was created as my capstone project for my Bachelors Degree. It was made during my
 			final undergraduate semester at California Lutheran University in Spring of 2024. I developed
@@ -23,6 +23,7 @@
 			of which you are welcome to and encouraged to view.
 		</P>
 	</div>
+	<!--TODO: Add a place to host documentation for this project. -->
 </div>
 
 <style>

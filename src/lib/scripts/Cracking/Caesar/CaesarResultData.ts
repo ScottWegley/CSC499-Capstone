@@ -1,6 +1,7 @@
 import { ResultData } from '../Generic/ResultData';
 
 export class CaesarResultData extends ResultData {
+	/** An array representing the offsets of the alphabets applied to generate the potential results. */
 	protected shifts: number[];
 
 	public constructor(
@@ -22,16 +23,19 @@ export class CaesarResultData extends ResultData {
 		for (let i = 0; i < this.results.length; i++) {
 			output =
 				output +
-				"Shift " + this.shifts[i] + " || " +
+				'Shift ' +
+				this.shifts[i] +
+				' || ' +
 				parseFloat((this.accuracy[i] * 100).toFixed(2)) +
-				"% Accurate: " +
+				'% Accurate: ' +
 				this.results[i] +
 				'\n';
 		}
 		return output;
 	}
 
-    public getShifts(): number[] {
-        return this.shifts;
-    }
+	/** Returns an array of the offsets used to generate potential alphabets from the decryption process in the same order as the potential results they were applied to.'s */
+	public getShifts(): number[] {
+		return this.shifts;
+	}
 }

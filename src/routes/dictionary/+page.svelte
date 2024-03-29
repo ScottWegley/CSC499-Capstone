@@ -143,6 +143,7 @@
 		URL.revokeObjectURL(link.href);
 	}
 
+	// #region Alert Systems Vars & Functions
 	/** Boolean to track whether user has saved changes. */
 	let unsavedChanges = false;
 	/** Boolean to track whether the user has acknowledged our saving alert. */
@@ -155,6 +156,7 @@
 		unsavedChanges = true;
 		saveAcknowledged = true;
 	}
+	// #endregion
 </script>
 
 <title>Dictionary</title>

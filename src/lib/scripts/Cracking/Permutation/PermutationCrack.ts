@@ -7,6 +7,10 @@ export class PermutationCrack extends CipherCracker {
 	/** Stores pairings of letters in the alphabet to letters they might be.*/
 	private possibleCharacters!: PossibleCharacterSet;
 
+	/** Function to trigger rerendering for components that use data from this class. */
+	public updateComponents: () => void;
+
+	/** Creates a new permutation cracker for a specified text.  Accepts modifiers for the results data and functions to assist in web page reactivity. */
 	public constructor(
 		text: string,
 		threshold?: number,
@@ -24,7 +28,6 @@ export class PermutationCrack extends CipherCracker {
 		}
 	}
 
-	public updateComponents: () => void;
 
 	/** Resets our mapping of letters to possible letters to default state, where every letter can be every letter. */
 	private resetCharacterPossibilities(): void {
