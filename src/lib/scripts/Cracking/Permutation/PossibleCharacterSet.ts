@@ -31,6 +31,19 @@ export class PossibleCharacterSet {
 		return this.possibleChars.get(header) ?? new Set<string>;
 	}
 
+	/** Removes specified letters from the list of possible characters corresponding to a specified header character. */
+	public prunePossibleLetters(header: string, ...letters: string[]) {
+		letters.forEach((character) => {
+			if (
+				this.possibleChars.get(header)?.has(character) &&
+				this.possibleChars.get(header) != undefined
+			) {
+				this.possibleChars
+					.get(header)!.delete(character);
+			}
+		});
+	}
+
 	/** Returns the number of alphabets we could generate based on the current possibilities. */
 	public calculatePossibleAlphabets(): number {
 		let total = 1;
