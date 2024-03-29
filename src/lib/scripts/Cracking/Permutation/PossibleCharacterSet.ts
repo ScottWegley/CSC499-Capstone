@@ -32,7 +32,7 @@ export class PossibleCharacterSet {
 	}
 
 	/** Removes specified letters from the list of possible characters corresponding to a specified header character. */
-	public prunePossibleLetters(header: string, ...letters: string[]) {
+	public prunePossibleLetters(header: string, letters: string[]) {
 		letters.forEach((character) => {
 			if (
 				this.possibleChars.get(header)?.has(character) &&
@@ -41,6 +41,19 @@ export class PossibleCharacterSet {
 				this.possibleChars.get(header)!.delete(character);
 			}
 		});
+	}
+
+	/** Loosely accurate check for if a given word can exists in our possibilities. */
+	public canContainWord(sourceWord: string, checkWord: string): boolean{
+		let possible = true;
+		for(let i = 0; i < sourceWord.length; i++){
+			if(this.possibleChars.has(sourceWord.charAt(i))){
+				possible = possible && this.possibleChars.get(sourceWord.charAt(i))!.has(checkWord.charAt(i));
+			} else {
+				possible = false;
+			}
+		}
+		return possible;
 	}
 
 	/** Modifies the calling PossibleCharacterSet possibility sets, reducing them to only values that show up in both sets. */
