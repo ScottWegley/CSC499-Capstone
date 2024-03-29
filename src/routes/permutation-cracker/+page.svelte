@@ -24,17 +24,18 @@
 		TableBodyRow,
 		ButtonGroup,
 		Input,
-		Select
+		Select,
+		Kbd
 	} from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 	import { PossibleCharacterSet } from '$lib/scripts/Cracking/Permutation/PossibleCharacterSet';
 
 	// #region Global Settings & Functions
 	// PERMED VERSION OF INPUT TEXT
-	// GKVYYOCB SVEMNJDJF TPCLSONCDK O DE SWV GNNI FNP YWDKK JVDZ SWOY ZDF D LJOYOY GVTDKKY SWV KDCZ UWDSVRVJ SWNPBWSY DJV OEMNYYOGKV
 	/** Stores the text given to us by the user. */
 	$: inputText =
-		'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
+		'GKVYYOCB SVEMNJDJF TPCLSONCDK O DE SWV GNNI FNP YWDKK JVDZ SWOY ZDF D LJOYOY GVTDKKY SWV KDCZ UWDSVRVJ SWNPBWSY DJV OEMNYYOGKV';
+	// $: inputText = "BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE";
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -48,7 +49,7 @@
 	/** Whether the results should be displayed in ascending order. */
 	let ascendingResults = false;
 	/** Whether or not the results should be displayed. */
-	let displayResults = false;
+	let displayResults = true;
 
 	/** Make sure the dictionary has been loaded so we don't do async shenanigans.*/
 	onMount(async () => {
@@ -78,7 +79,6 @@
 		});
 		return items;
 	}
-
 	// #endregion
 
 	// #region Permutation Cracking Data Storage & Functions
@@ -122,6 +122,7 @@
 			return;
 		}
 		if ((e as PointerEvent).shiftKey) {
+			// TODO: Custom analysis window
 			generateWordAnalysisItems(inputText).forEach((item) => {
 				let rules = new WordRuleSet(item.name);
 				let matches = Dictionary.getMatchingWords(
@@ -165,7 +166,6 @@
 		crackInProgress = false;
 		wordToAnalyze = '';
 		selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
-		displayResults = false;
 		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
 		permutationCrack = new PermutationCrack(
 			inputText,
@@ -245,6 +245,7 @@
 	</P>
 	<div class="flex w-full flex-col content-center items-center justify-center">
 		<div class="flex w-full flex-row justify-center justify-self-center" id="panel-parent">
+			<!-- #region Application Settings -->
 			<Card class="min-w-5/6 mr-1 max-w-fit">
 				<div class="min-w-5/6 flex flex-col justify-center" id="control-panel">
 					<Toggle size="small" bind:checked={tooltipsActive} class="mb-3">Toggle Tooltips</Toggle>
@@ -260,9 +261,9 @@
 						}}>Caesar Cipher Mode</Toggle
 					>
 					{#if tooltipsActive}
-						<Tooltip
+						<Tooltip class="max-w-64"
 							>If you know your input text was encrypted with specifically a Caesar Cipher, turn
-							this switch on. <br /> The page will use Caesar specific cracking techniques and decrypt
+							this switch on. The page will use Caesar specific cracking techniques and decrypt
 							the text exponentially faster.
 						</Tooltip>
 					{/if}
@@ -281,7 +282,7 @@
 					{/if}
 					<Label class="mb-1.5">{'Accuracy Threshold: ' + accuracyThreshold + '%'}</Label>
 					{#if tooltipsActive}
-						<Tooltip>
+						<Tooltip class="max-w-64">
 							Determines what percentage of a result must be words in the specified dictionary to be
 							displayed.
 						</Tooltip>
@@ -297,7 +298,7 @@
 
 					<Label class="mb-1.5">{'Percentage Returned: ' + returnPercentage + '%'}</Label>
 					{#if tooltipsActive}
-						<Tooltip>
+						<Tooltip class="max-w-64">
 							Determines what percentage of the results should be shown after all other filtering is
 							done.
 						</Tooltip>
@@ -311,6 +312,7 @@
 					/>
 				</div>
 			</Card>
+			<!-- #endregion -->
 			<div class="ml-1 mr-1 flex w-5/12 flex-col justify-center" id="inputs-panel">
 				<Textarea
 					placeholder="Input Text"
@@ -346,9 +348,11 @@
 					{/if}
 				{/if}
 			</div>
+			<!-- #region Permutation Interaction Panel -->
 			{#if !caesarMode && crackInProgress}
 				<Card class="ml-1 mr-1 min-w-fit">
 					<div class="flex max-w-fit flex-col justify-center" id="permutation-panel">
+						<!-- #region Display ALphabet -->
 						<div id="alphabet-display" class="mb-3 flex flex-col">
 							<div id="first-half-alphabet" class="mb-1 mt-1">
 								<ButtonGroup>
@@ -404,6 +408,7 @@
 								solved, and red if they are not involved.</Tooltip
 							>
 						{/if}
+						<!-- #endregion -->
 						<div id="permutation-settings">
 							<div id="character-possibility" class="text-left">
 								{#key permutationUpdateTracker}
@@ -434,12 +439,6 @@
 							<div id="reduce-by-word" class="mt-3 text-left">
 								<Label
 									><span class="text-xs">Word to Analyze</span>
-									{#if tooltipsActive}
-										<Tooltip>
-											When you run word analysis, we look for patterns in the selected word and use
-											it to reduce the number of possible remaining alphabets.
-										</Tooltip>
-									{/if}
 									<div class="flex flex-row items-center justify-center">
 										<Select
 											class="mr-1 mt-1"
@@ -447,7 +446,16 @@
 											items={generateWordAnalysisItems(inputText)}
 											bind:value={wordToAnalyze}
 										></Select>
-										<Button size="xs" color="purple" on:click={analyzeSelectedWord}>Analyze</Button>
+										<Button class="mt-1" size="xs" color="purple" on:click={analyzeSelectedWord}
+											>Analyze</Button
+										>
+										{#if tooltipsActive}
+											<Tooltip class="text-center max-w-64">
+												When you run word analysis, we look for patterns in the selected word and
+												use it to reduce the number of possible alphabets. Press <Kbd>Shift</Kbd> and
+												click for customization options.
+											</Tooltip>
+										{/if}
 									</div>
 								</Label>
 							</div>
@@ -456,95 +464,98 @@
 					</div>
 				</Card>
 			{/if}
+			<!-- #endregion -->
 		</div>
-		<div class="flex w-4/5 flex-col content-center justify-center">
-			<div class="mt-3 flex flex-row justify-center justify-self-center" id="table-div">
-				{#if displayResults && caesarMode}
-					<Table shadow>
-						<TableHead>
-							<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
-							<TableHeadCell class="text-xs"
-								>Results {'(' + caesarResults.getResultCount() + ' Total)'}</TableHeadCell
-							>
-							<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
-						</TableHead>
-						{#if tooltipsActive && realWordSet.size != 0}
-							<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
-						{/if}
-						<TableBody>
-							{#each caesarResults.getResults() as result, i}
-								<TableBodyRow>
-									<TableBodyCell
-										><span class="text-xs"
-											>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</span
-										></TableBodyCell
-									>
-									<TableBodyCell>
-										{#each generateDisplayForResult(result) as displayResult, i}
-											<span class={(!displayResult.accurate ? 'text-red-500 ' : '') + 'text-xs'}
-												>{displayResult.text}</span
-											>
-											{#if (i + 1) % 20 == 0}
-												<br />
-											{/if}
-										{/each}
-									</TableBodyCell>
-									<TableBodyCell
-										><span class="text-xs"
-											>{getCipherAlphabet(caesarResults.getShifts()[i])
-												.toString()
-												.replaceAll(',', '')}</span
-										><Tooltip>
-											Shift of {caesarResults.getShifts()[i]}
-										</Tooltip></TableBodyCell
-									>
-								</TableBodyRow>
-							{/each}
-						</TableBody>
-					</Table>
-				{/if}
-				{#if displayResults && false}
-					<!-- Edit this table for permutation results eventually-->
-					<Table shadow>
-						<TableHead>
-							<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
-							<TableHeadCell class="text-xs">Results</TableHeadCell>
-							<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
-						</TableHead>
-						{#if tooltipsActive && realWordSet.size != 0}
-							<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
-						{/if}
-						<TableBody>
-							{#each caesarResults.getResults() as result, i}
-								<TableBodyRow>
-									<TableBodyCell
-										><span class="text-xs"
-											>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</span
-										></TableBodyCell
-									>
-									<TableBodyCell>
-										{#each generateDisplayForResult(result) as displayResult, i}
-											<span class={(!displayResult.accurate ? 'text-red-500 ' : '') + 'text-xs'}
-												>{displayResult.text}</span
-											>
-											{#if (i + 1) % 20 == 0}
-												<br />
-											{/if}
-										{/each}
-									</TableBodyCell>
-									<TableBodyCell
-										><span class="text-xs"
-											>{getCipherAlphabet(caesarResults.getShifts()[i])
-												.toString()
-												.replaceAll(',', '')}</span
-										></TableBodyCell
-									>
-								</TableBodyRow>
-							{/each}
-						</TableBody>
-					</Table>
-				{/if}
-			</div>
+		<div class="mt-3 flex flex-row justify-center justify-self-center" id="table-div">
+			<!-- #region Caesar Results Table -->
+			{#if displayResults && caesarMode}
+				<Table shadow>
+					<TableHead>
+						<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
+						<TableHeadCell class="text-xs"
+							>Results {'(' + caesarResults.getResultCount() + ' Total)'}</TableHeadCell
+						>
+						<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
+					</TableHead>
+					{#if tooltipsActive && realWordSet.size != 0}
+						<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
+					{/if}
+					<TableBody>
+						{#each caesarResults.getResults() as result, i}
+							<TableBodyRow>
+								<TableBodyCell
+									><span class="text-xs"
+										>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</span
+									></TableBodyCell
+								>
+								<TableBodyCell>
+									{#each generateDisplayForResult(result) as displayResult, i}
+										<span class={(!displayResult.accurate ? 'text-red-500 ' : '') + 'text-xs'}
+											>{displayResult.text}</span
+										>
+										{#if (i + 1) % 20 == 0}
+											<br />
+										{/if}
+									{/each}
+								</TableBodyCell>
+								<TableBodyCell
+									><span class="text-xs"
+										>{getCipherAlphabet(caesarResults.getShifts()[i])
+											.toString()
+											.replaceAll(',', '')}</span
+									><Tooltip>
+										Shift of {caesarResults.getShifts()[i]}
+									</Tooltip></TableBodyCell
+								>
+							</TableBodyRow>
+						{/each}
+					</TableBody>
+				</Table>
+			{/if}
+			<!-- #endregion -->
+			<!-- #region Permutation Results Table -->
+			{#if displayResults && false}
+				<!--TODO: Edit this table for permutation results eventually-->
+				<Table shadow>
+					<TableHead>
+						<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
+						<TableHeadCell class="text-xs">Results</TableHeadCell>
+						<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
+					</TableHead>
+					{#if tooltipsActive && realWordSet.size != 0}
+						<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
+					{/if}
+					<TableBody>
+						{#each caesarResults.getResults() as result, i}
+							<TableBodyRow>
+								<TableBodyCell
+									><span class="text-xs"
+										>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</span
+									></TableBodyCell
+								>
+								<TableBodyCell>
+									{#each generateDisplayForResult(result) as displayResult, i}
+										<span class={(!displayResult.accurate ? 'text-red-500 ' : '') + 'text-xs'}
+											>{displayResult.text}</span
+										>
+										{#if (i + 1) % 20 == 0}
+											<br />
+										{/if}
+									{/each}
+								</TableBodyCell>
+								<TableBodyCell
+									><span class="text-xs"
+										>{getCipherAlphabet(caesarResults.getShifts()[i])
+											.toString()
+											.replaceAll(',', '')}</span
+									></TableBodyCell
+								>
+							</TableBodyRow>
+						{/each}
+					</TableBody>
+				</Table>
+			{/if}
+			<!-- #endregion -->
 		</div>
 	</div>
 </div>
