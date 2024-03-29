@@ -4,8 +4,8 @@
 	import { CaesarResultData } from '$lib/scripts/Cracking/Caesar/CaesarResultData';
 	import { PermutationCrack } from '$lib/scripts/Cracking/Permutation/PermutationCrack';
 	import { PermutationResultData } from '$lib/scripts/Cracking/Permutation/PermutationResultData';
-	import { WordRuleSet } from '$lib/scripts/Cracking/Permutation/WordRuleSet';
-	import { Dictionary, sanitizeInput } from '$lib/scripts/Ciphers/Dictionary';
+	import { WordRuleSet } from '$lib/scripts/Util/WordRuleSet';
+	import { Dictionary, sanitizeInput } from '$lib/scripts/Util/Dictionary';
 	import {
 		Heading,
 		P,

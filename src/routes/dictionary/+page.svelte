@@ -14,7 +14,7 @@
 	import { writable } from 'svelte/store';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
-	import { getSpecificWordlist, isValidDictionary } from '$lib/scripts/Ciphers/Dictionary';
+	import { getSpecificWordlist, isValidDictionary } from '$lib/scripts/Util/Dictionary';
 
 	/** Stores a reference to the fileupload element. */
 	let inputFileUpload: HTMLElement;

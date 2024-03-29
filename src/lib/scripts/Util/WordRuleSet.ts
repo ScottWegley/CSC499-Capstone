@@ -1,4 +1,4 @@
-import { sanitizeInput } from '$lib/scripts/Ciphers/Dictionary';
+import { sanitizeInput } from '$lib/scripts/Util/Dictionary';
 
 export class WordRuleSet {
 	/** Stores the word used to generate the rule set. */

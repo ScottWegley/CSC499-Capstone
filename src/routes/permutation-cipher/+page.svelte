@@ -12,7 +12,7 @@
 	import VerticalInput from '$lib/components/VerticalInput.svelte';
 	import { generateRandomAlphabet, isValidAlphabet, permutationDecrypt, permutationEncrypt } from '$lib/scripts/Ciphers/PermutationCipher';
 	import { DEFAULT_ALPHABET } from '$lib/scripts/Ciphers/CaesarCipher';
-	import { sanitizeInput } from '$lib/scripts/Ciphers/Dictionary';
+	import { sanitizeInput } from '$lib/scripts/Util/Dictionary';
 
 	/** This stores the permutated alphabet. */
 	let permutationAlphabet = DEFAULT_ALPHABET.map((l) => l);

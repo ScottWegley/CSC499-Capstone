@@ -1,5 +1,5 @@
 import { browser } from "$app/environment";
-import { getSpecificWordlist } from "$lib/scripts/Ciphers/Dictionary";
+import { getSpecificWordlist } from "$lib/scripts/Util/Dictionary";
 
 export const prerender = true;
 

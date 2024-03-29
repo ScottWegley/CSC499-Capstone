@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
-import { DEFAULT_ALPHABET } from './CaesarCipher';
-import { WordRuleSet } from '../Cracking/Permutation/WordRuleSet';
+import { DEFAULT_ALPHABET } from '../Ciphers/CaesarCipher';
+import { WordRuleSet } from './WordRuleSet';
 
 /** Load a specified word list from a file. */
 export async function getSpecificWordlist(filename: string) {
