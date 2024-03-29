@@ -41,6 +41,7 @@ export class PossibleCharacterSet {
 				this.possibleChars.get(header)!.delete(character);
 			}
 		});
+		this.removeSolvedLetters();
 	}
 
 	/** Loosely accurate check for if a given word can exists in our possibilities. */
@@ -62,7 +63,20 @@ export class PossibleCharacterSet {
 			if (comparison.getPossibilities(header).size != 0) {
 				characterSet.forEach((c) => {
 					if (!comparison.getPossibilities(header).has(c)) {
-						this.possibleChars.get(header)!.delete(c);
+						this.prunePossibleLetters(header,[c]);
+					}
+				});
+			}
+		});
+	}
+
+	/** Function to check every set of possible characters.  If a character only has one possibility, remove that possibility from all other characters. */
+	public removeSolvedLetters(){
+		this.possibleChars.forEach((checkSet,checkKey) => {
+			if(checkSet.size == 1){
+				this.possibleChars.forEach((modSet, modKey) => {
+					if(modKey != checkKey){
+						modSet.delete([...checkSet][0]);
 					}
 				});
 			}
