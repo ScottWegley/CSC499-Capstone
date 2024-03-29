@@ -21,6 +21,27 @@ export class PossibleCharacterSet {
 		}
 	}
 
+	/** Returns the map storing our header characters and their possible character. */
+	public getMap() {
+		return this.possibleChars;
+	}
+
+	/** Returns the possible characters corresponding to a specified header character. */
+	public getPossibilities(header: string) {
+		return this.possibleChars.get(header) ?? new Set<string>;
+	}
+
+	/** Returns the number of alphabets we could generate based on the current possibilities. */
+	public calculatePossibleAlphabets(): number {
+		let total = 1;
+		this.possibleChars.forEach((value) => {
+			if (value.size != 0) {
+				total *= value.size;
+			}
+		});
+		return total;
+	}
+
     public toString(): string {
         let output = `Possible Character Set`;
         this.possibleChars.forEach((value,key)=>{
