@@ -141,18 +141,14 @@
 			return;
 		}
 		if ((e as PointerEvent).shiftKey) {
-			console.log(generateWordAnalysisItems(inputText));
 			generateWordAnalysisItems(inputText).forEach((item) => {
 				let rules = new WordRuleSet(item.name);
-				console.log(rules.toString());
 				let matches = Dictionary.getMatchingWords(rules, item.name, permutationCrack.getPossibleCharacterSet());
 				if (matches.length == 0) {
 					console.log('No word matches.');
 					// ALERT USER NO MATCHES
 				} else {
-					console.log(matches);
 					let resultingPossibleChars = new PossibleCharacterSet(item.name, matches);
-					console.log(resultingPossibleChars.toString());
 					permutationCrack
 						.getPossibleCharacterSet()
 						.reduceToOverlappingPossibilities(resultingPossibleChars);
@@ -161,15 +157,12 @@
 			});
 		} else {
 			let rules = new WordRuleSet(wordToAnalyze);
-			console.log(rules.toString());
 			let matches = Dictionary.getMatchingWords(rules, wordToAnalyze, permutationCrack.getPossibleCharacterSet());
 			if (matches.length == 0) {
 				console.log('No word matches.');
 				// ALERT USER NO MATCHES
 			} else {
-				console.log(matches);
 				let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
-				console.log(resultingPossibleChars.toString());
 				permutationCrack
 					.getPossibleCharacterSet()
 					.reduceToOverlappingPossibilities(resultingPossibleChars);
