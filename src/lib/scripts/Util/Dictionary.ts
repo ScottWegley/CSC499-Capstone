@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { PossibleCharacterSet } from '../Cracking/Permutation/PossibleCharacterSet';
 import { WordRuleSet } from './WordRuleSet';
 
 /** Load a specified word list from a file. */
@@ -48,15 +49,21 @@ export class Dictionary {
 		Dictionary.ready = true;
 	}
 
-	public static getMatchingWords(rules: WordRuleSet): string[] {
+	public static getMatchingWords(rules: WordRuleSet, sourceWord?: string, charSets?:PossibleCharacterSet): string[] {
 		if (!Dictionary.ready) {
 			console.log('Dictionary class is not ready.  Call Sync Dictionary.');
 			return [];
 		}
 		let output: string[] = [];
-		this.dictionary.split(',').forEach((word, i) => {
-			if (rules.isSimilar(word)) {
-				output.push(word);
+		this.dictionary.split(',').forEach((checkWord) => {
+			if (rules.isSimilar(checkWord)) {
+				if(charSets !== undefined && sourceWord !== undefined){
+					if(charSets.canContainWord(sourceWord, checkWord)){
+						output.push(checkWord);
+					}
+				} else {
+					output.push(checkWord);
+				}
 			}
 		});
 		return output;
