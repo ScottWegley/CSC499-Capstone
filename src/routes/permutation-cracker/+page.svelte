@@ -29,10 +29,11 @@
 	import { onMount } from 'svelte';
 	import { PossibleCharacterSet } from '$lib/scripts/Cracking/Permutation/PossibleCharacterSet';
 
-	// PERMED VERSION OF INPUT TEXT 
+	// PERMED VERSION OF INPUT TEXT
 	// GKVYYOCB SVEMNJDJF TPCLSONCDK O DE SWV GNNI FNP YWDKK JVDZ SWOY ZDF D LJOYOY GVTDKKY SWV KDCZ UWDSVRVJ SWNPBWSY DJV OEMNYYOGKV
 	/** Stores the text given to us by the user. */
-	$: inputText = "BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE";
+	$: inputText =
+		'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -146,9 +147,15 @@
 		let rules = new WordRuleSet(wordToAnalyze);
 		console.log(rules.toString());
 		let matches = Dictionary.getMatchingWords(rules);
-		console.log(matches);
-		let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
-		console.log(resultingPossibleChars.toString());
+		if (matches.length == 0) {
+			// ALERT USER NO MATCHES
+		} else {
+			console.log(matches);
+			let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
+			console.log(resultingPossibleChars.toString());
+			permutationCrack.getPossibleCharacterSet().reduceToOverlappingPossibilities(resultingPossibleChars);
+			updatePermutationComponents();
+		}
 	}
 
 	/** Function to reset the permutation cracker to their default state. */
@@ -167,14 +174,14 @@
 				for (let index = 0; index < 23; index++) {
 					permutationCrack.removeLettersFromPossible(
 						l,
-						[...permutationCrack.getPossibleCharacters(l)][0]
+						[...permutationCrack.getPossibleCharacterSet().getPossibilities(l)][0]
 					);
 				}
 			});
 		} else {
 			permutationCrack.removeLettersFromPossible(
 				selectedPossibilityCharacter,
-				[...permutationCrack.getPossibleCharacters(selectedPossibilityCharacter)][0]
+				[...permutationCrack.getPossibleCharacterSet().getPossibilities(selectedPossibilityCharacter)][0]
 			);
 		}
 	}
@@ -308,8 +315,8 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack.getPossibleCharacters(letter).size > 0
-													? permutationCrack.getPossibleCharacters(letter).size == 1
+												color={permutationCrack.getPossibleCharacterSet().getPossibilities(letter).size > 0
+													? permutationCrack.getPossibleCharacterSet().getPossibilities(letter).size == 1
 														? 'green'
 														: 'yellow'
 													: 'red'}
@@ -329,8 +336,8 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack.getPossibleCharacters(letter).size > 0
-													? permutationCrack.getPossibleCharacters(letter).size == 1
+												color={permutationCrack.getPossibleCharacterSet().getPossibilities(letter).size > 0
+													? permutationCrack.getPossibleCharacterSet().getPossibilities(letter).size == 1
 														? 'green'
 														: 'yellow'
 													: 'red'}
@@ -360,7 +367,7 @@
 									<Input
 										size="sm"
 										disabled
-										value={[...permutationCrack.getPossibleCharacters(selectedPossibilityCharacter)]
+										value={[...permutationCrack.getPossibleCharacterSet().getPossibilities(selectedPossibilityCharacter)]
 											.toString()
 											.replaceAll(',', '')
 											.trim()}
