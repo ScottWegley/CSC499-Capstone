@@ -1,4 +1,4 @@
-import { DEFAULT_ALPHABET } from './CaesarCipher';
+import { DEFAULT_ALPHABET } from "../Util/Dictionary";
 
 /** Function to check if a specified alphabet array is valid. */
 export function isValidAlphabet(toCheck: string[]): boolean {
