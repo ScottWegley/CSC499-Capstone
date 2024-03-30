@@ -1,10 +1,5 @@
 import { DEFAULT_ALPHABET } from '../Util/Dictionary';
 
-/** Function to convert a letter in our uppercase alphabet to it's index in the alphabet. */
-export function getLetterIndex(letter: string): number {
-	return letter.charCodeAt(0) - 65;
-}
-
 /** Function to return an alphabet shifted by a specified amount. */
 export function getCipherAlphabet(shift: number): string[] {
 	while (shift < 0) {

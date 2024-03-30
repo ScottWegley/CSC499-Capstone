@@ -38,6 +38,11 @@ export const DEFAULT_ALPHABET = [
 	'Z'
 ];
 
+/** Function to convert a letter in our uppercase alphabet to it's index in the alphabet. */
+export function getLetterIndex(letter: string): number {
+	return letter.charCodeAt(0) - 65;
+}
+
 /** Class based dictionary tools. */
 export class Dictionary {
 	static ready: boolean = false;
