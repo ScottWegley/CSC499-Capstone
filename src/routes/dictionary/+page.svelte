@@ -22,7 +22,9 @@
 	/** This variable will store our wordlist.  If one exists in storage, use that.  If not, default to our basic word list. */
 	const wordlist = writable(browser && (localStorage.getItem('wordlist') || 'empty'));
 	/** When wordlist changes, update the session storage representation. */
-	wordlist.subscribe((val) => browser && localStorage.setItem('wordlist', val.toString().toUpperCase()));
+	wordlist.subscribe(
+		(val) => browser && localStorage.setItem('wordlist', val.toString().toUpperCase())
+	);
 
 	/** When the page has loaded, unless a different word list exists in memory, grab our default word list and load it. */
 	onMount(async () => {
@@ -45,7 +47,7 @@
 	/** Dynamically pick a wordlist based on filename. */
 	async function resetToAltWordlist(filename: string) {
 		wordlist.set(await getSpecificWordlist(filename));
-		console.log("Setting dictionary to " + filename);
+		console.log('Setting dictionary to ' + filename);
 		resyncDisplayWithSession();
 		(inputFileUpload as HTMLInputElement).value = '';
 		saveAcknowledged = false;
@@ -161,13 +163,18 @@
 
 <title>Dictionary</title>
 
-<div class="text-center">
+<div class="flex flex-col items-center justify-center text-center">
 	<Heading tag="h2" class="mb-4">Dictionary</Heading>
-	<P class="mb-6 text-lg dark:text-gray-400 sm:px-16" align="center" size="sm">
-		This page allows you to customize the default wordlist we use or replace it with your own. <br/>
-		Editing word lists of more than 20,000 words is likely to crash your browser.  For lengthy word lists, edit on your computer and upload the .txt file.
-	</P>
-	<div class="flex min-h-[75%] flex-row justify-center">
+	<div>
+		<P class="mb-6 max-w-4xl text-lg dark:text-gray-400 sm:px-16" align="center" size="sm">
+			This page allows you to customize the default wordlist we use or replace it with your own. <Kbd
+				class="px-1.5 py-1">Shift</Kbd
+			> click the reset button to access larger wordlists we provide understanding that this will put
+			more stress on your browser. Editing word lists of more than 20,000 words is likely to crash your
+			browser. For lengthy word lists, edit on your computer and upload the .txt file.
+		</P>
+	</div>
+	<div class="flex min-h-[75%] min-w-full flex-row justify-center">
 		<Textarea
 			id="wordlist"
 			name="wordlist"
@@ -181,7 +188,7 @@
 		/>
 		<div class="flex flex-col">
 			<Fileupload
-				class="mb-3 ml-3 max-h-10 max-w-64"
+				class="mb-3 ml-3 max-h-10 w-64"
 				accept=".txt"
 				name="fileUpload"
 				on:change={handleFileUpload}
@@ -189,7 +196,7 @@
 			<Button
 				outline
 				color="green"
-				class="mb-1 ml-3 max-w-64"
+				class="mb-1 ml-3 w-64"
 				on:click={() => {
 					if (updateStoredWordlist()) {
 						unsavedChanges = false;
@@ -197,12 +204,13 @@
 					}
 				}}>Save Changes</Button
 			>
-			<Button outline color="red" class="mb-1 ml-3 max-w-64" on:click={resetWordlist}
+			<Button outline color="red" class="mb-1 ml-3 w-64" on:click={resetWordlist}
 				>Reset to Default</Button
 			>
 			<Tooltip
 				>We provide a default wordlist composed of Google's 10,000 most common english words. <br />
-				To select another from our default lists, press <Kbd class="px-1.5 py-1">shift</Kbd> and click the reset button.
+				To select another from our default lists, press <Kbd class="px-1.5 py-1">shift</Kbd> and click
+				the reset button.
 			</Tooltip>
 			<Modal size="xs" bind:open={dictionarySelectPopUp} autoclose>
 				<div class="flex flex-col text-center">
@@ -214,31 +222,25 @@
 								resetToAltWordlist('small.txt');
 							}}>Small</Button
 						>
-						<Tooltip>
-							Composed of 20,000 Words.
-						</Tooltip>
+						<Tooltip>Composed of 20,000 Words.</Tooltip>
 						<Button
 							class=""
 							on:click={() => {
 								resetToAltWordlist('medium.txt');
 							}}>Medium</Button
 						>
-						<Tooltip>
-							Composed of 30,000 Words.
-						</Tooltip>
+						<Tooltip>Composed of 30,000 Words.</Tooltip>
 						<Button
 							class="ml-3"
 							on:click={() => {
 								resetToAltWordlist('large.txt');
 							}}>Large</Button
 						>
-						<Tooltip>
-							Composed of ~63,000 Words.
-						</Tooltip>
+						<Tooltip>Composed of ~63,000 Words.</Tooltip>
 					</div>
 				</div>
 			</Modal>
-			<Button outline color="yellow" class="ml-3 max-w-64" on:click={downloadDictionary}>
+			<Button outline color="yellow" class="ml-3 w-64" on:click={downloadDictionary}>
 				Download Dictionary
 			</Button>
 		</div>
