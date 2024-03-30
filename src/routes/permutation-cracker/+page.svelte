@@ -25,7 +25,8 @@
 		ButtonGroup,
 		Input,
 		Select,
-		Kbd
+		Kbd,
+		Modal
 	} from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 	import { PossibleCharacterSet } from '$lib/scripts/Cracking/Permutation/PossibleCharacterSet';
@@ -34,7 +35,7 @@
 	// PERMED VERSION OF INPUT TEXT
 	/** Stores the text given to us by the user. */
 	$: inputText =
-		'GKVYYOCB SVEMNJDJF TPCLSONCDK O DE SWV GNNI FNP YWDKK JVDZ SWOY ZDF D LJOYOY GVTDKKY SWV KDCZ UWDSVRVJ SWNPBWSY DJV OEMNYYOGKV';
+		"EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG";
 	// $: inputText = "BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE";
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
@@ -86,8 +87,6 @@
 	let selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 	/** Variable to update whenever we want to refresh permutation crack dependent components. */
 	let permutationUpdateTracker = 0;
-	/** The current word the user wants to analyze to reduce the possibilities. */
-	let wordToAnalyze = '';
 
 	/** Public access for the results of a permutation crack. */
 	let permutationResults: PermutationResultData = new PermutationResultData(
@@ -112,8 +111,15 @@
 		crackInProgress = true;
 	}
 
+	/** The current word the user wants to analyze to reduce the possibilities. */
+	let wordToAnalyze = '';
+	/** Tracks whether the analysis modal is open. */
+	let analysisCustomizationWindow = false;
+	/** Tracks how many times the batch analysis is supposed to run. */
+	let batchAnalysisCount = 1;
+
 	/** Runs our analysis and subsequent reduction functions on the selected word. */
-	function analyzeSelectedWord(e: Event) {
+	function analyzeButtonClick(e: Event) {
 		if (
 			(inputText.indexOf(wordToAnalyze) == -1 || wordToAnalyze.length < 1) &&
 			!(e as PointerEvent).shiftKey
@@ -122,25 +128,7 @@
 			return;
 		}
 		if ((e as PointerEvent).shiftKey) {
-			// TODO: Custom analysis window
-			generateWordAnalysisItems(inputText).forEach((item) => {
-				let rules = new WordRuleSet(item.name);
-				let matches = Dictionary.getMatchingWords(
-					rules,
-					item.name,
-					permutationCrack.getPossibleCharacterSet()
-				);
-				if (matches.length == 0) {
-					console.log('No word matches.');
-					// ALERT USER NO MATCHES
-				} else {
-					let resultingPossibleChars = new PossibleCharacterSet(item.name, matches);
-					permutationCrack
-						.getPossibleCharacterSet()
-						.reduceToOverlappingPossibilities(resultingPossibleChars);
-					updatePermutationComponents();
-				}
-			});
+			analysisCustomizationWindow = true;
 		} else {
 			let rules = new WordRuleSet(wordToAnalyze);
 			let matches = Dictionary.getMatchingWords(
@@ -149,7 +137,7 @@
 				permutationCrack.getPossibleCharacterSet()
 			);
 			if (matches.length == 0) {
-				console.log('No word matches.');
+				console.log('No word matches for ' + wordToAnalyze);
 				// ALERT USER NO MATCHES
 			} else {
 				let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
@@ -161,10 +149,35 @@
 		}
 	}
 
+	function runBatchAnalysis(rounds: number) {
+		for (let i = 0; i < rounds; i++) {
+			generateWordAnalysisItems(inputText).forEach((item) => {
+				let rules = new WordRuleSet(item.name);
+				let matches = Dictionary.getMatchingWords(
+					rules,
+					item.name,
+					permutationCrack.getPossibleCharacterSet()
+				);
+				if (matches.length == 0) {
+					console.log('No word matches for ' + item.name);
+					// ALERT USER NO MATCHES
+				} else {
+					let resultingPossibleChars = new PossibleCharacterSet(item.name, matches);
+					permutationCrack
+						.getPossibleCharacterSet()
+						.reduceToOverlappingPossibilities(resultingPossibleChars);
+					updatePermutationComponents();
+				}
+			});
+		}
+		analysisCustomizationWindow = false;
+	}
+
 	/** Function to reset the permutation cracker to their default state. */
 	function resetPermutationCracking() {
 		crackInProgress = false;
 		wordToAnalyze = '';
+		analysisCustomizationWindow = false;
 		selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
 		permutationCrack = new PermutationCrack(
@@ -239,9 +252,10 @@
 		This page hosts a tool for cracking text encrypted by a Permutation Cipher. Due to the nature of
 		a Permutation Cipher, it will crack text encrypted by a Caesar Cipher too. Tooltips on every
 		element are enabled by default and recommended if this is your first time with this tool. Hover
-		over an element to see these tips. For this tool to work, I recommended that you use an
-		incredibly lengthy word list for permutation cracking. If a word in your encrypted text is not
-		in the dictionary you use, this tool may not work.
+		over an element to see these tips. For this tool to work, I recommend that you use an incredibly
+		lengthy word list for permutation cracking. If a word in your encrypted text is not in the
+		dictionary you use, this tool may not work. Your browser may stall while running a number of the
+		functions of this page; give it time to finish.
 	</P>
 	<div class="flex w-full flex-col content-center items-center justify-center">
 		<div class="flex w-full flex-row justify-center justify-self-center" id="panel-parent">
@@ -263,8 +277,8 @@
 					{#if tooltipsActive}
 						<Tooltip class="max-w-64"
 							>If you know your input text was encrypted with specifically a Caesar Cipher, turn
-							this switch on. The page will use Caesar specific cracking techniques and decrypt
-							the text exponentially faster.
+							this switch on. The page will use Caesar specific cracking techniques and decrypt the
+							text exponentially faster.
 						</Tooltip>
 					{/if}
 					<Toggle size="small" bind:checked={displayResults} class="mb-3">Display Results</Toggle>
@@ -362,9 +376,9 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack.getPossibleCharacterSet().getPossibilities(letter)
+												color={permutationCrack.getPossibleCharacterSet().getPossibilitiesForLetter(letter)
 													.size > 0
-													? permutationCrack.getPossibleCharacterSet().getPossibilities(letter)
+													? permutationCrack.getPossibleCharacterSet().getPossibilitiesForLetter(letter)
 															.size == 1
 														? 'green'
 														: 'yellow'
@@ -385,9 +399,9 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack.getPossibleCharacterSet().getPossibilities(letter)
+												color={permutationCrack.getPossibleCharacterSet().getPossibilitiesForLetter(letter)
 													.size > 0
-													? permutationCrack.getPossibleCharacterSet().getPossibilities(letter)
+													? permutationCrack.getPossibleCharacterSet().getPossibilitiesForLetter(letter)
 															.size == 1
 														? 'green'
 														: 'yellow'
@@ -422,7 +436,7 @@
 										value={[
 											...permutationCrack
 												.getPossibleCharacterSet()
-												.getPossibilities(selectedPossibilityCharacter)
+												.getPossibilitiesForLetter(selectedPossibilityCharacter)
 										]
 											.toString()
 											.replaceAll(',', '')
@@ -446,16 +460,55 @@
 											items={generateWordAnalysisItems(inputText)}
 											bind:value={wordToAnalyze}
 										></Select>
-										<Button class="mt-1" size="xs" color="purple" on:click={analyzeSelectedWord}
+										<Button class="mt-1" size="xs" color="purple" on:click={analyzeButtonClick}
 											>Analyze</Button
 										>
 										{#if tooltipsActive}
-											<Tooltip class="text-center max-w-64">
+											<Tooltip class="max-w-64 text-center">
 												When you run word analysis, we look for patterns in the selected word and
-												use it to reduce the number of possible alphabets. Press <Kbd>Shift</Kbd> and
-												click for customization options.
+												use it to reduce the number of possible alphabets. Press <Kbd
+													class="px-1.5 py-1">shift</Kbd
+												> and click for customization options.
 											</Tooltip>
 										{/if}
+										<!-- #region Analysis Modal -->
+										<Modal size="xs" bind:open={analysisCustomizationWindow}>
+											<div class="flex flex-col items-center justify-center text-center">
+												<Heading tag="h5" class="mb-4">Batch Analysis</Heading>
+												<div class="text-left">
+													<Label><span class="text-xs">Batch Analysis Rounds</span></Label>
+													<div class="mt-1 flex flex-col items-center text-center">
+														<Input
+															type="number"
+															bind:value={batchAnalysisCount}
+															size="sm"
+															class="w-36"
+															on:change={() => {
+																if (batchAnalysisCount < 1) {
+																	batchAnalysisCount = 1;
+																}
+															}}
+														></Input>
+														<Button
+															size="xs"
+															class="mt-1 w-36"
+															color="purple"
+															outline
+															on:click={() => {
+																runBatchAnalysis(batchAnalysisCount);
+															}}>Run Batch Analysis</Button
+														>
+														{#if tooltipsActive}
+															<Tooltip class="max-w-64">
+																This will iterate over every word in your input text and run the
+																analysis however many times you specify.
+															</Tooltip>
+														{/if}
+													</div>
+												</div>
+											</div>
+										</Modal>
+										<!-- #endregion -->
 									</div>
 								</Label>
 							</div>
