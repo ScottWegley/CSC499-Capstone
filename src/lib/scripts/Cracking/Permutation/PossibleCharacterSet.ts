@@ -1,7 +1,10 @@
-import { DEFAULT_ALPHABET } from '$lib/scripts/Util/Dictionary';
+import { DEFAULT_ALPHABET, getLetterIndex } from '$lib/scripts/Util/Dictionary';
 
 export class PossibleCharacterSet {
+	/** Maps characters to the list of possible equivalent characters. */
 	private possibleChars: Map<string, Set<string>> = new Map<string, Set<string>>();
+	/** The limit on how many alphabets you can safely iterate over before the browser crashes. */
+	private safeGenerationLimit: number = 200000;
 
 	/** Creates list of possible characters. */
 	public constructor(word?: string, matches?: string[]) {
@@ -26,8 +29,70 @@ export class PossibleCharacterSet {
 		return this.possibleChars;
 	}
 
+	/** Returns the limit on how many alphabets you can safely iterate over before the browser crashes. */
+	public getSafeGenerationLimit(): number{
+		return this.safeGenerationLimit;
+	}
+
+	/** Returns a list of all possible alphabets.  Function will exit prematurely if there are too many possibilities.*/
+	public requestPossibleAlphabets() {
+		if (this.calculatePossibleAlphabets() > this.safeGenerationLimit) {
+			console.log('Too many possible alphabets, aborting.');
+			return;
+		}
+		let allAlphabets: Set<string[]> = new Set<string[]>();
+		this.generateAlphabet([], '', this.getRelevantHeaders(), (alphabet: string[]) => {
+			allAlphabets.add(alphabet);
+		});
+		return allAlphabets;
+	}
+
+	/** Return a collection of headers that have possibilities. */
+	public getRelevantHeaders(): Set<string> {
+		let headers: Set<string> = new Set<string>();
+		this.possibleChars.forEach((characters, header) => {
+			if (characters.size != 0) {
+				headers.add(header);
+			}
+		});
+		return headers;
+	}
+
+	private generateAlphabet(
+		prevIteration: string[],
+		prevHeader: string,
+		validHeaders: Set<string>,
+		storeAlphabet: (alphabet: string[]) => void
+	) {
+		let currentIteration = [...prevIteration];
+		if (prevHeader == 'Z') {
+			storeAlphabet(currentIteration);
+		} else {
+			let curHeader: string =
+				prevHeader == '' ? 'A' : DEFAULT_ALPHABET[getLetterIndex(prevHeader) + 1];
+			if (!validHeaders.has(curHeader)) {
+				this.generateAlphabet([...currentIteration, '?'], curHeader, validHeaders, storeAlphabet);
+			} else {
+				let toTraverse: string[] = [];
+				this.getPossibilitiesForLetter(curHeader).forEach((letter) => {
+					if (currentIteration.indexOf(letter) == -1) {
+						toTraverse.push(letter);
+					}
+				});
+				toTraverse.forEach((letter) => {
+					this.generateAlphabet(
+						[...currentIteration, letter],
+						curHeader,
+						validHeaders,
+						storeAlphabet
+					);
+				});
+			}
+		}
+	}
+
 	/** Returns the possible characters corresponding to a specified header character. */
-	public getPossibilities(header: string) {
+	public getPossibilitiesForLetter(header: string) {
 		return this.possibleChars.get(header) ?? new Set<string>();
 	}
 
@@ -45,11 +110,12 @@ export class PossibleCharacterSet {
 	}
 
 	/** Loosely accurate check for if a given word can exists in our possibilities. */
-	public canContainWord(sourceWord: string, checkWord: string): boolean{
+	public canContainWord(sourceWord: string, checkWord: string): boolean {
 		let possible = true;
-		for(let i = 0; i < sourceWord.length; i++){
-			if(this.possibleChars.has(sourceWord.charAt(i))){
-				possible = possible && this.possibleChars.get(sourceWord.charAt(i))!.has(checkWord.charAt(i));
+		for (let i = 0; i < sourceWord.length; i++) {
+			if (this.possibleChars.has(sourceWord.charAt(i))) {
+				possible =
+					possible && this.possibleChars.get(sourceWord.charAt(i))!.has(checkWord.charAt(i));
 			} else {
 				possible = false;
 			}
@@ -60,10 +126,10 @@ export class PossibleCharacterSet {
 	/** Modifies the calling PossibleCharacterSet possibility sets, reducing them to only values that show up in both sets. */
 	public reduceToOverlappingPossibilities(comparison: PossibleCharacterSet) {
 		this.possibleChars.forEach((characterSet, header) => {
-			if (comparison.getPossibilities(header).size != 0) {
+			if (comparison.getPossibilitiesForLetter(header).size != 0) {
 				characterSet.forEach((c) => {
-					if (!comparison.getPossibilities(header).has(c)) {
-						this.prunePossibleLetters(header,[c]);
+					if (!comparison.getPossibilitiesForLetter(header).has(c)) {
+						this.prunePossibleLetters(header, [c]);
 					}
 				});
 			}
@@ -71,11 +137,11 @@ export class PossibleCharacterSet {
 	}
 
 	/** Function to check every set of possible characters.  If a character only has one possibility, remove that possibility from all other characters. */
-	public removeSolvedLetters(){
-		this.possibleChars.forEach((checkSet,checkKey) => {
-			if(checkSet.size == 1){
+	public removeSolvedLetters() {
+		this.possibleChars.forEach((checkSet, checkKey) => {
+			if (checkSet.size == 1) {
 				this.possibleChars.forEach((modSet, modKey) => {
-					if(modKey != checkKey){
+					if (modKey != checkKey) {
 						modSet.delete([...checkSet][0]);
 					}
 				});
@@ -92,6 +158,7 @@ export class PossibleCharacterSet {
 			}
 		});
 		return total;
+		// TODO: Speak to Dr. V and Zane about a way to improve this calculation.
 	}
 
 	/** Returns a string representation of the PossibleCharacterSet. */
