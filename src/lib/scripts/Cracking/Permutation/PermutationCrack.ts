@@ -52,4 +52,16 @@ export class PermutationCrack extends CipherCracker {
 		});
 		this.updateComponents();
 	}
+
+	/** Returns report data for all possible alphabets applied to the input text.  Returns nothing if there number of possible alphabets is above the safe limit. */
+	public fullReport(){
+		if(this.possibleCharacters.calculatePossibleAlphabets() > this.possibleCharacters.getSafeGenerationLimit()){
+			return;
+		}
+		// TODO: gen possible alphabets, apply them, apply mutators, populate results data.
+	}
+
+	public modifiedReport(){
+
+	}
 }
