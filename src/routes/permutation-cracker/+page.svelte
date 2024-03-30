@@ -35,7 +35,7 @@
 	// PERMED VERSION OF INPUT TEXT
 	/** Stores the text given to us by the user. */
 	$: inputText =
-		"EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG";
+		'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
 	// $: inputText = "BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE";
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
@@ -221,25 +221,10 @@
 	function debugButton(e: Event) {
 		if ((e as PointerEvent).shiftKey) {
 		} else {
-			let rules = new WordRuleSet(wordToAnalyze);
-			console.log(rules.toString());
-			let matches = Dictionary.getMatchingWords(
-				rules,
-				wordToAnalyze,
-				permutationCrack.getPossibleCharacterSet()
-			);
-			if (matches.length == 0) {
-				console.log('No word matches.');
-				// ALERT USER NO MATCHES
-			} else {
-				console.log(matches);
-				let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
-				console.log(resultingPossibleChars.toString());
-				permutationCrack
-					.getPossibleCharacterSet()
-					.reduceToOverlappingPossibilities(resultingPossibleChars);
-				updatePermutationComponents();
-			}
+			let alphabets =
+				permutationCrack.getPossibleCharacterSet().requestPossibleAlphabets() ??
+				new Set<string[]>();
+			console.log(alphabets.size + ' Alphabets');
 		}
 	}
 </script>
@@ -376,10 +361,12 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack.getPossibleCharacterSet().getPossibilitiesForLetter(letter)
-													.size > 0
-													? permutationCrack.getPossibleCharacterSet().getPossibilitiesForLetter(letter)
-															.size == 1
+												color={permutationCrack
+													.getPossibleCharacterSet()
+													.getPossibilitiesForLetter(letter).size > 0
+													? permutationCrack
+															.getPossibleCharacterSet()
+															.getPossibilitiesForLetter(letter).size == 1
 														? 'green'
 														: 'yellow'
 													: 'red'}
@@ -399,10 +386,12 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack.getPossibleCharacterSet().getPossibilitiesForLetter(letter)
-													.size > 0
-													? permutationCrack.getPossibleCharacterSet().getPossibilitiesForLetter(letter)
-															.size == 1
+												color={permutationCrack
+													.getPossibleCharacterSet()
+													.getPossibilitiesForLetter(letter).size > 0
+													? permutationCrack
+															.getPossibleCharacterSet()
+															.getPossibilitiesForLetter(letter).size == 1
 														? 'green'
 														: 'yellow'
 													: 'red'}
@@ -424,6 +413,7 @@
 						{/if}
 						<!-- #endregion -->
 						<div id="permutation-settings">
+							<!-- #region Display Possible Characters -->
 							<div id="character-possibility" class="text-left">
 								{#key permutationUpdateTracker}
 									<Label class="block"
@@ -444,12 +434,15 @@
 									></Input>
 									<Label class="mt-1 block"
 										><span class="text-xs"
-											>{permutationCrack.getPossibleCharacterSet().calculatePossibleAlphabets()} Remaining
-											Alphabets</span
+											>Less Than {permutationCrack
+												.getPossibleCharacterSet()
+												.calculatePossibleAlphabets()} Remaining Alphabets</span
 										></Label
 									>
 								{/key}
 							</div>
+							<!-- #endregion -->
+							<!-- #region Analyze Words -->
 							<div id="reduce-by-word" class="mt-3 text-left">
 								<Label
 									><span class="text-xs">Word to Analyze</span>
@@ -512,6 +505,9 @@
 									</div>
 								</Label>
 							</div>
+							<!-- #endregion -->
+							<!-- #region  -->
+							<div id="result-generation-buttons"></div>
 							<Button on:click={debugButton} class="mt-3"></Button>
 						</div>
 					</div>
