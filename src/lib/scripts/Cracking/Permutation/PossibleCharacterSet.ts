@@ -1,10 +1,11 @@
 import { DEFAULT_ALPHABET, getLetterIndex } from '$lib/scripts/Util/Dictionary';
+import { basedQuickSort } from '$lib/scripts/Util/QuickSort';
 
 export class PossibleCharacterSet {
 	/** Maps characters to the list of possible equivalent characters. */
 	private possibleChars: Map<string, Set<string>> = new Map<string, Set<string>>();
 	/** The limit on how many alphabets you can safely iterate over before the browser crashes. */
-	private safeGenerationLimit: number = 200000;
+	private safeGenerationLimit: number = 1000000000;
 
 	/** Creates list of possible characters. */
 	public constructor(word?: string, matches?: string[]) {
@@ -36,7 +37,7 @@ export class PossibleCharacterSet {
 
 	/** Returns a list of all possible alphabets.  Function will exit prematurely if there are too many possibilities.*/
 	public requestPossibleAlphabets() {
-		if (this.calculatePossibleAlphabets() > this.safeGenerationLimit) {
+		if (this.calculateCombinations() > this.safeGenerationLimit) {
 			console.log('Too many possible alphabets, aborting.');
 			return;
 		}
@@ -149,8 +150,8 @@ export class PossibleCharacterSet {
 		});
 	}
 
-	/** Returns the number of alphabets we could generate based on the current possibilities. */
-	public calculatePossibleAlphabets(): number {
+	/** Returns the number of combinations we could generate based on the current possibilities. */
+	public calculateCombinations(): number {
 		let total = 1;
 		this.possibleChars.forEach((value) => {
 			if (value.size != 0) {
@@ -158,13 +159,44 @@ export class PossibleCharacterSet {
 			}
 		});
 		return total;
-		// TODO: Speak to Dr. V and Zane about a way to improve this calculation.
+		// TODO: Speak to Dr. V and about a way to improve this calculation.
+	}
+
+	/** Calculates a slightly more accurate number of alphabet combinations */
+	public calculateCombinationsSequal(): number {
+		let sizes:number[] = [];
+		this.possibleChars.forEach((value) => {
+			sizes.push(value.size);
+		});
+		basedQuickSort(sizes);
+		console.log(sizes);
+		let total = sizes[sizes.length-1];
+		let currentMax = total - 1;
+		let logString = `${total} * `;
+		for(let i = sizes.length - 2; i >= 0; i--){
+			let toMult = 1;
+			if(sizes[i] > currentMax){
+				toMult = currentMax;
+			} else {
+				toMult = sizes[i];
+				currentMax = sizes[i];
+			}
+
+			if(toMult < 1){
+				toMult = 1;
+			}
+			total *= toMult;
+			logString += `${toMult} * `
+			currentMax--;
+		}
+		console.log(logString);
+		return total;
 	}
 
 	/** Returns a string representation of the PossibleCharacterSet. */
 	public toString(): string {
 		let output = `Possible Character Set`;
-		output += `\n ${this.calculatePossibleAlphabets()} Alphabets`;
+		output += `\n ${this.calculateCombinations()} Alphabets`;
 		this.possibleChars.forEach((value, key) => {
 			output += `\n${key}: ${[...value].toString()}`;
 		});

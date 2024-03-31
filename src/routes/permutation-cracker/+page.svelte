@@ -221,10 +221,12 @@
 	function debugButton(e: Event) {
 		if ((e as PointerEvent).shiftKey) {
 		} else {
+			console.log(permutationCrack.getPossibleCharacterSet().calculateCombinations() + " Original Prediction");
+			console.log(permutationCrack.getPossibleCharacterSet().calculateCombinationsSequal() + " Revised Prediction");
 			let alphabets =
 				permutationCrack.getPossibleCharacterSet().requestPossibleAlphabets() ??
 				new Set<string[]>();
-			console.log(alphabets.size + ' Alphabets');
+			console.log(alphabets.size + ' Actual Alphabets');
 		}
 	}
 </script>
@@ -436,7 +438,7 @@
 										><span class="text-xs"
 											>Less Than {permutationCrack
 												.getPossibleCharacterSet()
-												.calculatePossibleAlphabets()} Remaining Alphabets</span
+												.calculateCombinations()} Remaining Alphabets</span
 										></Label
 									>
 								{/key}

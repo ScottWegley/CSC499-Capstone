@@ -2,6 +2,7 @@ import { caesarDecryption } from '../../Ciphers/CaesarCipher';
 import { CipherCracker } from '../Generic/CipherCrack';
 import { CaesarResultData } from './CaesarResultData';
 import { DEFAULT_ALPHABET, Dictionary } from '../../Util/Dictionary';
+import { basedQuickSort } from '$lib/scripts/Util/QuickSort';
 
 /** Class to bruteforce crack a Caesar Cipher encrypted piece of text. */
 export class CaesarCrack extends CipherCracker {
@@ -40,7 +41,7 @@ export class CaesarCrack extends CipherCracker {
 		threshold: number = 0,
 		percentage: number = 1
 	): CaesarResultData {
-		CipherCracker.basedQuickSort(accuracy, [results, shifts]);
+		basedQuickSort(accuracy, [results, shifts]);
 		let outResults: string[] = [];
 		let outAccuracy: number[] = [];
 		let outShift: number[] = [];
