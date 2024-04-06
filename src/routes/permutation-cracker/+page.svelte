@@ -160,6 +160,7 @@
 		}
 	}
 
+	/** Function to handle manual updates to the possible character sets. */
 	function updatePossibleCharacters(e: Event) {
 		let proposedCharSet = (e.srcElement as HTMLInputElement).value;
 		proposedCharSet = sanitizeInput(proposedCharSet).replaceAll(' ', '').replaceAll(',', '');
@@ -211,6 +212,9 @@
 			updatePermutationComponents
 		);
 	}
+
+	/** Tracks whether the rerport modal is true. */
+	let reportCustomizationWindow = false;
 	// #endregion
 
 	// #region Caesar Data and Functions
@@ -468,10 +472,14 @@
 										on:change={updatePossibleCharacters}
 									></Input>
 									<Label class="mt-1 block"
-										><span class="text-xs "
-											>Less Than <span class={(permutationCrack
-												.getPossibleCharacterSet()
-												.calculateCombinationsOvercorrection() < PossibleCharacterSet.getSafeGenerationLimit() ? "text-green-600" : "text-red-600")}
+										><span class="text-xs"
+											>Less Than <span
+												class={permutationCrack
+													.getPossibleCharacterSet()
+													.calculateCombinationsOvercorrection() <
+												PossibleCharacterSet.getSafeGenerationLimit()
+													? 'text-green-600'
+													: 'text-red-600'}
 												>{permutationCrack
 													.getPossibleCharacterSet()
 													.calculateCombinationsOvercorrection()
@@ -554,8 +562,32 @@
 							<!-- #endregion -->
 							<!-- #region Result Generation -->
 							<div id="result-generation-buttons" class="mt-3">
-								<Button class="w-full">Get Results</Button>
+								<Button
+									class="w-full"
+									on:click={() => {
+										reportCustomizationWindow = true;
+									}}>Get Results</Button
+								>
 								<!-- TODO: Result Gen Modal -->
+								<!-- #region Report Modal -->
+								<Modal size="lg" bind:open={reportCustomizationWindow}>
+									<div class="flex flex-col items-center justify-center text-center">
+										<Heading tag="h5" class="mb-1">Report Generator</Heading>
+										<P class="text-md mb-2 dark:text-gray-400 sm:px-16" align="center" size="sm">
+											This window allows you to customize your report before you generate it. Any
+											report may not contain the full answer, but it might contain clues that bring
+											you closer to it.
+										</P>
+										<div>
+											<!-- TODO: Select which letters to include. -->
+											<!-- TODO: Allow users to customize possibilities for the report specifically. -->
+										</div>
+										<div>
+											<Button>Generate Results</Button>
+										</div>
+									</div>
+								</Modal>
+								<!-- #endregion -->
 							</div>
 							<!-- #endregion -->
 							<Button on:click={debugButton} class="mt-3"></Button>

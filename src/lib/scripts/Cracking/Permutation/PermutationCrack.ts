@@ -53,14 +53,13 @@ export class PermutationCrack extends CipherCracker {
 		this.updateComponents();
 	}
 
-	/** Returns report data for all possible alphabets applied to the input text.  Returns nothing if there number of possible alphabets is above the safe limit. */
+	/** Returns report data for all possible alphabets applied to the input text.*/
 	public fullReport(){
-		if(this.possibleCharacters.calculateCombinations() > this.possibleCharacters.getSafeGenerationLimit()){
-			return;
-		}
+		
 		// TODO: gen possible alphabets, apply them, apply mutators, populate results data.
 	}
-
+	
+	/** Returns reports with modified data. */
 	public modifiedReport(){
 
 	}
