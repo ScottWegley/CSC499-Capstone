@@ -4,8 +4,10 @@ import { basedQuickSort } from '$lib/scripts/Util/QuickSort';
 export class PossibleCharacterSet {
 	/** Maps characters to the list of possible equivalent characters. */
 	private possibleChars: Map<string, Set<string>> = new Map<string, Set<string>>();
-	/** The limit on how many alphabets you can safely iterate over before the browser crashes. */
-	private safeGenerationLimit: number = 1000000000;
+	/** The limit on how many alphabets you should safely iterate over before risking browser crashes. */
+	private static safeGenerationLimit: number = 100_000_000;
+	/** A boolean representing whether we should bother checking generation limits. */
+	private static safeMode: boolean = true;
 
 	/** Creates list of possible characters. */
 	public constructor(word?: string, matches?: string[]) {
@@ -30,14 +32,24 @@ export class PossibleCharacterSet {
 		return this.possibleChars;
 	}
 
+	/** Disables safety features of this class. */
+	public static disableSafety() {
+		this.safeMode = false;
+	}
+
+	/** Enables safety features of this class. */
+	public static enableSafety() {
+		this.safeMode = true;
+	}
+
 	/** Returns the limit on how many alphabets you can safely iterate over before the browser crashes. */
-	public getSafeGenerationLimit(): number{
+	public static getSafeGenerationLimit(): number{
 		return this.safeGenerationLimit;
 	}
 
 	/** Returns a list of all possible alphabets.  Function will exit prematurely if there are too many possibilities.*/
 	public requestPossibleAlphabets() {
-		if (this.calculateCombinations() > this.safeGenerationLimit) {
+		if (this.calculateCombinationsOvercorrection() > PossibleCharacterSet.safeGenerationLimit && PossibleCharacterSet.safeMode) {
 			console.log('Too many possible alphabets, aborting.');
 			return;
 		}
@@ -95,6 +107,11 @@ export class PossibleCharacterSet {
 	/** Returns the possible characters corresponding to a specified header character. */
 	public getPossibilitiesForLetter(header: string) {
 		return this.possibleChars.get(header) ?? new Set<string>();
+	}
+
+	public setPossibilitiesForLetter(header: string, possibilities: Set<string>){
+		this.possibleChars.set(header,possibilities);
+		this.removeSolvedLetters()
 	}
 
 	/** Removes specified letters from the list of possible characters corresponding to a specified header character. */
@@ -159,17 +176,15 @@ export class PossibleCharacterSet {
 			}
 		});
 		return total;
-		// TODO: Speak to Dr. V and about a way to improve this calculation.
 	}
 
 	/** Calculates a slightly more accurate number of alphabet combinations */
-	public calculateCombinationsSequal(): number {
+	public calculateCombinationsOvercorrection(): number {
 		let sizes:number[] = [];
 		this.possibleChars.forEach((value) => {
 			sizes.push(value.size);
 		});
 		basedQuickSort(sizes);
-		console.log(sizes);
 		let total = sizes[sizes.length-1];
 		let currentMax = total - 1;
 		let logString = `${total} * `;
@@ -189,14 +204,13 @@ export class PossibleCharacterSet {
 			logString += `${toMult} * `
 			currentMax--;
 		}
-		console.log(logString);
 		return total;
 	}
 
 	/** Returns a string representation of the PossibleCharacterSet. */
 	public toString(): string {
 		let output = `Possible Character Set`;
-		output += `\n ${this.calculateCombinations()} Alphabets`;
+		output += `\n ${this.calculateCombinationsOvercorrection()} Alphabets`
 		this.possibleChars.forEach((value, key) => {
 			output += `\n${key}: ${[...value].toString()}`;
 		});

@@ -32,7 +32,6 @@
 	import { PossibleCharacterSet } from '$lib/scripts/Cracking/Permutation/PossibleCharacterSet';
 
 	// #region Global Settings & Functions
-	// PERMED VERSION OF INPUT TEXT
 	/** Stores the text given to us by the user. */
 	$: inputText =
 		'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
@@ -51,6 +50,8 @@
 	let ascendingResults = false;
 	/** Whether or not the results should be displayed. */
 	let displayResults = true;
+	/** Whether or not the user has access to advanced features. */
+	let advancedMode = true;
 
 	/** Make sure the dictionary has been loaded so we don't do async shenanigans.*/
 	onMount(async () => {
@@ -65,6 +66,16 @@
 	/** Function to add things to our real word set. */
 	function addToRealWords(word: string) {
 		realWordSet.add(word);
+	}
+
+	/** Handles any switching for advanced features. */
+	function toggleAdvancedMode(){
+		if(advancedMode){
+			PossibleCharacterSet.disableSafety();
+		} else {
+			PossibleCharacterSet.enableSafety();
+		}
+		return;
 	}
 
 	/** Push unique items for the analysis dropdown. */
@@ -149,6 +160,15 @@
 		}
 	}
 
+	function updatePossibleCharacters(e: Event) {
+		let proposedCharSet = (e.srcElement as HTMLInputElement).value;
+		proposedCharSet = sanitizeInput(proposedCharSet).replaceAll(' ','').replaceAll(',','');
+		proposedCharSet = [...new Set(proposedCharSet.split(''))].join('');
+		permutationCrack.getPossibleCharacterSet().setPossibilitiesForLetter(selectedPossibilityCharacter,new Set(proposedCharSet.split('')));
+
+		updatePermutationComponents();
+	}
+
 	function runBatchAnalysis(rounds: number) {
 		for (let i = 0; i < rounds; i++) {
 			generateWordAnalysisItems(inputText).forEach((item) => {
@@ -221,8 +241,10 @@
 	function debugButton(e: Event) {
 		if ((e as PointerEvent).shiftKey) {
 		} else {
-			console.log(permutationCrack.getPossibleCharacterSet().calculateCombinations() + " Original Prediction");
-			console.log(permutationCrack.getPossibleCharacterSet().calculateCombinationsSequal() + " Revised Prediction");
+			console.log(
+				permutationCrack.getPossibleCharacterSet().calculateCombinationsOvercorrection() +
+					' Revised Prediction'
+			);
 			let alphabets =
 				permutationCrack.getPossibleCharacterSet().requestPossibleAlphabets() ??
 				new Set<string[]>();
@@ -249,6 +271,10 @@
 			<!-- #region Application Settings -->
 			<Card class="min-w-5/6 mr-1 max-w-fit">
 				<div class="min-w-5/6 flex flex-col justify-center" id="control-panel">
+					<Toggle size="small" bind:checked={advancedMode} class="mb-3" on:change={toggleAdvancedMode}>Advanced Mode</Toggle>
+					{#if tooltipsActive}
+						<Tooltip>Enables advanced feeatures of the app. USE AT YOUR OWN RISK.</Tooltip>
+					{/if}
 					<Toggle size="small" bind:checked={tooltipsActive} class="mb-3">Toggle Tooltips</Toggle>
 					{#if tooltipsActive}
 						<Tooltip>Toggle this switch to turn tooltips on/off</Tooltip>
@@ -277,9 +303,8 @@
 					>
 					{#if tooltipsActive}
 						<Tooltip
-							>Display results in {ascendingResults ? 'ascending' : 'descending'} accuracy. Click to
-							toggle.</Tooltip
-						>
+							>Toggle to show results in {!ascendingResults ? 'ascending' : 'descending'} accuracy.
+						</Tooltip>
 					{/if}
 					<Label class="mb-1.5">{'Accuracy Threshold: ' + accuracyThreshold + '%'}</Label>
 					{#if tooltipsActive}
@@ -424,7 +449,7 @@
 									>
 									<Input
 										size="sm"
-										disabled
+										disabled={!advancedMode}
 										value={[
 											...permutationCrack
 												.getPossibleCharacterSet()
@@ -433,14 +458,22 @@
 											.toString()
 											.replaceAll(',', '')
 											.trim()}
+										on:change={updatePossibleCharacters}
 									></Input>
 									<Label class="mt-1 block"
 										><span class="text-xs"
 											>Less Than {permutationCrack
 												.getPossibleCharacterSet()
-												.calculateCombinations()} Remaining Alphabets</span
+												.calculateCombinationsOvercorrection()
+												.toLocaleString()} Remaining Alphabets</span
 										></Label
 									>
+									{#if tooltipsActive}
+										<Tooltip class="max-w-64 text-center">
+											It is not reccomended to generate a report if there are more than 100,000,000
+											Alphabets remaining.
+										</Tooltip>
+									{/if}
 								{/key}
 							</div>
 							<!-- #endregion -->
