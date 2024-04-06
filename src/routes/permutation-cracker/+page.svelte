@@ -69,8 +69,8 @@
 	}
 
 	/** Handles any switching for advanced features. */
-	function toggleAdvancedMode(){
-		if(advancedMode){
+	function toggleAdvancedMode() {
+		if (advancedMode) {
 			PossibleCharacterSet.disableSafety();
 		} else {
 			PossibleCharacterSet.enableSafety();
@@ -162,9 +162,11 @@
 
 	function updatePossibleCharacters(e: Event) {
 		let proposedCharSet = (e.srcElement as HTMLInputElement).value;
-		proposedCharSet = sanitizeInput(proposedCharSet).replaceAll(' ','').replaceAll(',','');
+		proposedCharSet = sanitizeInput(proposedCharSet).replaceAll(' ', '').replaceAll(',', '');
 		proposedCharSet = [...new Set(proposedCharSet.split(''))].join('');
-		permutationCrack.getPossibleCharacterSet().setPossibilitiesForLetter(selectedPossibilityCharacter,new Set(proposedCharSet.split('')));
+		permutationCrack
+			.getPossibleCharacterSet()
+			.setPossibilitiesForLetter(selectedPossibilityCharacter, new Set(proposedCharSet.split('')));
 
 		updatePermutationComponents();
 	}
@@ -271,7 +273,12 @@
 			<!-- #region Application Settings -->
 			<Card class="min-w-5/6 mr-1 max-w-fit">
 				<div class="min-w-5/6 flex flex-col justify-center" id="control-panel">
-					<Toggle size="small" bind:checked={advancedMode} class="mb-3" on:change={toggleAdvancedMode}>Advanced Mode</Toggle>
+					<Toggle
+						size="small"
+						bind:checked={advancedMode}
+						class="mb-3"
+						on:change={toggleAdvancedMode}>Advanced Mode</Toggle
+					>
 					{#if tooltipsActive}
 						<Tooltip>Enables advanced feeatures of the app. USE AT YOUR OWN RISK.</Tooltip>
 					{/if}
@@ -461,11 +468,15 @@
 										on:change={updatePossibleCharacters}
 									></Input>
 									<Label class="mt-1 block"
-										><span class="text-xs"
-											>Less Than {permutationCrack
+										><span class="text-xs "
+											>Less Than <span class={(permutationCrack
 												.getPossibleCharacterSet()
-												.calculateCombinationsOvercorrection()
-												.toLocaleString()} Remaining Alphabets</span
+												.calculateCombinationsOvercorrection() < PossibleCharacterSet.getSafeGenerationLimit() ? "text-green-600" : "text-red-600")}
+												>{permutationCrack
+													.getPossibleCharacterSet()
+													.calculateCombinationsOvercorrection()
+													.toLocaleString()}</span
+											> Remaining Alphabets</span
 										></Label
 									>
 									{#if tooltipsActive}
@@ -541,8 +552,12 @@
 								</Label>
 							</div>
 							<!-- #endregion -->
-							<!-- #region  -->
-							<div id="result-generation-buttons"></div>
+							<!-- #region Result Generation -->
+							<div id="result-generation-buttons" class="mt-3">
+								<Button class="w-full">Get Results</Button>
+								<!-- TODO: Result Gen Modal -->
+							</div>
+							<!-- #endregion -->
 							<Button on:click={debugButton} class="mt-3"></Button>
 						</div>
 					</div>
