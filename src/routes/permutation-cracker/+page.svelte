@@ -34,8 +34,9 @@
 	// #region Global Settings & Functions
 	/** Stores the text given to us by the user. */
 	// $: inputText =
-		// 'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
-	$: inputText = "BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE";
+	// 'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
+	$: inputText =
+		'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -83,11 +84,18 @@
 		let items: { value: string; name: string }[] = [];
 		let tempSet = new Set<string>();
 
-		input.split(' ').forEach((i) => {
-			tempSet.add(i);
+		input.split(' ').forEach((word) => {
+			let solved: boolean = true;
+			for (let i = 0; i < word.length; i++) {
+				solved =
+					solved && permPossibleCharacters.getPossibilitiesForLetter(word.charAt(i)).size == 1;
+			}
+			if (!solved) {
+				tempSet.add(word);
+			}
 		});
-		tempSet.forEach((i, j, k) => {
-			items.push({ value: i, name: i });
+		tempSet.forEach((word) => {
+			items.push({ value: word, name: word });
 		});
 		return items;
 	}
@@ -146,18 +154,13 @@
 			analysisCustomizationWindow = true;
 		} else {
 			let rules = new WordRuleSet(wordToAnalyze);
-			let matches = Dictionary.getMatchingWords(
-				rules,
-				wordToAnalyze,
-				permPossibleCharacters
-			);
+			let matches = Dictionary.getMatchingWords(rules, wordToAnalyze, permPossibleCharacters);
 			if (matches.length == 0) {
 				console.log('No word matches for ' + wordToAnalyze);
 				// ALERT USER NO MATCHES
 			} else {
 				let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
-				permPossibleCharacters
-					.reduceToOverlappingPossibilities(resultingPossibleChars);
+				permPossibleCharacters.reduceToOverlappingPossibilities(resultingPossibleChars);
 				console.log(permPossibleCharacters.toString());
 			}
 		}
@@ -168,8 +171,10 @@
 		let proposedCharSet = (e.srcElement as HTMLInputElement).value;
 		proposedCharSet = sanitizeInput(proposedCharSet).replaceAll(' ', '').replaceAll(',', '');
 		proposedCharSet = [...new Set(proposedCharSet.split(''))].join('');
-		permPossibleCharacters
-			.setPossibilitiesForLetter(selectedPossibilityCharacter, new Set(proposedCharSet.split('')));
+		permPossibleCharacters.setPossibilitiesForLetter(
+			selectedPossibilityCharacter,
+			new Set(proposedCharSet.split(''))
+		);
 
 		updatePermutationComponents();
 	}
@@ -178,19 +183,14 @@
 		for (let i = 0; i < rounds; i++) {
 			generateWordAnalysisItems(inputText).forEach((item) => {
 				let rules = new WordRuleSet(item.name);
-				let matches = Dictionary.getMatchingWords(
-					rules,
-					item.name,
-					permPossibleCharacters
-				);
+				let matches = Dictionary.getMatchingWords(rules, item.name, permPossibleCharacters);
 				if (matches.length == 0) {
 					console.log('No word matches for ' + item.name);
 					// ALERT USER NO MATCHES
 				} else {
 					let resultingPossibleChars = new PossibleCharacterSet(item.name, matches);
-					permutationCrack
-						permPossibleCharacters
-						.reduceToOverlappingPossibilities(resultingPossibleChars);
+					permutationCrack;
+					permPossibleCharacters.reduceToOverlappingPossibilities(resultingPossibleChars);
 					updatePermutationComponents();
 				}
 			});
@@ -213,7 +213,7 @@
 		reportCustomizationWindow = false;
 		selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
-		permPossibleCharacters = new PossibleCharacterSet(inputText.replaceAll(' ',''));
+		permPossibleCharacters = new PossibleCharacterSet(inputText.replaceAll(' ', ''));
 		permutationCrack = new PermutationCrack(
 			inputText,
 			0,
@@ -257,12 +257,9 @@
 			console.log(permPossibleCharacters.toString());
 		} else {
 			console.log(
-				permPossibleCharacters.calculateCombinationsOvercorrection() +
-					' Revised Prediction'
+				permPossibleCharacters.calculateCombinationsOvercorrection() + ' Revised Prediction'
 			);
-			let alphabets =
-				permPossibleCharacters.requestPossibleAlphabets() ??
-				new Set<string[]>();
+			let alphabets = permPossibleCharacters.requestPossibleAlphabets() ?? new Set<string[]>();
 			console.log(alphabets.size + ' Actual Alphabets');
 		}
 	}
@@ -408,10 +405,8 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permPossibleCharacters
-													.getPossibilitiesForLetter(letter).size > 0
-													? permPossibleCharacters
-															.getPossibilitiesForLetter(letter).size == 1
+												color={permPossibleCharacters.getPossibilitiesForLetter(letter).size > 0
+													? permPossibleCharacters.getPossibilitiesForLetter(letter).size == 1
 														? 'green'
 														: 'yellow'
 													: 'red'}
@@ -431,10 +426,8 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permPossibleCharacters
-													.getPossibilitiesForLetter(letter).size > 0
-													? permPossibleCharacters
-															.getPossibilitiesForLetter(letter).size == 1
+												color={permPossibleCharacters.getPossibilitiesForLetter(letter).size > 0
+													? permPossibleCharacters.getPossibilitiesForLetter(letter).size == 1
 														? 'green'
 														: 'yellow'
 													: 'red'}
@@ -467,8 +460,9 @@
 										size="sm"
 										disabled={!advancedMode}
 										value={[
-											...permPossibleCharacters
-												.getPossibilitiesForLetter(selectedPossibilityCharacter)
+											...permPossibleCharacters.getPossibilitiesForLetter(
+												selectedPossibilityCharacter
+											)
 										]
 											.toString()
 											.replaceAll(',', '')
@@ -478,8 +472,7 @@
 									<Label class="mt-1 block"
 										><span class="text-xs"
 											>At Most <span
-												class={permPossibleCharacters
-													.calculateCombinationsOvercorrection() <
+												class={permPossibleCharacters.calculateCombinationsOvercorrection() <
 												PossibleCharacterSet.getSafeGenerationLimit()
 													? 'text-green-600'
 													: 'text-red-600'}
@@ -503,12 +496,14 @@
 								<Label
 									><span class="text-xs">Word to Analyze</span>
 									<div class="flex flex-row items-center justify-center">
-										<Select
-											class="mr-1 mt-1"
-											size="sm"
-											items={generateWordAnalysisItems(inputText)}
-											bind:value={wordToAnalyze}
-										></Select>
+										{#key permutationUpdateTracker}
+											<Select
+												class="mr-1 mt-1"
+												size="sm"
+												items={generateWordAnalysisItems(inputText)}
+												bind:value={wordToAnalyze}
+											></Select>
+										{/key}
 										<Button class="mt-1" size="xs" color="purple" on:click={analyzeButtonClick}
 											>Analyze</Button
 										>
@@ -569,7 +564,9 @@
 									on:click={() => {
 										reportCustomizationWindow = true;
 										reportPossibleCharacterSet = new PossibleCharacterSet();
-										reportPossibleCharacterSet.reduceToOverlappingPossibilities(permPossibleCharacters);
+										reportPossibleCharacterSet.reduceToOverlappingPossibilities(
+											permPossibleCharacters
+										);
 									}}>Get Results</Button
 								>
 								<!-- TODO: Result Gen Modal -->
