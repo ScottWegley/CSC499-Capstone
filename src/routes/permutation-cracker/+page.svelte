@@ -160,7 +160,6 @@
 			} else {
 				let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
 				permPossibleCharacters.reduceToOverlappingPossibilities(resultingPossibleChars);
-				console.log(permPossibleCharacters.toString());
 			}
 		}
 	}
@@ -172,6 +171,19 @@
 		proposedCharSet = [...new Set(proposedCharSet.split(''))].join('');
 		permPossibleCharacters.setPossibilitiesForLetter(
 			selectedPossibilityCharacter,
+			new Set(proposedCharSet.split(''))
+		);
+
+		updatePermutationComponents();
+	}
+
+	/** Function to handle manual updates to the possible character sets. */
+	function updateResultPossibleCharacters(e: Event) {
+		let proposedCharSet = (e.srcElement as HTMLInputElement).value;
+		proposedCharSet = sanitizeInput(proposedCharSet).replaceAll(' ', '').replaceAll(',', '');
+		proposedCharSet = [...new Set(proposedCharSet.split(''))].join('');
+		reportPossibleCharacterSet.setPossibilitiesForLetter(
+			reportPossibilityCharacter,
 			new Set(proposedCharSet.split(''))
 		);
 
@@ -213,6 +225,7 @@
 		selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
 		permPossibleCharacters = new PossibleCharacterSet(inputText.replaceAll(' ', ''));
+		reportPossibleCharacterSet = new PossibleCharacterSet(inputText.replaceAll(' ', ''));
 		permutationCrack = new PermutationCrack(
 			inputText,
 			0,
@@ -565,9 +578,10 @@
 									on:click={() => {
 										reportCustomizationWindow = true;
 										reportPossibleCharacterSet = new PossibleCharacterSet();
-										reportPossibleCharacterSet.reduceToOverlappingPossibilities(
+										reportPossibleCharacterSet.overwrite(
 											permPossibleCharacters
 										);
+										updatePermutationComponents();
 									}}>Get Results</Button
 								>
 								<!-- TODO: Result Gen Modal -->
@@ -646,7 +660,7 @@
 															.toString()
 															.replaceAll(',', '')
 															.trim()}
-														on:change={updatePossibleCharacters}
+														on:change={updateResultPossibleCharacters}
 													></Input>
 													<Label class="mt-1 block"
 														><span class="text-xs"

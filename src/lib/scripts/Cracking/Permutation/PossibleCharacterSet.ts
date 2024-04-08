@@ -179,6 +179,12 @@ export class PossibleCharacterSet {
 		});
 	}
 
+	public overwrite(source: PossibleCharacterSet) {
+		this.possibleChars.forEach((characterSet, header) => {
+			this.possibleChars.set(header,source.getPossibilitiesForLetter(header));
+		})
+	}
+
 	/** Function to check every set of possible characters.  If a character only has one possibility, remove that possibility from all other characters. */
 	public removeSolvedLetters() {
 		this.possibleChars.forEach((checkSet, checkKey) => {
