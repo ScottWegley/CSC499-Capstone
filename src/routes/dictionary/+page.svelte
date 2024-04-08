@@ -197,6 +197,7 @@
 				outline
 				color="green"
 				class="mb-1 ml-3 w-64"
+				disabled={!unsavedChanges}
 				on:click={() => {
 					if (updateStoredWordlist()) {
 						unsavedChanges = false;
