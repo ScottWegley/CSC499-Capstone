@@ -477,7 +477,7 @@
 									></Input>
 									<Label class="mt-1 block"
 										><span class="text-xs"
-											>Less Than <span
+											>At Most <span
 												class={permPossibleCharacters
 													.calculateCombinationsOvercorrection() <
 												PossibleCharacterSet.getSafeGenerationLimit()
