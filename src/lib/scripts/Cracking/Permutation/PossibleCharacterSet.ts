@@ -9,7 +9,10 @@ export class PossibleCharacterSet {
 	/** A boolean representing whether we should bother checking generation limits. */
 	private static safeMode: boolean = true;
 
-	/** Creates list of possible characters. */
+	/** Creates list of possible characters. If you specify a word and matches,
+	 * it will populate the set with the letters present in the word and the
+	 * corresponding letters form the matches.
+	 * */
 	public constructor(word?: string, matches?: string[]) {
 		if (word !== undefined && matches !== undefined) {
 			for (let charIndex = 0; charIndex < word.length; charIndex++) {
@@ -43,13 +46,16 @@ export class PossibleCharacterSet {
 	}
 
 	/** Returns the limit on how many alphabets you can safely iterate over before the browser crashes. */
-	public static getSafeGenerationLimit(): number{
+	public static getSafeGenerationLimit(): number {
 		return this.safeGenerationLimit;
 	}
 
 	/** Returns a list of all possible alphabets.  Function will exit prematurely if there are too many possibilities.*/
 	public requestPossibleAlphabets() {
-		if (this.calculateCombinationsOvercorrection() > PossibleCharacterSet.safeGenerationLimit && PossibleCharacterSet.safeMode) {
+		if (
+			this.calculateCombinationsOvercorrection() > PossibleCharacterSet.safeGenerationLimit &&
+			PossibleCharacterSet.safeMode
+		) {
 			console.log('Too many possible alphabets, aborting.');
 			return;
 		}
@@ -109,9 +115,9 @@ export class PossibleCharacterSet {
 		return this.possibleChars.get(header) ?? new Set<string>();
 	}
 
-	public setPossibilitiesForLetter(header: string, possibilities: Set<string>){
-		this.possibleChars.set(header,possibilities);
-		this.removeSolvedLetters()
+	public setPossibilitiesForLetter(header: string, possibilities: Set<string>) {
+		this.possibleChars.set(header, possibilities);
+		this.removeSolvedLetters();
 	}
 
 	/** Removes specified letters from the list of possible characters corresponding to a specified header character. */
@@ -180,28 +186,28 @@ export class PossibleCharacterSet {
 
 	/** Calculates a slightly more accurate number of alphabet combinations */
 	public calculateCombinationsOvercorrection(): number {
-		let sizes:number[] = [];
+		let sizes: number[] = [];
 		this.possibleChars.forEach((value) => {
 			sizes.push(value.size);
 		});
 		basedQuickSort(sizes);
-		let total = sizes[sizes.length-1];
+		let total = sizes[sizes.length - 1];
 		let currentMax = total - 1;
 		let logString = `${total} * `;
-		for(let i = sizes.length - 2; i >= 0; i--){
+		for (let i = sizes.length - 2; i >= 0; i--) {
 			let toMult = 1;
-			if(sizes[i] > currentMax){
+			if (sizes[i] > currentMax) {
 				toMult = currentMax;
 			} else {
 				toMult = sizes[i];
 				currentMax = sizes[i];
 			}
 
-			if(toMult < 1){
+			if (toMult < 1) {
 				toMult = 1;
 			}
 			total *= toMult;
-			logString += `${toMult} * `
+			logString += `${toMult} * `;
 			currentMax--;
 		}
 		return total;
@@ -210,7 +216,7 @@ export class PossibleCharacterSet {
 	/** Returns a string representation of the PossibleCharacterSet. */
 	public toString(): string {
 		let output = `Possible Character Set`;
-		output += `\n ${this.calculateCombinationsOvercorrection()} Alphabets`
+		output += `\n ${this.calculateCombinationsOvercorrection()} Alphabets`;
 		this.possibleChars.forEach((value, key) => {
 			output += `\n${key}: ${[...value].toString()}`;
 		});
