@@ -33,9 +33,9 @@
 
 	// #region Global Settings & Functions
 	/** Stores the text given to us by the user. */
-	$: inputText =
-		'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
-	// $: inputText = "BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE";
+	// $: inputText =
+		// 'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
+	$: inputText = "BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE";
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -158,7 +158,7 @@
 				let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
 				permPossibleCharacters
 					.reduceToOverlappingPossibilities(resultingPossibleChars);
-				updatePermutationComponents();
+				console.log(permPossibleCharacters.toString());
 			}
 		}
 	}
@@ -213,7 +213,7 @@
 		reportCustomizationWindow = false;
 		selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
-		permPossibleCharacters = new PossibleCharacterSet();
+		permPossibleCharacters = new PossibleCharacterSet(inputText.replaceAll(' ',''));
 		permutationCrack = new PermutationCrack(
 			inputText,
 			0,
@@ -254,6 +254,7 @@
 
 	function debugButton(e: Event) {
 		if ((e as PointerEvent).shiftKey) {
+			console.log(permPossibleCharacters.toString());
 		} else {
 			console.log(
 				permPossibleCharacters.calculateCombinationsOvercorrection() +

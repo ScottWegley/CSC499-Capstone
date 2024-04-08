@@ -64,6 +64,7 @@ export class Dictionary {
 		this.dictionary.split(',').forEach((checkWord) => {
 			if (rules.isSimilar(checkWord)) {
 				if(charSets !== undefined && sourceWord !== undefined){
+					console.log(`Char set contains ${checkWord}: ${charSets.canContainWord(sourceWord,checkWord)}`)
 					if(charSets.canContainWord(sourceWord, checkWord)){
 						output.push(checkWord);
 					}
