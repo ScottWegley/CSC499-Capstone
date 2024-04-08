@@ -9,9 +9,14 @@ export class PossibleCharacterSet {
 	/** A boolean representing whether we should bother checking generation limits. */
 	private static safeMode: boolean = true;
 
+	private static updateComponents: () => void = () => {
+		console.log("Component Update Function not assigned.")
+	}
+
 	/** Creates list of possible characters. If you specify a word and matches,
 	 * it will populate the set with the letters present in the word and the
-	 * corresponding letters form the matches.
+	 * corresponding letters form the matches.  If you specify only a word,
+	 * it will set every letter not in the word to an empty set.
 	 * */
 	public constructor(word?: string, matches?: string[]) {
 		if (word !== undefined && matches !== undefined) {
@@ -27,7 +32,16 @@ export class PossibleCharacterSet {
 			for (let i = 0; i < DEFAULT_ALPHABET.length; i++) {
 				this.possibleChars.set(DEFAULT_ALPHABET[i], new Set<string>(DEFAULT_ALPHABET));
 			}
+			if (word !== undefined) {
+				DEFAULT_ALPHABET.forEach((c) => {
+					if (word.indexOf(c) == -1) {
+						this.prunePossibleLetters(c, DEFAULT_ALPHABET);
+					}
+				});
+			}
 		}
+		PossibleCharacterSet.updateComponents();
+
 	}
 
 	/** Returns the map storing our header characters and their possible character. */
@@ -43,6 +57,11 @@ export class PossibleCharacterSet {
 	/** Enables safety features of this class. */
 	public static enableSafety() {
 		this.safeMode = true;
+	}
+
+	/** Sets the function used to update components that listen to this class. */
+	public static setUpdateFunction(updateFunction: () => void){
+		this.updateComponents = updateFunction;
 	}
 
 	/** Returns the limit on how many alphabets you can safely iterate over before the browser crashes. */
@@ -171,6 +190,7 @@ export class PossibleCharacterSet {
 				});
 			}
 		});
+		PossibleCharacterSet.updateComponents();
 	}
 
 	/** Returns the number of combinations we could generate based on the current possibilities. */

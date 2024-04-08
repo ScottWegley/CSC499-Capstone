@@ -4,8 +4,6 @@ import { PossibleCharacterSet } from './PossibleCharacterSet';
 
 /** Class to bruteforce crack a Caesar Cipher encrypted piece of text. */
 export class PermutationCrack extends CipherCracker {
-	/** Stores pairings of letters in the alphabet to letters they might be.*/
-	private possibleCharacters!: PossibleCharacterSet;
 
 	/** Function to trigger rerendering for components that use data from this class. */
 	public updateComponents: () => void;
@@ -23,35 +21,8 @@ export class PermutationCrack extends CipherCracker {
 		if (componentUpdateFunction) {
 			this.updateComponents = componentUpdateFunction;
 		} else this.updateComponents = () => {};
-		if (text !== undefined) {
-			this.resetCharacterPossibilities();
-		}
 	}
 
-
-	/** Resets our mapping of letters to possible letters to default state, where every letter can be every letter. */
-	private resetCharacterPossibilities(): void {
-		this.possibleCharacters = new PossibleCharacterSet();
-		DEFAULT_ALPHABET.forEach((c) => {
-			if(this.input.indexOf(c) == -1){
-				this.possibleCharacters.prunePossibleLetters(c,DEFAULT_ALPHABET);
-			}
-		});
-		this.updateComponents();
-	}
-
-	/** Returns a mapping of letters to the letters they might be. */
-	public getPossibleCharacterSet(): PossibleCharacterSet {
-		return this.possibleCharacters;
-	}
-
-	/** Removes specifies letters from the list of possibilities for a specified header letter. */
-	public removeLettersFromPossible(inHeader: string, ...letters: string[]): void {
-		letters.forEach((l) => {
-			this.possibleCharacters.prunePossibleLetters(inHeader, [l]);
-		});
-		this.updateComponents();
-	}
 
 	/** Returns report data for all possible alphabets applied to the input text.*/
 	public fullReport(){

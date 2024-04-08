@@ -110,11 +110,15 @@
 	);
 	/** Public access and storage for our Permutation Crack*/
 	let permutationCrack: PermutationCrack = new PermutationCrack(inputText);
+	/** Stores a mapping of characters to possible characters that the app will use. */
+	let permPossibleCharacters: PossibleCharacterSet = new PossibleCharacterSet();
 
 	/** Function that hits a variable with an update.  Permutation components listen to that variable and rerender.*/
 	function updatePermutationComponents() {
 		permutationUpdateTracker++;
 	}
+
+	PossibleCharacterSet.setUpdateFunction(updatePermutationComponents);
 
 	/** Function to start the cracking process. */
 	function startCracking() {
@@ -145,15 +149,14 @@
 			let matches = Dictionary.getMatchingWords(
 				rules,
 				wordToAnalyze,
-				permutationCrack.getPossibleCharacterSet()
+				permPossibleCharacters
 			);
 			if (matches.length == 0) {
 				console.log('No word matches for ' + wordToAnalyze);
 				// ALERT USER NO MATCHES
 			} else {
 				let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
-				permutationCrack
-					.getPossibleCharacterSet()
+				permPossibleCharacters
 					.reduceToOverlappingPossibilities(resultingPossibleChars);
 				updatePermutationComponents();
 			}
@@ -165,8 +168,7 @@
 		let proposedCharSet = (e.srcElement as HTMLInputElement).value;
 		proposedCharSet = sanitizeInput(proposedCharSet).replaceAll(' ', '').replaceAll(',', '');
 		proposedCharSet = [...new Set(proposedCharSet.split(''))].join('');
-		permutationCrack
-			.getPossibleCharacterSet()
+		permPossibleCharacters
 			.setPossibilitiesForLetter(selectedPossibilityCharacter, new Set(proposedCharSet.split('')));
 
 		updatePermutationComponents();
@@ -179,7 +181,7 @@
 				let matches = Dictionary.getMatchingWords(
 					rules,
 					item.name,
-					permutationCrack.getPossibleCharacterSet()
+					permPossibleCharacters
 				);
 				if (matches.length == 0) {
 					console.log('No word matches for ' + item.name);
@@ -187,7 +189,7 @@
 				} else {
 					let resultingPossibleChars = new PossibleCharacterSet(item.name, matches);
 					permutationCrack
-						.getPossibleCharacterSet()
+						permPossibleCharacters
 						.reduceToOverlappingPossibilities(resultingPossibleChars);
 					updatePermutationComponents();
 				}
@@ -211,6 +213,7 @@
 		reportCustomizationWindow = false;
 		selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
+		permPossibleCharacters = new PossibleCharacterSet();
 		permutationCrack = new PermutationCrack(
 			inputText,
 			0,
@@ -253,11 +256,11 @@
 		if ((e as PointerEvent).shiftKey) {
 		} else {
 			console.log(
-				permutationCrack.getPossibleCharacterSet().calculateCombinationsOvercorrection() +
+				permPossibleCharacters.calculateCombinationsOvercorrection() +
 					' Revised Prediction'
 			);
 			let alphabets =
-				permutationCrack.getPossibleCharacterSet().requestPossibleAlphabets() ??
+				permPossibleCharacters.requestPossibleAlphabets() ??
 				new Set<string[]>();
 			console.log(alphabets.size + ' Actual Alphabets');
 		}
@@ -404,11 +407,9 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack
-													.getPossibleCharacterSet()
+												color={permPossibleCharacters
 													.getPossibilitiesForLetter(letter).size > 0
-													? permutationCrack
-															.getPossibleCharacterSet()
+													? permPossibleCharacters
 															.getPossibilitiesForLetter(letter).size == 1
 														? 'green'
 														: 'yellow'
@@ -429,11 +430,9 @@
 												class="max-w-2 text-center"
 												size="xs"
 												outline={selectedPossibilityCharacter != letter}
-												color={permutationCrack
-													.getPossibleCharacterSet()
+												color={permPossibleCharacters
 													.getPossibilitiesForLetter(letter).size > 0
-													? permutationCrack
-															.getPossibleCharacterSet()
+													? permPossibleCharacters
 															.getPossibilitiesForLetter(letter).size == 1
 														? 'green'
 														: 'yellow'
@@ -467,8 +466,7 @@
 										size="sm"
 										disabled={!advancedMode}
 										value={[
-											...permutationCrack
-												.getPossibleCharacterSet()
+											...permPossibleCharacters
 												.getPossibilitiesForLetter(selectedPossibilityCharacter)
 										]
 											.toString()
@@ -479,14 +477,12 @@
 									<Label class="mt-1 block"
 										><span class="text-xs"
 											>Less Than <span
-												class={permutationCrack
-													.getPossibleCharacterSet()
+												class={permPossibleCharacters
 													.calculateCombinationsOvercorrection() <
 												PossibleCharacterSet.getSafeGenerationLimit()
 													? 'text-green-600'
 													: 'text-red-600'}
-												>{permutationCrack
-													.getPossibleCharacterSet()
+												>{permPossibleCharacters
 													.calculateCombinationsOvercorrection()
 													.toLocaleString()}</span
 											> Remaining Alphabets</span
@@ -571,6 +567,8 @@
 									class="w-full"
 									on:click={() => {
 										reportCustomizationWindow = true;
+										reportPossibleCharacterSet = new PossibleCharacterSet();
+										reportPossibleCharacterSet.reduceToOverlappingPossibilities(permPossibleCharacters);
 									}}>Get Results</Button
 								>
 								<!-- TODO: Result Gen Modal -->
