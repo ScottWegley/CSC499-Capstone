@@ -196,11 +196,19 @@
 		analysisCustomizationWindow = false;
 	}
 
+	/** Tracks whether the rerport modal is true. */
+	let reportCustomizationWindow = false;
+	/** Tracks the selected possibility character for the report generator alphabet display. */
+	let reportPossibilityCharacter = DEFAULT_ALPHABET[0];
+	/** The character set to be used for report generation. */
+	let reportPossibleCharacterSet = new PossibleCharacterSet();
+
 	/** Function to reset the permutation cracker to their default state. */
 	function resetPermutationCracking() {
 		crackInProgress = false;
 		wordToAnalyze = '';
 		analysisCustomizationWindow = false;
+		reportCustomizationWindow = false;
 		selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
 		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
 		permutationCrack = new PermutationCrack(
@@ -212,9 +220,6 @@
 			updatePermutationComponents
 		);
 	}
-
-	/** Tracks whether the rerport modal is true. */
-	let reportCustomizationWindow = false;
 	// #endregion
 
 	// #region Caesar Data and Functions
@@ -578,15 +583,63 @@
 											report may not contain the full answer, but it might contain clues that bring
 											you closer to it.
 										</P>
+										<!-- #region Display Possible Characters - Result Generation -->
 										<div>
-											<!-- TODO: Select which letters to include. -->
-											<!-- TODO: Allow users to customize possibilities for the report specifically. -->
+											<div class="mb-1 mt-1">
+												<ButtonGroup>
+													{#each DEFAULT_ALPHABET.slice(0, Math.floor(DEFAULT_ALPHABET.length / 2)) as letter}
+														{#key permutationUpdateTracker}
+															<Button
+																class="max-w-2 text-center"
+																size="xs"
+																outline={reportPossibilityCharacter != letter}
+																color={reportPossibleCharacterSet.getPossibilitiesForLetter(letter)
+																	.size > 0
+																	? reportPossibleCharacterSet.getPossibilitiesForLetter(letter)
+																			.size == 1
+																		? 'green'
+																		: 'yellow'
+																	: 'red'}
+																on:click={() => {
+																	reportPossibilityCharacter = letter;
+																}}>{letter}</Button
+															>
+														{/key}
+													{/each}
+												</ButtonGroup>
+											</div>
+											<div class="mb-1 mt-1">
+												<ButtonGroup>
+													{#each DEFAULT_ALPHABET.slice(Math.floor(DEFAULT_ALPHABET.length / 2), DEFAULT_ALPHABET.length) as letter}
+														{#key permutationUpdateTracker}
+															<Button
+																class="max-w-2 text-center"
+																size="xs"
+																outline={reportPossibilityCharacter != letter}
+																color={reportPossibleCharacterSet.getPossibilitiesForLetter(letter)
+																	.size > 0
+																	? reportPossibleCharacterSet.getPossibilitiesForLetter(letter)
+																			.size == 1
+																		? 'green'
+																		: 'yellow'
+																	: 'red'}
+																on:click={() => {
+																	reportPossibilityCharacter = letter;
+																}}>{letter}</Button
+															>
+														{/key}
+													{/each}
+												</ButtonGroup>
+												<!-- TODO: Select which letters to include. -->
+												<!-- TODO: Allow users to customize possibilities for the report specifically. -->
+											</div>
+											<!-- #endregion -->
+											<div>
+												<Button>Generate Results</Button>
+											</div>
 										</div>
-										<div>
-											<Button>Generate Results</Button>
-										</div>
-									</div>
-								</Modal>
+									</div></Modal
+								>
 								<!-- #endregion -->
 							</div>
 							<!-- #endregion -->
