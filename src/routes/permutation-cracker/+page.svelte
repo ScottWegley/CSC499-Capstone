@@ -157,7 +157,6 @@
 			let matches = Dictionary.getMatchingWords(rules, wordToAnalyze, permPossibleCharacters);
 			if (matches.length == 0) {
 				console.log('No word matches for ' + wordToAnalyze);
-				// ALERT USER NO MATCHES
 			} else {
 				let resultingPossibleChars = new PossibleCharacterSet(wordToAnalyze, matches);
 				permPossibleCharacters.reduceToOverlappingPossibilities(resultingPossibleChars);
@@ -356,6 +355,7 @@
 				</div>
 			</Card>
 			<!-- #endregion -->
+			<!-- #region Inputs Area -->
 			<div class="ml-1 mr-1 flex w-5/12 flex-col justify-center" id="inputs-panel">
 				<Textarea
 					placeholder="Input Text"
@@ -391,6 +391,7 @@
 					{/if}
 				{/if}
 			</div>
+			<!-- #endregion -->
 			<!-- #region Permutation Interaction Panel -->
 			{#if !caesarMode && crackInProgress}
 				<Card class="ml-1 mr-1 min-w-fit">
@@ -626,8 +627,47 @@
 														{/key}
 													{/each}
 												</ButtonGroup>
-												<!-- TODO: Select which letters to include. -->
-												<!-- TODO: Allow users to customize possibilities for the report specifically. -->
+											</div>
+											<div class="text-left">
+												{#key permutationUpdateTracker}
+													<Label class="block"
+														><span class="text-xs"
+															>Letter {reportPossibilityCharacter} Could Be</span
+														></Label
+													>
+													<Input
+														size="sm"
+														disabled={!advancedMode}
+														value={[
+															...reportPossibleCharacterSet.getPossibilitiesForLetter(
+																reportPossibilityCharacter
+															)
+														]
+															.toString()
+															.replaceAll(',', '')
+															.trim()}
+														on:change={updatePossibleCharacters}
+													></Input>
+													<Label class="mt-1 block"
+														><span class="text-xs"
+															>At Most <span
+																class={reportPossibleCharacterSet.calculateCombinationsOvercorrection() <
+																PossibleCharacterSet.getSafeGenerationLimit()
+																	? 'text-green-600'
+																	: 'text-red-600'}
+																>{reportPossibleCharacterSet
+																	.calculateCombinationsOvercorrection()
+																	.toLocaleString()}</span
+															> Remaining Alphabets</span
+														></Label
+													>
+													{#if tooltipsActive}
+														<Tooltip class="max-w-64 text-center">
+															It is not reccomended to generate a report if there are more than
+															100,000,000 Alphabets remaining.
+														</Tooltip>
+													{/if}
+												{/key}
 											</div>
 											<!-- #endregion -->
 											<div>
