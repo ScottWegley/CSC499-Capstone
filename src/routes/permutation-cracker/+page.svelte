@@ -34,9 +34,9 @@
 	// #region Global Settings & Functions
 	/** Stores the text given to us by the user. */
 	$: inputText =
-	'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
+		'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
 	// $: inputText =
-		// 'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
+	// 'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -108,7 +108,7 @@
 	let permutationUpdateTracker = 0;
 
 	/** Public access for the results of a permutation crack. */
-	let permutationResults: PermutationResultData | undefined = undefined
+	let permutationResults: PermutationResultData | undefined = undefined;
 	/** Public access and storage for our Permutation Crack*/
 	let permutationCrack: PermutationCrack = new PermutationCrack(inputText);
 	/** Stores a mapping of characters to possible characters that the app will use. */
@@ -233,10 +233,10 @@
 		reportPossibleCharacterSet = new PossibleCharacterSet(inputText.replaceAll(' ', ''));
 		permutationCrack = new PermutationCrack(
 			inputText,
-			0,
-			1,
-			true,
-			() => {},
+			accuracyThreshold / 100,
+			returnPercentage / 100,
+			ascendingResults,
+			addToRealWords,
 			updatePermutationComponents
 		);
 	}
@@ -317,8 +317,10 @@
 						size="small"
 						bind:checked={caesarMode}
 						class="mb-4"
-						on:click={() => {
-							caesarCrack();
+						on:change={() => {
+							if (caesarMode) {
+								caesarCrack();
+							}
 						}}>Caesar Cipher Mode</Toggle
 					>
 					{#if tooltipsActive}
@@ -332,8 +334,17 @@
 					{#if tooltipsActive}
 						<Tooltip>Toggle to hide or show the results table.</Tooltip>
 					{/if}
-					<Toggle size="small" bind:checked={ascendingResults} class="mb-3"
-						>{ascendingResults ? 'Ascending' : 'Descending'} Results</Toggle
+					<Toggle
+						size="small"
+						bind:checked={ascendingResults}
+						on:change={() => {
+							if (caesarMode) {
+								caesarCrack;
+							} else {
+								permutationResults = undefined;
+							}
+						}}
+						class="mb-3">{ascendingResults ? 'Ascending' : 'Descending'} Results</Toggle
 					>
 					{#if tooltipsActive}
 						<Tooltip
@@ -351,7 +362,13 @@
 						class="mb-3"
 						size="sm"
 						bind:value={accuracyThreshold}
-						on:change={caesarCrack}
+						on:change={() => {
+							if (caesarMode) {
+								caesarCrack;
+							} else {
+								permutationResults = undefined;
+							}
+						}}
 						min="0"
 						max="100"
 					/>
@@ -366,7 +383,13 @@
 					<Range
 						size="sm"
 						bind:value={returnPercentage}
-						on:change={caesarCrack}
+						on:change={() => {
+							if (caesarMode) {
+								caesarCrack;
+							} else {
+								permutationResults = undefined;
+							}
+						}}
 						min="0"
 						max="100"
 					/>
@@ -715,12 +738,13 @@
 						<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
 						<TableHeadCell class="text-xs"
 							>Results {'(' + caesarResults.getResultCount() + ' Total)'}</TableHeadCell
-						>
+						>{#if tooltipsActive && realWordSet.size != 0}
+							<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
+						{/if}
+
 						<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
 					</TableHead>
-					{#if tooltipsActive && realWordSet.size != 0}
-						<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
-					{/if}
+
 					<TableBody>
 						{#each caesarResults.getResults() as result, i}
 							<TableBodyRow>
@@ -755,17 +779,16 @@
 			{/if}
 			<!-- #endregion -->
 			<!-- #region Permutation Results Table -->
-			{#if displayResults && permutationResults !== undefined}
+			{#if displayResults && permutationResults !== undefined && !caesarMode}
 				<!--TODO: Edit this table for permutation results eventually-->
 				<Table shadow>
 					<TableHead>
 						<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
-						<TableHeadCell class="text-xs">Results</TableHeadCell>
+						<TableHeadCell class="text-xs"
+							>Results {'(' + permutationResults.getResultCount() + ' Total)'}</TableHeadCell
+						>
 						<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
 					</TableHead>
-					{#if tooltipsActive && realWordSet.size != 0}
-						<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
-					{/if}
 					<TableBody>
 						{#each permutationResults.getResults() as result, i}
 							<TableBodyRow>
@@ -785,10 +808,13 @@
 									{/each}
 								</TableBodyCell>
 								<TableBodyCell
-									><span class="text-xs"
-										>{permutationResults.getAlphabets()[i].toString().replaceAll(',', '')}</span
-									></TableBodyCell
-								>
+									><span class="font-mono text-xs"
+										>{DEFAULT_ALPHABET.toString().replaceAll(',', '')}</span
+									><br />
+									<span class="font-mono text-xs">
+										{permutationResults.getAlphabets()[i].toString().replaceAll(',', '')}
+									</span>
+								</TableBodyCell>
 							</TableBodyRow>
 						{/each}
 					</TableBody>

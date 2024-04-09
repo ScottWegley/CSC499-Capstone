@@ -52,9 +52,6 @@ export class PermutationCrack extends CipherCracker {
 		});
 		let alphabetSet = [...alphabets!];
 		basedQuickSort(accuracy, [results, alphabetSet]);
-		console.log(results);
-		console.log(accuracy);
-		console.log(alphabetSet);
 		let outResults: string[] = [];
 		let outAccuracy: number[] = [];
 		let outAlpabets: string[][] = [];
@@ -77,9 +74,6 @@ export class PermutationCrack extends CipherCracker {
 			outResults.push(results[i]);
 			outAlpabets.push(alphabetSet[i]);
 		}
-		console.log(outResults);
-		console.log(outAccuracy);
-		console.log(outAlpabets);
 		return new PermutationResultData(
 			!ascending ? outResults.reverse() : outResults,
 			!ascending ? outAccuracy.reverse() : outAccuracy,
