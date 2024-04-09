@@ -4,9 +4,6 @@ export abstract class CipherCracker {
 	/** Stores the text to crack. */
 	protected input: string;
 
-	/** Add a real word to our list of real words. */
-	protected storeRealWord: (w: string) => void;
-
 	/** The minimum accuracy necessary for a result to be considered accurate. */
 	protected accuracyThreshold: number = 0.95;
 	/** The percentage of results to be displayed to the user. */
@@ -18,16 +15,11 @@ export abstract class CipherCracker {
 	/** An array of accuracy ratings corresponding to all the possible results. */
 	protected accuracySet: number[] = [];
 	/** Create a new instance of a Cipher Cracker with text to crack. */
-	public constructor(text: string, threshold?: number, percentage?: number, ascending?: boolean, storageFunction?: (w: string) => void) {
+	public constructor(text: string, threshold?: number, percentage?: number, ascending?: boolean) {
 		this.input = text;
 		this.accuracyThreshold = threshold == undefined ? this.accuracyThreshold : threshold;
 		this.returnPercentage = percentage == undefined ? this.returnPercentage : percentage;
 		this.ascendingOrder = ascending == undefined ? this.ascendingOrder : ascending;
-		if(storageFunction){
-			this.storeRealWord = storageFunction;
-		} else {
-			this.storeRealWord = (x:string) => {};
-		}
 	}
 	
 	//#region Basic Getters

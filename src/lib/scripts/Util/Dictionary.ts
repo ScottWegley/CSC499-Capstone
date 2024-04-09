@@ -48,6 +48,9 @@ export class Dictionary {
 	static ready: boolean = false;
 	static dictionary: string;
 
+	static usedWords: Set<string> = new Set<string>();
+	static fakeWords: Set<string> = new Set<string>();
+
 	/** Function to store the dictionary from local storage in our class as a static member. */
 	public static async syncDictionary() {
 		Dictionary.ready = false;
@@ -55,7 +58,11 @@ export class Dictionary {
 		Dictionary.ready = true;
 	}
 
-	public static getMatchingWords(rules: WordRuleSet, sourceWord?: string, charSets?:PossibleCharacterSet): string[] {
+	public static getMatchingWords(
+		rules: WordRuleSet,
+		sourceWord?: string,
+		charSets?: PossibleCharacterSet
+	): string[] {
 		if (!Dictionary.ready) {
 			console.log('Dictionary class is not ready.  Call Sync Dictionary.');
 			return [];
@@ -63,12 +70,14 @@ export class Dictionary {
 		let output: string[] = [];
 		this.dictionary.split(',').forEach((checkWord) => {
 			if (rules.isSimilar(checkWord)) {
-				if(charSets !== undefined && sourceWord !== undefined){
-					if(charSets.canContainWord(sourceWord, checkWord)){
+				if (charSets !== undefined && sourceWord !== undefined) {
+					if (charSets.canContainWord(sourceWord, checkWord)) {
 						output.push(checkWord);
+						this.usedWords.add(checkWord);
 					}
 				} else {
 					output.push(checkWord);
+					this.usedWords.add(checkWord);
 				}
 			}
 		});
@@ -76,7 +85,7 @@ export class Dictionary {
 	}
 
 	/** Returns a percentage accuracy rating for how many words in a given text are in a given dictionary. */
-	public static checkAccuracy(text: string, storeWord?: (w: string) => void) {
+	public static checkAccuracy(text: string) {
 		if (!Dictionary.ready) {
 			console.log('Dictionary class is not ready.  Call Sync Dictionary.');
 			return 0;
@@ -93,15 +102,44 @@ export class Dictionary {
 		/** The amount of words that are in our dictionary. */
 		let realWordCount = 0;
 
+		/** Check the words we've already used before hitting the whole dictionary. */
+		let toRemove: string[] = [];
+		textArray.forEach((word) => {
+			if (this.usedWords.has(word)) {
+				realWordCount++;
+				toRemove.push(word);
+			}
+			/** Remove any words we know aren't real preemptively. */
+			if(this.fakeWords.has(word)){
+				toRemove.push(word);
+			}
+		});
+
+		/** Any words that we've already used and found right now should be removed from the list we need to check the dicitonary for. */
+		toRemove.forEach((word) => {
+			let found = false;
+			for (let i = 0; i < textArray.length && !found; i++) {
+				if (textArray[i] == word) {
+					found = true;
+					for(let k = i; k < textArray.length - 1; k++){
+						textArray[k] = textArray[k+1];
+					}
+					textArray.pop();
+				}
+			}
+		});
+
 		/** Loop through every word in the dictionary while we are not at 100% accuracy. */
-		for (let i = 0; i < dictArray.length && realWordCount < totalWords; i++) {
+		for (
+			let i = 0;
+			i < dictArray.length && realWordCount < totalWords && textArray.length > 0;
+			i++
+		) {
 			let k = 0;
 			while (k < textArray.length && textArray.length > 0) {
 				if (textArray[k] == dictArray[i]) {
 					realWordCount++;
-					if (storeWord != undefined) {
-						storeWord(textArray[k]);
-					}
+					Dictionary.usedWords.add(textArray[k]);
 					for (let j = k; j < textArray.length - 1; j++) {
 						textArray[j] = textArray[j + 1];
 					}
@@ -110,6 +148,10 @@ export class Dictionary {
 					k++;
 				}
 			}
+		}
+
+		while(textArray.length > 0){
+			this.fakeWords.add(textArray.pop()!)
 		}
 		return realWordCount / totalWords;
 	}

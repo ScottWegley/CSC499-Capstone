@@ -33,10 +33,10 @@
 
 	// #region Global Settings & Functions
 	/** Stores the text given to us by the user. */
-	$: inputText =
-		'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
 	// $: inputText =
-	// 'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
+	// 	'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
+	$: inputText =
+	'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -61,13 +61,6 @@
 			caesarCrack();
 		}
 	});
-
-	/** Storage of all words from the dictionary that showed up in any result. */
-	let realWordSet = new Set<String>();
-	/** Function to add things to our real word set. */
-	function addToRealWords(word: string) {
-		realWordSet.add(word);
-	}
 
 	/** Handles any switching for advanced features. */
 	function toggleAdvancedMode() {
@@ -215,8 +208,10 @@
 			reportPossibleCharacterSet = new PossibleCharacterSet();
 			reportPossibleCharacterSet.overwrite(permPossibleCharacters);
 		} else {
+			console.log("Requesting results.");
+			let starttime = Date.now();
 			permutationResults = permutationCrack.getMutatedResultsData(permPossibleCharacters);
-			console.log(permutationResults);
+			console.log(`Results generated in ${(Date.now()-starttime)/1000} Seconds`);
 		}
 		updatePermutationComponents();
 	}
@@ -236,7 +231,6 @@
 			accuracyThreshold / 100,
 			returnPercentage / 100,
 			ascendingResults,
-			addToRealWords,
 			updatePermutationComponents
 		);
 	}
@@ -253,7 +247,6 @@
 			accuracyThreshold / 100,
 			returnPercentage / 100,
 			ascendingResults,
-			addToRealWords
 		);
 		caesarResults = caesarCracker.getMutatedResultsData();
 		crackInProgress = false;
@@ -263,7 +256,7 @@
 	function generateDisplayForResult(result: string) {
 		let displayWords: { text: string; accurate: boolean }[] = [];
 		result.split(' ').forEach((x) => {
-			displayWords.push({ text: x + ' ', accurate: realWordSet.has(x) });
+			displayWords.push({ text: x + ' ', accurate: Dictionary.usedWords.has(x) });
 		});
 		return displayWords;
 	}
@@ -271,7 +264,8 @@
 
 	function debugButton(e: Event) {
 		if ((e as PointerEvent).shiftKey) {
-			console.log(permPossibleCharacters.toString());
+			console.log(Dictionary.usedWords);
+			console.log(Dictionary.fakeWords)
 		} else {
 			console.log(
 				permPossibleCharacters.calculateCombinationsOvercorrection() + ' Revised Prediction'
@@ -737,11 +731,8 @@
 					<TableHead>
 						<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
 						<TableHeadCell class="text-xs"
-							>Results {'(' + caesarResults.getResultCount() + ' Total)'}</TableHeadCell
-						>{#if tooltipsActive && realWordSet.size != 0}
-							<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
-						{/if}
-
+							>Results {'(' + caesarResults.getResultCount() + ' Total)'} || Red words were not present in the dictionary</TableHeadCell
+						>
 						<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
 					</TableHead>
 

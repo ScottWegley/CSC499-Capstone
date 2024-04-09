@@ -15,10 +15,9 @@ export class PermutationCrack extends CipherCracker {
 		threshold?: number,
 		percentage?: number,
 		ascending?: boolean,
-		storageFunction?: (w: string) => void,
 		componentUpdateFunction?: () => void
 	) {
-		super(text, threshold, percentage, ascending, storageFunction);
+		super(text, threshold, percentage, ascending);
 		if (componentUpdateFunction) {
 			this.updateComponents = componentUpdateFunction;
 		} else this.updateComponents = () => {};
@@ -30,14 +29,16 @@ export class PermutationCrack extends CipherCracker {
 		threshold: number = 0,
 		percentage: number = 1,
 		possibleChars: PossibleCharacterSet,
-		storeRealWord: (word: string) => void
 	) {
+		console.log("Requesting alphabets.")
 		let alphabets = possibleChars.requestPossibleAlphabets();
 		let results: string[] = [];
 		let accuracy: number[] = [];
 		if (alphabets == undefined) {
 			return;
 		}
+		console.log("Applying alphabets.")
+		let starttime = Date.now();
 		alphabets.forEach((alpha) => {
 			let resultText = '';
 			for (let i = 0; i < input.length; i++) {
@@ -48,9 +49,11 @@ export class PermutationCrack extends CipherCracker {
 				}
 			}
 			results.push(resultText);
-			accuracy.push(Dictionary.checkAccuracy(resultText, storeRealWord));
+			accuracy.push(Dictionary.checkAccuracy(resultText));
 		});
+		console.log(`Alphabets applied in ${(Date.now()-starttime)/1000} Seconds`)
 		let alphabetSet = [...alphabets!];
+		console.log("Sorting results");
 		basedQuickSort(accuracy, [results, alphabetSet]);
 		let outResults: string[] = [];
 		let outAccuracy: number[] = [];
@@ -65,6 +68,7 @@ export class PermutationCrack extends CipherCracker {
 				stillSearching = false;
 			}
 		}
+		console.log("Mutating Results");
 		for (
 			let i = thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
 			i < results.length;
@@ -99,7 +103,6 @@ export class PermutationCrack extends CipherCracker {
 			threshold ? this.accuracyThreshold : undefined,
 			percentage ? this.returnPercentage : undefined,
 			possibleChars,
-			this.storeRealWord
 		);
 	}
 }

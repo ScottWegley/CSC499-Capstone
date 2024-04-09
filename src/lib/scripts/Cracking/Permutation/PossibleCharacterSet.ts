@@ -71,6 +71,7 @@ export class PossibleCharacterSet {
 
 	/** Returns a list of all possible alphabets.  Function will exit prematurely if there are too many possibilities.*/
 	public requestPossibleAlphabets() {
+		let starttime = Date.now();
 		if (
 			this.calculateCombinationsOvercorrection() > PossibleCharacterSet.safeGenerationLimit &&
 			PossibleCharacterSet.safeMode
@@ -82,6 +83,7 @@ export class PossibleCharacterSet {
 		this.generateAlphabet([], '', this.getRelevantHeaders(), (alphabet: string[]) => {
 			allAlphabets.add(alphabet);
 		});
+		console.log(`Generated ${allAlphabets.size} Alphabets in ${(Date.now()-starttime)/1000} Seconds`)
 		return allAlphabets;
 	}
 
