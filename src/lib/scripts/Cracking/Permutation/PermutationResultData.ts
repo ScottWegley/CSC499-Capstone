@@ -15,4 +15,8 @@ export class PermutationResultData extends ResultData {
 		super(resultSet, accuracySet, accuracyThreshold, returnPercentage, ascendingOrder);
 		this.alphabets = alphabetArray;
 	}
+
+	public getAlphabets(): string[][] {
+		return this.alphabets;
+	}
 }

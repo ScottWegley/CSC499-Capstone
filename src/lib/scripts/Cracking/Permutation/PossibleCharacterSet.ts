@@ -179,6 +179,7 @@ export class PossibleCharacterSet {
 		});
 	}
 
+	/** Overwrites the calling PossibleCharacterSet with the data from another set. */
 	public overwrite(source: PossibleCharacterSet) {
 		this.possibleChars.forEach((characterSet, header) => {
 			this.possibleChars.set(header,source.getPossibilitiesForLetter(header));

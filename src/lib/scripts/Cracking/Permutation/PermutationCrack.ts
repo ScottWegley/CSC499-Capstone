@@ -1,10 +1,11 @@
-import { DEFAULT_ALPHABET } from '$lib/scripts/Util/Dictionary';
+import { Dictionary, getLetterIndex } from '$lib/scripts/Util/Dictionary';
+import { basedQuickSort } from '$lib/scripts/Util/QuickSort';
 import { CipherCracker } from '../Generic/CipherCrack';
+import { PermutationResultData } from './PermutationResultData';
 import { PossibleCharacterSet } from './PossibleCharacterSet';
 
 /** Class to bruteforce crack a Caesar Cipher encrypted piece of text. */
 export class PermutationCrack extends CipherCracker {
-
 	/** Function to trigger rerendering for components that use data from this class. */
 	public updateComponents: () => void;
 
@@ -17,21 +18,87 @@ export class PermutationCrack extends CipherCracker {
 		storageFunction?: (w: string) => void,
 		componentUpdateFunction?: () => void
 	) {
-		super(text, threshold, percentage, ascending);
+		super(text, threshold, percentage, ascending, storageFunction);
 		if (componentUpdateFunction) {
 			this.updateComponents = componentUpdateFunction;
 		} else this.updateComponents = () => {};
 	}
 
+	public static getMutatedResultsData(
+		results: string[],
+		accuracy: number[],
+		input: string,
+		ascending: boolean = false,
+		threshold: number = 0,
+		percentage: number = 1,
+		possibleChars: PossibleCharacterSet,
+		storeRealWord: (word: string)=>void
+	) {
+		let alphabets = possibleChars.requestPossibleAlphabets();
+		if(alphabets == undefined){
+			return;
+		}
+		alphabets.forEach((alpha) => {
+			let resultText = '';
+			for (let i = 0; i < input.length; i++) {
+				resultText += ([...alpha])[getLetterIndex(input.charAt(i))]
+			}
+			results.push(resultText);
+			accuracy.push(Dictionary.checkAccuracy(resultText,storeRealWord));
+		});
+		let alphabetSet = [...alphabets!];
 
-	/** Returns report data for all possible alphabets applied to the input text.*/
-	public fullReport(){
-		
-		// TODO: gen possible alphabets, apply them, apply mutators, populate results data.
+		basedQuickSort(accuracy,[results,alphabetSet]);
+
+		let outResults: string[] = [];
+		let outAccuracy: number[] = [];
+		let outAlpabets: string[][] = [];
+		let thresholdMin = 0;
+		let stillSearching = true;
+		for (let i = 0; i < results.length && stillSearching; i++) {
+			if (accuracy[i] < threshold) {
+				thresholdMin++;
+				continue;
+			} else {
+				stillSearching = false;
+			}
+		}
+		for (
+			let i = thresholdMin + Math.floor((1 - percentage) * (results.length - thresholdMin));
+			i < results.length;
+			i++
+		) {
+			outAccuracy.push(accuracy[i]);
+			outResults.push(results[i]);
+			outAlpabets.push(alphabetSet[i]);
+		}
+		return new PermutationResultData(
+			!ascending ? outResults.reverse() : outResults,
+			!ascending ? outAccuracy.reverse() : outAccuracy,
+			!ascending ? outAlpabets.reverse() : outAlpabets,
+			threshold,
+			percentage,
+			ascending
+		);
 	}
-	
-	/** Returns reports with modified data. */
-	public modifiedReport(){
 
+	/** Returns an insance of CaesarResultsData with only the relevant data and the applied mutations stored.  Generated based
+	 * on what's stored in our class.
+	 */
+	public getMutatedResultsData(
+		possibleChars: PossibleCharacterSet,
+		ascending: boolean = true,
+		threshold: boolean = true,
+		percentage: boolean = true,
+	): PermutationResultData | undefined {
+		return PermutationCrack.getMutatedResultsData(
+			this.resultSet,
+			this.accuracySet,
+			this.input,
+			ascending ? this.ascendingOrder : undefined,
+			threshold ? this.accuracyThreshold : undefined,
+			percentage ? this.returnPercentage : undefined,
+			possibleChars, this.storeRealWord
+		);
 	}
 }

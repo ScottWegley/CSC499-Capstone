@@ -216,6 +216,17 @@
 	/** The character set to be used for report generation. */
 	let reportPossibleCharacterSet = new PossibleCharacterSet();
 
+	function getResultsClick(e: Event) {
+		if ((e as PointerEvent).shiftKey) {
+			reportCustomizationWindow = true;
+			reportPossibleCharacterSet = new PossibleCharacterSet();
+			reportPossibleCharacterSet.overwrite(permPossibleCharacters);
+		} else {
+			permutationCrack.getMutatedResultsData(permPossibleCharacters);
+		}
+		updatePermutationComponents();
+	}
+
 	/** Function to reset the permutation cracker to their default state. */
 	function resetPermutationCracking() {
 		crackInProgress = false;
@@ -573,17 +584,12 @@
 							<!-- #endregion -->
 							<!-- #region Result Generation -->
 							<div id="result-generation-buttons" class="mt-3">
-								<Button
-									class="w-full"
-									on:click={() => {
-										reportCustomizationWindow = true;
-										reportPossibleCharacterSet = new PossibleCharacterSet();
-										reportPossibleCharacterSet.overwrite(
-											permPossibleCharacters
-										);
-										updatePermutationComponents();
-									}}>Get Results</Button
-								>
+								<Button class="w-full" on:click={getResultsClick}>Get Results</Button>
+								{#if tooltipsActive}
+									<Tooltip
+										>Shift click if you want to customize your report before generating.</Tooltip
+									>
+								{/if}
 								<!-- TODO: Result Gen Modal -->
 								<!-- #region Report Modal -->
 								<Modal size="lg" bind:open={reportCustomizationWindow}>
@@ -592,7 +598,8 @@
 										<P class="text-md mb-2 dark:text-gray-400 sm:px-16" align="center" size="sm">
 											This window allows you to customize your report before you generate it. Any
 											report may not contain the full answer, but it might contain clues that bring
-											you closer to it.
+											you closer to it. Changes to these displayed possible characters will not
+											affect the main page; they only alter the report you generate.
 										</P>
 										<!-- #region Display Possible Characters - Result Generation -->
 										<div>
@@ -685,7 +692,13 @@
 											</div>
 											<!-- #endregion -->
 											<div>
-												<Button>Generate Results</Button>
+												<Button
+													class="mt-1"
+													on:click={() => {
+														permutationCrack.getMutatedResultsData(reportPossibleCharacterSet);
+														updatePermutationComponents();
+													}}>Generate Results</Button
+												>
 											</div>
 										</div>
 									</div></Modal
