@@ -33,10 +33,10 @@
 
 	// #region Global Settings & Functions
 	/** Stores the text given to us by the user. */
-	// $: inputText =
-	// 'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
 	$: inputText =
-		'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
+	'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
+	// $: inputText =
+		// 'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -108,14 +108,7 @@
 	let permutationUpdateTracker = 0;
 
 	/** Public access for the results of a permutation crack. */
-	let permutationResults: PermutationResultData = new PermutationResultData(
-		[],
-		[],
-		[],
-		0,
-		0,
-		false
-	);
+	let permutationResults: PermutationResultData | undefined = undefined
 	/** Public access and storage for our Permutation Crack*/
 	let permutationCrack: PermutationCrack = new PermutationCrack(inputText);
 	/** Stores a mapping of characters to possible characters that the app will use. */
@@ -222,7 +215,8 @@
 			reportPossibleCharacterSet = new PossibleCharacterSet();
 			reportPossibleCharacterSet.overwrite(permPossibleCharacters);
 		} else {
-			permutationCrack.getMutatedResultsData(permPossibleCharacters);
+			permutationResults = permutationCrack.getMutatedResultsData(permPossibleCharacters);
+			console.log(permutationResults);
 		}
 		updatePermutationComponents();
 	}
@@ -234,13 +228,13 @@
 		analysisCustomizationWindow = false;
 		reportCustomizationWindow = false;
 		selectedPossibilityCharacter = DEFAULT_ALPHABET[0];
-		permutationResults = new PermutationResultData([], [], [], 0, 0, false);
+		permutationResults = undefined;
 		permPossibleCharacters = new PossibleCharacterSet(inputText.replaceAll(' ', ''));
 		reportPossibleCharacterSet = new PossibleCharacterSet(inputText.replaceAll(' ', ''));
 		permutationCrack = new PermutationCrack(
 			inputText,
 			0,
-			0,
+			1,
 			true,
 			() => {},
 			updatePermutationComponents
@@ -761,7 +755,7 @@
 			{/if}
 			<!-- #endregion -->
 			<!-- #region Permutation Results Table -->
-			{#if displayResults && false}
+			{#if displayResults && permutationResults !== undefined}
 				<!--TODO: Edit this table for permutation results eventually-->
 				<Table shadow>
 					<TableHead>
@@ -773,11 +767,11 @@
 						<Tooltip>Red words were not found in dictionary you are using.</Tooltip>
 					{/if}
 					<TableBody>
-						{#each caesarResults.getResults() as result, i}
+						{#each permutationResults.getResults() as result, i}
 							<TableBodyRow>
 								<TableBodyCell
 									><span class="text-xs"
-										>{parseFloat((caesarResults.getAccuracy()[i] * 100).toFixed(2))}%</span
+										>{parseFloat((permutationResults.getAccuracy()[i] * 100).toFixed(2))}%</span
 									></TableBodyCell
 								>
 								<TableBodyCell>
@@ -792,9 +786,7 @@
 								</TableBodyCell>
 								<TableBodyCell
 									><span class="text-xs"
-										>{getCipherAlphabet(caesarResults.getShifts()[i])
-											.toString()
-											.replaceAll(',', '')}</span
+										>{permutationResults.getAlphabets()[i].toString().replaceAll(',', '')}</span
 									></TableBodyCell
 								>
 							</TableBodyRow>

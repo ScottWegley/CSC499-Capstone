@@ -1,4 +1,4 @@
-import { Dictionary, getLetterIndex } from '$lib/scripts/Util/Dictionary';
+import { DEFAULT_ALPHABET, Dictionary, getLetterIndex } from '$lib/scripts/Util/Dictionary';
 import { basedQuickSort } from '$lib/scripts/Util/QuickSort';
 import { CipherCracker } from '../Generic/CipherCrack';
 import { PermutationResultData } from './PermutationResultData';
@@ -25,31 +25,36 @@ export class PermutationCrack extends CipherCracker {
 	}
 
 	public static getMutatedResultsData(
-		results: string[],
-		accuracy: number[],
 		input: string,
 		ascending: boolean = false,
 		threshold: number = 0,
 		percentage: number = 1,
 		possibleChars: PossibleCharacterSet,
-		storeRealWord: (word: string)=>void
+		storeRealWord: (word: string) => void
 	) {
 		let alphabets = possibleChars.requestPossibleAlphabets();
-		if(alphabets == undefined){
+		let results: string[] = [];
+		let accuracy: number[] = [];
+		if (alphabets == undefined) {
 			return;
 		}
 		alphabets.forEach((alpha) => {
 			let resultText = '';
 			for (let i = 0; i < input.length; i++) {
-				resultText += ([...alpha])[getLetterIndex(input.charAt(i))]
+				if (DEFAULT_ALPHABET.includes(input.charAt(i))) {
+					resultText += [...alpha][getLetterIndex(input.charAt(i))];
+				} else {
+					resultText += input.charAt(i);
+				}
 			}
 			results.push(resultText);
-			accuracy.push(Dictionary.checkAccuracy(resultText,storeRealWord));
+			accuracy.push(Dictionary.checkAccuracy(resultText, storeRealWord));
 		});
 		let alphabetSet = [...alphabets!];
-
-		basedQuickSort(accuracy,[results,alphabetSet]);
-
+		basedQuickSort(accuracy, [results, alphabetSet]);
+		console.log(results);
+		console.log(accuracy);
+		console.log(alphabetSet);
 		let outResults: string[] = [];
 		let outAccuracy: number[] = [];
 		let outAlpabets: string[][] = [];
@@ -72,6 +77,9 @@ export class PermutationCrack extends CipherCracker {
 			outResults.push(results[i]);
 			outAlpabets.push(alphabetSet[i]);
 		}
+		console.log(outResults);
+		console.log(outAccuracy);
+		console.log(outAlpabets);
 		return new PermutationResultData(
 			!ascending ? outResults.reverse() : outResults,
 			!ascending ? outAccuracy.reverse() : outAccuracy,
@@ -89,16 +97,15 @@ export class PermutationCrack extends CipherCracker {
 		possibleChars: PossibleCharacterSet,
 		ascending: boolean = true,
 		threshold: boolean = true,
-		percentage: boolean = true,
+		percentage: boolean = true
 	): PermutationResultData | undefined {
 		return PermutationCrack.getMutatedResultsData(
-			this.resultSet,
-			this.accuracySet,
 			this.input,
 			ascending ? this.ascendingOrder : undefined,
 			threshold ? this.accuracyThreshold : undefined,
 			percentage ? this.returnPercentage : undefined,
-			possibleChars, this.storeRealWord
+			possibleChars,
+			this.storeRealWord
 		);
 	}
 }
