@@ -286,7 +286,7 @@
 		element are enabled by default and recommended if this is your first time with this tool. Hover
 		over an element to see these tips. For this tool to work, I recommend that you use an incredibly
 		lengthy word list for permutation cracking. If a word in your encrypted text is not in the
-		dictionary you use, this tool may not work. Your browser may stall while running a number of the
+		dictionary you use, this tool may not work. Your browser may stall for up to 10 minutes while running a number of the
 		functions of this page; give it time to finish.
 	</P>
 	<div class="flex w-full flex-col content-center items-center justify-center">
@@ -601,7 +601,6 @@
 										>Shift click if you want to customize your report before generating.</Tooltip
 									>
 								{/if}
-								<!-- TODO: Result Gen Modal -->
 								<!-- #region Report Modal -->
 								<Modal size="lg" bind:open={reportCustomizationWindow}>
 									<div class="flex flex-col items-center justify-center text-center">
@@ -696,7 +695,7 @@
 													{#if tooltipsActive}
 														<Tooltip class="max-w-64 text-center">
 															It is not reccomended to generate a report if there are more than
-															100,000,000 Alphabets remaining.
+															{PossibleCharacterSet.getSafeGenerationLimit().toLocaleString()} Alphabets remaining.
 														</Tooltip>
 													{/if}
 												{/key}

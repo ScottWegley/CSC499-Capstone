@@ -5,7 +5,7 @@ export class PossibleCharacterSet {
 	/** Maps characters to the list of possible equivalent characters. */
 	private possibleChars: Map<string, Set<string>> = new Map<string, Set<string>>();
 	/** The limit on how many alphabets you should safely iterate over before risking browser crashes. */
-	private static safeGenerationLimit: number = 100_000_000;
+	private static safeGenerationLimit: number = 100_000;
 	/** A boolean representing whether we should bother checking generation limits. */
 	private static safeMode: boolean = true;
 
