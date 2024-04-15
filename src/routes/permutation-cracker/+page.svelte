@@ -706,7 +706,14 @@
 												<Button
 													class="mt-1"
 													on:click={() => {
-														permutationCrack.getMutatedResultsData(reportPossibleCharacterSet);
+														console.log('Requesting results.');
+														let starttime = Date.now();
+														permutationResults = permutationCrack.getMutatedResultsData(
+															reportPossibleCharacterSet
+														);
+														console.log(
+															`Results generated in ${(Date.now() - starttime) / 1000} Seconds`
+														);
 														updatePermutationComponents();
 													}}>Generate Results</Button
 												>
