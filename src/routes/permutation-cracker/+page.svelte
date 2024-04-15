@@ -36,7 +36,7 @@
 	// $: inputText =
 	// 	'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
 	$: inputText =
-	'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
+		'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -208,10 +208,10 @@
 			reportPossibleCharacterSet = new PossibleCharacterSet();
 			reportPossibleCharacterSet.overwrite(permPossibleCharacters);
 		} else {
-			console.log("Requesting results.");
+			console.log('Requesting results.');
 			let starttime = Date.now();
 			permutationResults = permutationCrack.getMutatedResultsData(permPossibleCharacters);
-			console.log(`Results generated in ${(Date.now()-starttime)/1000} Seconds`);
+			console.log(`Results generated in ${(Date.now() - starttime) / 1000} Seconds`);
 		}
 		updatePermutationComponents();
 	}
@@ -246,7 +246,7 @@
 			inputText,
 			accuracyThreshold / 100,
 			returnPercentage / 100,
-			ascendingResults,
+			ascendingResults
 		);
 		caesarResults = caesarCracker.getMutatedResultsData();
 		crackInProgress = false;
@@ -265,7 +265,7 @@
 	function debugButton(e: Event) {
 		if ((e as PointerEvent).shiftKey) {
 			console.log(Dictionary.usedWords);
-			console.log(Dictionary.fakeWords)
+			console.log(Dictionary.fakeWords);
 		} else {
 			console.log(
 				permPossibleCharacters.calculateCombinationsOvercorrection() + ' Revised Prediction'
@@ -286,8 +286,8 @@
 		element are enabled by default and recommended if this is your first time with this tool. Hover
 		over an element to see these tips. For this tool to work, I recommend that you use an incredibly
 		lengthy word list for permutation cracking. If a word in your encrypted text is not in the
-		dictionary you use, this tool may not work. Your browser may stall for up to 10 minutes while running a number of the
-		functions of this page; give it time to finish.
+		dictionary you use, this tool may not work. Your browser may stall for up to 10 minutes while
+		running a number of the functions of this page; give it time to finish.
 	</P>
 	<div class="flex w-full flex-col content-center items-center justify-center">
 		<div class="flex w-full flex-row justify-center justify-self-center" id="panel-parent">
@@ -695,7 +695,8 @@
 													{#if tooltipsActive}
 														<Tooltip class="max-w-64 text-center">
 															It is not reccomended to generate a report if there are more than
-															{PossibleCharacterSet.getSafeGenerationLimit().toLocaleString()} Alphabets remaining.
+															{PossibleCharacterSet.getSafeGenerationLimit().toLocaleString()} Alphabets
+															remaining.
 														</Tooltip>
 													{/if}
 												{/key}
@@ -730,7 +731,8 @@
 					<TableHead>
 						<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
 						<TableHeadCell class="text-xs"
-							>Results {'(' + caesarResults.getResultCount() + ' Total)'} || Red words were not present in the dictionary</TableHeadCell
+							>Results {'(' + caesarResults.getResultCount() + ' Total)'} || Red words were not present
+							in the dictionary</TableHeadCell
 						>
 						<TableHeadCell class="text-xs">Alphabet</TableHeadCell>
 					</TableHead>
@@ -770,7 +772,6 @@
 			<!-- #endregion -->
 			<!-- #region Permutation Results Table -->
 			{#if displayResults && permutationResults !== undefined && !caesarMode}
-				<!--TODO: Edit this table for permutation results eventually-->
 				<Table shadow>
 					<TableHead>
 						<TableHeadCell class="text-xs">Accuracy</TableHeadCell>
