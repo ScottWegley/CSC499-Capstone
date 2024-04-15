@@ -768,7 +768,7 @@
 											.toString()
 											.replaceAll(',', '')}</span
 									><Tooltip>
-										Shift of {caesarResults.getShifts()[i]}
+										Left Shift of {caesarResults.getShifts()[i]} / Right Shift of {26-caesarResults.getShifts()[i]}
 									</Tooltip></TableBodyCell
 								>
 							</TableBodyRow>
