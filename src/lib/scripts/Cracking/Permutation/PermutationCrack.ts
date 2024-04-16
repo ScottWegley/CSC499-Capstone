@@ -39,7 +39,11 @@ export class PermutationCrack extends CipherCracker {
 		}
 		console.log("Applying alphabets.")
 		let starttime = Date.now();
+		let completedCount = 0;
 		alphabets.forEach((alpha) => {
+			if(completedCount % 10000 == 0){
+				console.log(completedCount + " Completed")
+			}
 			let resultText = '';
 			for (let i = 0; i < input.length; i++) {
 				if (DEFAULT_ALPHABET.includes(input.charAt(i))) {
@@ -50,6 +54,7 @@ export class PermutationCrack extends CipherCracker {
 			}
 			results.push(resultText);
 			accuracy.push(Dictionary.checkAccuracy(resultText));
+			completedCount++;
 		});
 		console.log(`Alphabets applied in ${(Date.now()-starttime)/1000} Seconds`)
 		let alphabetSet = [...alphabets!];
