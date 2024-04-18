@@ -268,10 +268,10 @@
 			>Total Possible Passwords: {demoPassComplexity}
 		</FloatingLabelInput>
 		<ButtonGroup class="mb-3 mt-3">
-			<CheckboxButton bind:checked={demoUppercase}>[A-Z] Uppercase Letters</CheckboxButton>
-			<CheckboxButton bind:checked={demoLowercase}>[a-z] Lowercase Letters</CheckboxButton>
-			<CheckboxButton bind:checked={demoNumbers}>[0-9] Numbers</CheckboxButton>
-			<CheckboxButton bind:checked={demoSpecial}>[!#?] Special Characters</CheckboxButton>
+			<CheckboxButton bind:checked={demoUppercase} on:change={()=>{benchmarkRun = false}}>[A-Z] Uppercase Letters</CheckboxButton>
+			<CheckboxButton bind:checked={demoLowercase} on:change={()=>{benchmarkRun = false}}>[a-z] Lowercase Letters</CheckboxButton>
+			<CheckboxButton bind:checked={demoNumbers} on:change={()=>{benchmarkRun = false}}>[0-9] Numbers</CheckboxButton>
+			<CheckboxButton bind:checked={demoSpecial} on:change={()=>{benchmarkRun = false}}>[!#?] Special Characters</CheckboxButton>
 		</ButtonGroup>
 		<Button
 			outline
@@ -281,7 +281,7 @@
 			}}>Generate Sample Password</Button
 		>
 		<Label>Length: {demoPasswordLength}</Label>
-		<Range bind:value={demoPasswordLength} min={demoPassMin} max={demoPassMax} />
+		<Range bind:value={demoPasswordLength} min={demoPassMin} max={demoPassMax}  on:change={()=>{benchmarkRun = false}}/>
 	</div>
 	<!-- #endregion -->
 	<div class="mx-auto max-w-screen-lg">
