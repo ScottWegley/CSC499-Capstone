@@ -19,11 +19,9 @@
 			in. I additionally decided to make the theme and subject of the website Cybersecurity, with a
 			focus on Cryptography. Categorizing and collating information that I feel I know has proven an
 			excellent way for me to verify my own knowledge, and this seemed like a great chance to do
-			that. This page hosts a number of the documents I created during the development process, all
-			of which you are welcome to and encouraged to view.
+			that.
 		</P>
 	</div>
-	<!--TODO: Add a place to host documentation for this project. -->
 </div>
 
 <style>
