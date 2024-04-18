@@ -14,8 +14,7 @@
 	let permutationAlphabet = DEFAULT_ALPHABET.map((l) => l);
 
 	/** Stores the text the user gives us. */
-	let inputText =
-		'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
+	let inputText = '';
 
 	/** Stores the text we give back to the user. */
 	let outputText = '';

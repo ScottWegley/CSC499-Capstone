@@ -33,10 +33,7 @@
 
 	// #region Global Settings & Functions
 	/** Stores the text given to us by the user. */
-	// $: inputText =
-	// 	'EKGXXIBT QGUODHPHF LWBNQIDBPK I PU QVG EDDY FDW XVPKK HGPR QVIX RPF P NHIXIX EGLPKKX QVG KPBR CVPQGJGH QVDWTVQX PHG IUODXXIEKG';
-	$: inputText =
-		'BLESSING TEMPORARY FUNCTIONAL I AM THE BOOK YOU SHALL READ THIS DAY A CRISIS BEFALLS THE LAND WHATEVER THOUGHTS ARE IMPOSSIBLE';
+	$: inputText = '';
 	/** Stores whether or not tooltips should be shown. */
 	let tooltipsActive = true;
 	/** Tracks whether the page is in Caesar mode or not. */
@@ -52,7 +49,7 @@
 	/** Whether or not the results should be displayed. */
 	let displayResults = true;
 	/** Whether or not the user has access to advanced features. */
-	let advancedMode = true;
+	let advancedMode = false;
 
 	/** Make sure the dictionary has been loaded so we don't do async shenanigans.*/
 	onMount(async () => {
@@ -261,19 +258,6 @@
 		return displayWords;
 	}
 	// #endregion
-
-	function debugButton(e: Event) {
-		if ((e as PointerEvent).shiftKey) {
-			console.log(Dictionary.usedWords);
-			console.log(Dictionary.fakeWords);
-		} else {
-			console.log(
-				permPossibleCharacters.calculateCombinationsOvercorrection() + ' Revised Prediction'
-			);
-			let alphabets = permPossibleCharacters.requestPossibleAlphabets() ?? new Set<string[]>();
-			console.log(alphabets.size + ' Actual Alphabets');
-		}
-	}
 </script>
 
 <title>Home</title>
@@ -724,7 +708,6 @@
 								<!-- #endregion -->
 							</div>
 							<!-- #endregion -->
-							<Button on:click={debugButton} class="mt-3"></Button>
 						</div>
 					</div>
 				</Card>
@@ -768,7 +751,8 @@
 											.toString()
 											.replaceAll(',', '')}</span
 									><Tooltip>
-										Left Shift of {caesarResults.getShifts()[i]} / Right Shift of {26-caesarResults.getShifts()[i]}
+										Left Shift of {caesarResults.getShifts()[i]} / Right Shift of {26 -
+											caesarResults.getShifts()[i]}
 									</Tooltip></TableBodyCell
 								>
 							</TableBodyRow>
