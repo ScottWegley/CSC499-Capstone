@@ -13,10 +13,10 @@ export class CaesarCrack extends CipherCracker {
 
 	/** Create a new instance of Caesar Cracking with text to crack.  Subsequently cracks the text. */
 	public constructor(text: string, threshold?: number, percentage?: number, ascending?: boolean, storageFunction?: (w: string) => void) {
-		super(text, threshold, percentage, ascending, storageFunction);
+		super(text, threshold, percentage, ascending);
 		for (let i = 0; i < DEFAULT_ALPHABET.length; i++) {
 			this.resultSet.push(caesarDecryption(this.input, i));
-			this.accuracySet.push(Dictionary.checkAccuracy(this.resultSet[i], this.storeRealWord));
+			this.accuracySet.push(Dictionary.checkAccuracy(this.resultSet[i]));
 			this.shiftSet.push(i);
 		}
 	}
