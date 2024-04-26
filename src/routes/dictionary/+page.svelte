@@ -52,6 +52,7 @@
 		(inputFileUpload as HTMLInputElement).value = '';
 		saveAcknowledged = false;
 		unsavedChanges = false;
+		unsaveAcknowledged = true;
 	}
 
 	/** This stores the wordlist as \n seperated for display to the user. */
@@ -130,6 +131,7 @@
 			updateStoredWordlist();
 			saveAcknowledged = false;
 			unsavedChanges = false;
+			unsaveAcknowledged = true;
 		} else {
 			(e.target as HTMLInputElement).value = '';
 		}
@@ -150,6 +152,8 @@
 	let unsavedChanges = false;
 	/** Boolean to track whether the user has acknowledged our saving alert. */
 	let saveAcknowledged = true;
+	/** Boolean to track whether the user has acknowledged our unsaved alert alert. */
+	let unsaveAcknowledged = true;
 
 	/** Boolean to control opening the dictionary selection modal. */
 	let dictionarySelectPopUp = false;
@@ -157,6 +161,7 @@
 	function alertUserToDictionaryChange(e: Event) {
 		unsavedChanges = true;
 		saveAcknowledged = true;
+		unsaveAcknowledged = false;
 	}
 	// #endregion
 </script>
@@ -202,6 +207,7 @@
 					if (updateStoredWordlist()) {
 						unsavedChanges = false;
 						saveAcknowledged = false;
+						unsaveAcknowledged = true;
 					}
 				}}>Save Changes</Button
 			>
@@ -250,13 +256,13 @@
 </div>
 <div class="mt-3 flex flex-row justify-center">
 	<Footer>
-		{#if unsavedChanges}
+		{#if !unsaveAcknowledged}
 			<Alert color="red" border class="cursor-default"
 				><span class="font-medium">Danger!</span> You have unsaved changes. Click
 				<span
 					class="cursor-pointer underline"
 					on:click={() => {
-						unsavedChanges = false;
+						unsaveAcknowledged = true;
 					}}>here</span
 				> to dismiss.</Alert
 			>
@@ -269,6 +275,7 @@
 					on:click={() => {
 						saveAcknowledged = true;
 						unsavedChanges = false;
+						unsaveAcknowledged = true;
 					}}>here</span
 				> to dismiss.</Alert
 			>
